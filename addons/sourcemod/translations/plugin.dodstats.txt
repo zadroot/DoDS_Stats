@@ -1,0 +1,274 @@
+"Phrases"
+{
+	// Chat messages
+	"Connected stats"
+	{
+		"#format"	"{1:s},{2:i},{3:s}"
+		"en"		"{olive}{1}{default} connected ({green}{2}{default} points / {olive}Grade - {3}{default})"
+	}
+	"Notifications enabled"
+	{
+		"en"		"Rank notifications {olive}enabled{default}. Say {green}!notify{default} again to disable them."
+	}
+	"Notifications disabled"
+	{
+		"en"		"Rank notifications {olive}disabled{default}. Say {green}!notify{default} again to enable them."
+	}
+	"Ranking enabled"
+	{
+		"en"		"Ranking {green}enabled:{default} Round start."
+	}
+	"Ranking disabled"
+	{
+		"en"		"Ranking {green}disabled{default} during bonusround."
+	}
+	"Welcome message"
+	{
+		"en"		"This server is running {green}DoD:S Stats{default} plugin.\nYou may say {green}!notify{default} in chat to toggle stats notifications."
+	}
+	"Stats have been reset"
+	{
+		"en"		"{olive}All stats data has been reset."
+	}
+	"Removed from database"
+	{
+		"#format"	"{1:s}"
+		"en"		"{olive}{1}{default} was removed from database."
+	}
+	"Delete player"
+	{
+		"en"		"Usage: sm_resetplayer \"STEAM_ID\""
+	}
+	"Show target"
+	{
+		"en"		"Usage: sm_pstats <#userid|name>"
+	}
+	"First in rank"
+	{
+		"#format"	"{1:s},{2:s},{3:i},{4:i}"
+		"en"		"{olive}{1}{default} is on a {green}first place{default} ({olive}Grade: {green}{2}{default}) got {green}{3}{default} points - {green}{4}{default} kills."
+	}
+	"Rank display"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:i},{5:i},{6:i},{7:i}"
+		"en"		"{olive}{1}{default} is rank {green}{2}{default}/{green}{3}{default} with {green}{4}{default} points ({olive}{5} to next rank{default}), {green}{6}{default} kills & {green}{7}{default} deaths."
+	}
+	"Suicide penalty"
+	{
+		"#format"	"{1:i}"
+		"en"		"You lost {green}{1}{default} points for {olive}dying."
+	}
+	"Teamkill penalty"
+	{
+		"#format"	"{1:i}"
+		"en"		"You lost {green}{1}{default} points for {olive}killing a teammate."
+	}
+	"Kill points"
+	{
+		"#format"	"{1:i},{2:s}"
+		"en"		"You gained {green}{1}{default} points for killing {olive}{2}"
+	}
+	"Death points"
+	{
+		"#format"	"{1:s},{2:i}"
+		"en"		"You were killed by {olive}{1}{default} and lost {green}{2}{default} points."
+	}
+	"Level steal"
+	{
+		"#format"	"{1:i}"
+		"en"		"You gained {green}{1}{default} points for {green}stealing a level."
+	}
+	"GunGame victory"
+	{
+		"#format"	"{1:i}"
+		"en"		"You reached max level in {olive}GunGame{default} and got {green}{1}{default} points for victory!"
+	}
+	"Headshot points"
+	{
+		"#format"	"{1:i}"
+		"en"		"You gained {green}{1}{default} points for making a {green}headshot."
+	}
+	"Victory points"
+	{
+		"#format"	"{1:i}"
+		"en"		"Your team won the round and all team members gained {green}{1}{default} points."
+	}
+	"Capture points"
+	{
+		"#format"	"{1:i}"
+		"en"		"You gained {green}{1}{default} points for {green}Area Capture."
+	}
+	"Block points"
+	{
+		"#format"	"{1:i}"
+		"en"		"You gained {green}{1}{default} points for {green}Blocking Capture."
+	}
+	"Explode points"
+	{
+		"#format"	"{1:i}"
+		"en"		"You gained {green}{1}{default} points for {green}Exploding an object."
+	}
+	"Protect points"
+	{
+		"#format"	"{1:i}"
+		"en"		"You gained {green}{1}{default} points for {green}Protecting object/bomb."
+	}
+	"Plant points"
+	{
+		"#format"	"{1:i}"
+		"en"		"You gained {green}{1}{default} points for {green}Planting a bomb."
+	}
+	"Defused points"
+	{
+		"#format"	"{1:i}"
+		"en"		"You gained {green}{1}{default} points for {green}Defusing a bomb."
+	}
+	// Menu items: no colors here
+	"Session Stats"
+	{
+		"en"		"Player session"
+	}
+	"Session points"
+	{
+		"en"		"Points"
+	}
+	"Session kills"
+	{
+		"en"		"Kills"
+	}
+	"Session deaths"
+	{
+		"en"		"Deaths"
+	}
+	"Session headshots"
+	{
+		"en"		"Headshots"
+	}
+	"Session KDR"
+	{
+		"en"		"KDR"
+	}
+	"Session time"
+	{
+		"en"		"Played on a server"
+	}
+	"Session timestamp"
+	{
+		"#format"	"{1:i},{2:i}"
+		"en"		"{1} h {2} m"
+	}
+	"Player Stats"
+	{
+		"en"		"Player Stats"
+	}
+	"Nickname"
+	{
+		"#format"	"{1:s}"
+		"en"		"Nickname: {1}"
+	}
+	"Position"
+	{
+		"#format"	"{1:i},{2:i}"
+		"en"		"Position: №{1} of {2} players"
+	}
+	"Points earned"
+	{
+		"#format"	"{1:i}"
+		"en"		"{1} Points earned"
+	}
+	"Overall timeplayed"
+	{
+		"#format"	"{1:i},{2:i},{3:i}"
+		"en"		"Time played: {1} days - {2} h {3} m"
+	}
+	"Kill Stats"
+	{
+		"en"		"Kill Stats"
+	}
+	"Grade"
+	{
+		"#format"	"{1:s}"
+		"en"		"Grade: {1}"
+	}
+	"Kills & deaths"
+	{
+		"#format"	"{1:i},{2:i},{3:.2f}"
+		"en"		"{1}:{2} Frags ({3})"
+	}
+	"Overall headshots"
+	{
+		"#format"	"{1:i},{2:.0f}"
+		"en"		"Headshots: {1} ({2}%%)"
+	}
+	"Teamkills & teamkilled"
+	{
+		"#format"	"{1:i},{2:i}"
+		"en"		"Teamkills: {1} / Times teamkilled: {2}"
+	}
+	"Objective Stats"
+	{
+		"en"		"Objective Stats"
+	}
+	"Captures"
+	{
+		"#format"	"{1:i}"
+		"en"		"Captures: {1}"
+	}
+	"Blocked captures"
+	{
+		"#format"	"{1:i}"
+		"en"		"Blocked captures: {1}"
+	}
+	"Bombs planted"
+	{
+		"#format"	"{1:i}"
+		"en"		"Bombs planted: {1}"
+	}
+	"Bombs defused"
+	{
+		"#format"	"{1:i}"
+		"en"		"Bombs defused: {1}"
+	}
+	"GunGame Stats"
+	{
+		"en"		"GunGame Stats"
+	}
+	"Played & won"
+	{
+		"#format"	"{1:i},{2:i}"
+		"en"		"Rounds played: {1} / Rounds won: {2}"
+	}
+	"Steal & lost"
+	{
+		"#format"	"{1:i},{2:i}"
+		"en"		"Levels stolen: {1} / Levels lost: {2}"
+	}
+	"Top10"
+	{
+		"en"		"Top 10 Players"
+	}
+	"Top10 stats"
+	{
+		"#format"	"{1:s},{2:.2f},{3:i}"
+		"en"		"{1} | {2} KDR | {3} points"
+	}
+	"Top10 > 3"
+	{
+		"#format"	"{1:s},{2:.2f},{3:i}"
+		"en"		"{1} | {2} KDR | {3}"
+	}
+	"TopGrades"
+	{
+		"en"		"Top 10 Players - Awards"
+	}
+	"TopGrades stats"
+	{
+		"#format"	"{1:s},{2:s},{3:i}"
+		"en"		"{1} | {2} | {3} kills"
+	}
+	"TopGrades > 3"
+	{
+		"#format"	"{1:s},{2:s},{3:i}"
+		"en"		"{1} | {2} | {3}"
+	}
+}

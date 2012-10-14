@@ -1,0 +1,237 @@
+"Phrases"
+{
+	// Chat messages
+	"Connected stats"
+	{
+		"ru"		"{olive}{1}{default} присоединился ({green}{2}{default} очков / {olive}Звание - {3}{default})"
+	}
+	"Notifications enabled"
+	{
+		"ru"		"Оповещения {olive}включены{default}. Напишите {green}!notify{default} снова чтобы отключить."
+	}
+	"Notifications disabled"
+	{
+		"ru"		"Оповещения {olive}отключены{default}. Напишите {green}!notify{default} снова чтобы включить."
+	}
+	"Ranking enabled"
+	{
+		"ru"		"Раунд начался: статистика {green}включена.{default}"
+	}
+	"Ranking disabled"
+	{
+		"ru"		"Раунд окончен: статистика {green}отключена{default}"
+	}
+	"Welcome message"
+	{
+		"ru"		"Вы можете написать {green}!notify{default} чтобы включить или отключить оповещения cтатистики."
+	}
+	"Stats have been reset"
+	{
+		"ru"		"{olive}Статистика была обнулена"
+	}
+	"Removed from database"
+	{
+		"ru"		"{olive}{1}{default} был удален из базы данных."
+	}
+	"Delete player"
+	{
+		"ru"		"Используйте: sm_resetplayer \"STEAM_ID\""
+	}
+	"Show target"
+	{
+		"ru"		"Используйте: sm_pstats <#userid|имя>"
+	}
+	"First in rank"
+	{
+		"ru"		"{olive}{1}{default} находится на {green}первом месте{default} ({olive}Звание: {green}{2}{default}) набрано {green}{3}{default} очков - {4} убил"
+	}
+	"Rank display"
+	{
+		"ru"		"{olive}{1}{default} в ранге {green}{2}{default}/{green}{3}{default} набрано {green}{4}{default} очков ({olive}{5} до следующей позиции{default}), {6} убил и {7} смертей."
+	}
+	"Suicide penalty"
+	{
+		"ru"		"Вы потеряли {green}{1}{default} очков за {olive}самоубийство."
+	}
+	"Teamkill penalty"
+	{
+		"ru"		"Вы потеряли {green}{1}{default} очков за {olive}убийство союзника."
+	}
+	"Kill points"
+	{
+		"ru"		"Вы получили {green}{1}{default} очков за убийство {olive}{2}"
+	}
+	"Death points"
+	{
+		"ru"		"Вас убил {olive}{1}{default} и Вы потеряли {green}{2}{default} очков."
+	}
+	"Level steal"
+	{
+		"ru"		"Вы получили {green}{1}{default} очков и {green}+1 уровень{default}"
+	}
+	"GunGame victory"
+	{
+		"ru"		"Вы достигли максимального уровня в {olive}GunGame{default} и получили {green}{1}{default} очков за победу!"
+	}
+	"Headshot points"
+	{
+		"ru"		"Вы получили {green}{1}{default} очко за {green}хэдшот."
+	}
+	"Victory points"
+	{
+		"ru"		"Ваша команда победила в этом раунде и каждый игрок получает по {green}{1}{default} очка."
+	}
+	"Capture points"
+	{
+		"ru"		"Вы получили {green}{1}{default} очка за {green}Захват объекта."
+	}
+	"Block points"
+	{
+		"ru"		"Вы получили {green}{1}{default} очка за {green}Защиту флага."
+	}
+	"Explode points"
+	{
+		"ru"		"Вы получили {green}{1}{default} очка за {green}Подрыв объекта."
+	}
+	"Protect points"
+	{
+		"ru"		"Вы получили {green}{1}{default} очка за {green}Защиту."
+	}
+	"Plant points"
+	{
+		"ru"		"Вы получили {green}{1}{default} очка за {green}Установку взрывчатки."
+	}
+	"Defused points"
+	{
+		"ru"		"Вы получили {green}{1}{default} очка за {green}Обезвреживание взрывчатки."
+	}
+	// Menu items: no colors here
+	"Session Stats"
+	{
+		"ru"		"Сессия игрока"
+	}
+	"Session points"
+	{
+		"ru"		"Очки"
+	}
+	"Session kills"
+	{
+		"ru"		"Убийств"
+	}
+	"Session deaths"
+	{
+		"ru"		"Смертей"
+	}
+	"Session headshots"
+	{
+		"ru"		"В голову"
+	}
+	"Session KDR"
+	{
+		"ru"		"Соотношение У/С"
+	}
+	"Session time"
+	{
+		"ru"		"Сыграно времени"
+	}
+	"Session timestamp"
+	{
+		"ru"		"{1} ч {2} м"
+	}
+	"Player Stats"
+	{
+		"ru"		"Статистика"
+	}
+	"Nickname"
+	{
+		"ru"		"Имя: {1}"
+	}
+	"Position"
+	{
+		"ru"		"Позиция: №{1} из {2} игроков"
+	}
+	"Points earned"
+	{
+		"ru"		"Набрано очков: {1}"
+	}
+	"Overall timeplayed"
+	{
+		"ru"		"Время: {1} дней - {2} ч {3} м"
+	}
+	"Kill Stats"
+	{
+		"ru"		"Убийства"
+	}
+	"Grade"
+	{
+		"ru"		"Звание: {1}"
+	}
+	"Kills & deaths"
+	{
+		"ru"		"{1}:{2} фрагов ({3})"
+	}
+	"Overall headshots"
+	{
+		"ru"		"В голову: {1} ({2}%%)"
+	}
+	"Teamkills & teamkilled"
+	{
+		"ru"		"Убил своих: {1} / Убит своими: {2}"
+	}
+	"Objective Stats"
+	{
+		"ru"		"Объекты"
+	}
+	"Captures"
+	{
+		"ru"		"Захвачено: {1}"
+	}
+	"Blocked captures"
+	{
+		"ru"		"Заблокировано: {1}"
+	}
+	"Bombs planted"
+	{
+		"ru"		"Бомб установлено: {1}"
+	}
+	"Bombs defused"
+	{
+		"ru"		"Обезврежено: {1}"
+	}
+	"GunGame Stats"
+	{
+		"ru"		"Статистика GunGame"
+	}
+	"Played & won"
+	{
+		"ru"		"Раундов сыграно: {1} / Выиграно: {2}"
+	}
+	"Steal & lost"
+	{
+		"ru"		"Уровней украдено: {1} / Потеряно: {2}"
+	}
+	"Top10"
+	{
+		"ru"		"Десятка лучших"
+	}
+	"Top10 stats"
+	{
+		"ru"		"{1} | {2} У/С | {3} очков"
+	}
+	"Top10 > 3"
+	{
+		"ru"		"{1} | {2} У/С | {3}"
+	}
+	"TopGrades"
+	{
+		"ru"		"Табель о рангах"
+	}
+	"TopGrades stats"
+	{
+		"ru"		"{1} | {2} | {3} убил"
+	}
+	"TopGrades > 3"
+	{
+		"ru"		"{1} | {2} | {3}"
+	}
+}
