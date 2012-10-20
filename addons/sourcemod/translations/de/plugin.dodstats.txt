@@ -3,7 +3,7 @@
 	// Chat messages
 	"Connected stats"
 	{
-		"de"		"{olive}{1}{default} connected ({green}{2}{default} Punkte / {olive}Rang - {3}{default})"
+		"de"		"{olive}{1}{default} connected ({green}{2}{default} punkte / {olive}Rang - {3}{default})"
 	}
 	"Notifications enabled"
 	{
@@ -13,9 +13,13 @@
 	{
 		"de"		"Rang Benachrichtigung {olive}ausgeschalten{default}. Schreibe {green}!notify{default} zum einschalten."
 	}
+	"Not enough players"
+	{
+		"de"		"Brauchte mindestens {green}{1}{default} Spielern zu ermöglichen {green}stats{default}."
+	}
 	"Ranking enabled"
 	{
-		"de"		"Rangliste {green}eingeschaltet::{default} Start der Runde."
+		"de"		"Rangliste {green}eingeschaltet:{default} Start der Runde."
 	}
 	"Ranking disabled"
 	{
@@ -101,7 +105,7 @@
 	{
 		"de"		"Du bekommst {green}{1}{default} Punkte fuer {green}anbringen einer Bombe."
 	}
-	"Defused points"
+	"Defuse points"
 	{
 		"de"		"Du bekommst {green}{1}{default} Punkte fuer {green}entschaerfen einer Bombe."
 	}

@@ -4,33 +4,34 @@
 #define TOP_PLAYERS        10
 
 // Create Handles
-new	Handle:dodstats_version,
-	Handle:dodstats_info[DOD_MAXPLAYERS],
-	Handle:dodstats_announce = INVALID_HANDLE,
-	Handle:dodstats_hidechat = INVALID_HANDLE,
-	Handle:dodstats_purge = INVALID_HANDLE,
-	Handle:dodstats_bonusround = INVALID_HANDLE,
-	Handle:dodstats_gameplay = INVALID_HANDLE,
-	Handle:stats_points_start = INVALID_HANDLE,
-	Handle:stats_points_k_value = INVALID_HANDLE,
-	Handle:stats_points_min = INVALID_HANDLE,
-	Handle:stats_points_tk_penalty = INVALID_HANDLE,
-	Handle:stats_points_suicide = INVALID_HANDLE,
-	Handle:stats_points_capture = INVALID_HANDLE,
-	Handle:stats_points_block = INVALID_HANDLE,
-	Handle:stats_points_bomb_explode = INVALID_HANDLE,
-	Handle:stats_points_bomb_planted = INVALID_HANDLE,
-	Handle:stats_points_bomb_defused = INVALID_HANDLE,
-	Handle:stats_points_victory = INVALID_HANDLE,
-	Handle:stats_points_headshot = INVALID_HANDLE,
+new	Handle:dodstats_info[DOD_MAXPLAYERS],
+	Handle:dodstats_announce          = INVALID_HANDLE,
+	Handle:dodstats_hidechat          = INVALID_HANDLE,
+	Handle:dodstats_purge             = INVALID_HANDLE,
+	Handle:dodstats_bonusround        = INVALID_HANDLE,
+	Handle:dodstats_minplayers        = INVALID_HANDLE,
+	Handle:dodstats_gameplay          = INVALID_HANDLE,
+	Handle:stats_points_start         = INVALID_HANDLE,
+	Handle:stats_points_k_value       = INVALID_HANDLE,
+	Handle:stats_points_min           = INVALID_HANDLE,
+	Handle:stats_points_tk_penalty    = INVALID_HANDLE,
+	Handle:stats_points_suicide       = INVALID_HANDLE,
+	Handle:stats_points_capture       = INVALID_HANDLE,
+	Handle:stats_points_block         = INVALID_HANDLE,
+	Handle:stats_points_bomb_explode  = INVALID_HANDLE,
+	Handle:stats_points_bomb_planted  = INVALID_HANDLE,
+	Handle:stats_points_bomb_defused  = INVALID_HANDLE,
+	Handle:stats_points_victory       = INVALID_HANDLE,
+	Handle:stats_points_headshot      = INVALID_HANDLE,
 	Handle:stats_points_gg_levelsteal = INVALID_HANDLE,
-	Handle:stats_points_gg_maxlevel = INVALID_HANDLE,
-	Handle:db = INVALID_HANDLE;
+	Handle:stats_points_gg_maxlevel   = INVALID_HANDLE,
+	Handle:db                         = INVALID_HANDLE;
 
 // Other
-new Handle:gungame_custom,
+new Handle:gungame_custom = INVALID_HANDLE,
 	bool:rankactive = true,
-	bool:sqlite = false,
+	bool:roundend   = false,
+	bool:sqlite     = false,
 	gameplay = 0, /* 0 = Normal. 1 = DeathMatch. 2 = GunGame */
 	dod_global_player_count;
 

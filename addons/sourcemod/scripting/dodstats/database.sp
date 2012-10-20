@@ -11,7 +11,7 @@
  *
  * Creates database tables when the plugin starts.
  * --------------------------------------------------------------------- */
-public CreateTables()
+CreateTables()
 {
 	// For simplest queries are ones which do not return results ( CREATE, DROP, UPDATE, INSERT, and DELETE ) use SQL_FastQuery
 	if (sqlite)
@@ -24,11 +24,11 @@ public CreateTables()
  *
  * Gets global count of players from database.
  * --------------------------------------------------------------------- */
-public GetPlayerCount()
+GetPlayerCount()
 {
 	if (db != INVALID_HANDLE)
 	{
-		decl String:query[512];
+		decl String:query[128];
 
 		Format(query, sizeof(query), "SELECT * FROM dod_stats");
 		SQL_TQuery(db, PlayerCountCallback, query);
@@ -39,7 +39,7 @@ public GetPlayerCount()
  *
  * Loads a client's stats on connect.
  * --------------------------------------------------------------------- */
-public PrepareClient(client)
+PrepareClient(client)
 {
 	// It is important to check steamid of every connected player. Otherwise on every disconnect client will lost his stats.
 	decl String:client_steamid[64], String:query[512];
@@ -57,9 +57,10 @@ public PrepareClient(client)
  * --------------------------------------------------------------------- */
 public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:data)
 {
-	new client, time = GetTime();
 	if (handle != INVALID_HANDLE)
 	{
+		new client, time = GetTime();
+
 		// Data is always zero. Stop threading if client is zero.
 		if ((client = GetClientOfUserId(data)) > 0)
 		{
@@ -82,23 +83,23 @@ public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:
 				// And get player's previous data.
 				while(SQL_FetchRow(handle))
 				{
-					dod_stats_score[client] = SQL_FetchInt(handle, 0);
-					dod_stats_kills[client] = SQL_FetchInt(handle, 1);
-					dod_stats_deaths[client] = SQL_FetchInt(handle, 2);
-					dod_stats_headshots[client] = SQL_FetchInt(handle, 3);
-					dod_stats_teamkills[client] = SQL_FetchInt(handle, 4);
-					dod_stats_teamkilled[client] = SQL_FetchInt(handle, 5);
-					dod_stats_captures[client] = SQL_FetchInt(handle, 6);
-					dod_stats_capblocks[client] = SQL_FetchInt(handle, 7);
-					dod_stats_planted[client] = SQL_FetchInt(handle, 8);
-					dod_stats_defused[client] = SQL_FetchInt(handle, 9);
+					dod_stats_score[client]           = SQL_FetchInt(handle, 0);
+					dod_stats_kills[client]           = SQL_FetchInt(handle, 1);
+					dod_stats_deaths[client]          = SQL_FetchInt(handle, 2);
+					dod_stats_headshots[client]       = SQL_FetchInt(handle, 3);
+					dod_stats_teamkills[client]       = SQL_FetchInt(handle, 4);
+					dod_stats_teamkilled[client]      = SQL_FetchInt(handle, 5);
+					dod_stats_captures[client]        = SQL_FetchInt(handle, 6);
+					dod_stats_capblocks[client]       = SQL_FetchInt(handle, 7);
+					dod_stats_planted[client]         = SQL_FetchInt(handle, 8);
+					dod_stats_defused[client]         = SQL_FetchInt(handle, 9);
 					dod_stats_gg_roundsplayed[client] = SQL_FetchInt(handle, 10);
-					dod_stats_gg_roundswon[client] = SQL_FetchInt(handle, 11);
-					dod_stats_gg_levelsteal[client] = SQL_FetchInt(handle, 12);
-					dod_stats_gg_leveldown[client] = SQL_FetchInt(handle, 13);
-					dod_stats_online[client] = SQL_FetchInt(handle, 14);
-					dod_stats_client_notify[client] = SQL_FetchInt(handle, 15);
-					dod_stats_time_played[client] = SQL_FetchInt(handle, 16);
+					dod_stats_gg_roundswon[client]    = SQL_FetchInt(handle, 11);
+					dod_stats_gg_levelsteal[client]   = SQL_FetchInt(handle, 12);
+					dod_stats_gg_leveldown[client]    = SQL_FetchInt(handle, 13);
+					dod_stats_online[client]          = SQL_FetchInt(handle, 14);
+					dod_stats_client_notify[client]   = SQL_FetchInt(handle, 15);
+					dod_stats_time_played[client]     = SQL_FetchInt(handle, 16);
 				}
 			}
 			else // Nope player is new
@@ -162,7 +163,7 @@ public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:
  *
  * Executes a query Handle for receiving the results for rank. (threaded)
  * --------------------------------------------------------------------- */
-public QueryRankStats(client)
+QueryRankStats(client)
 {
 	decl String:query[512];
 	Format(query, sizeof(query), "SELECT DISTINCT score FROM dod_stats WHERE score > %i ORDER BY score ASC;", dod_stats_score[client]);
@@ -177,9 +178,9 @@ public QueryRankStats(client)
  * --------------------------------------------------------------------- */
 public QueryRank(Handle:owner, Handle:handle, const String:error[], any:data)
 {
-	new client;
 	if (handle != INVALID_HANDLE)
 	{
+		new client;
 		if ((client = GetClientOfUserId(data)) > 0)
 		{
 			// Getting rank position of all players.
@@ -208,7 +209,7 @@ public QueryRank(Handle:owner, Handle:handle, const String:error[], any:data)
  *
  * Executes a query Handle for receiving the results for top10.
  * --------------------------------------------------------------------- */
-public QueryTop10(client)
+QueryTop10(client)
 {
 	decl String:query[512];
 
@@ -222,7 +223,7 @@ public QueryTop10(client)
  *
  * Executes a query Handle for receiving the results for topgrades.
  * --------------------------------------------------------------------- */
-public QueryTopGrades(client)
+QueryTopGrades(client)
 {
 	decl String:query[512];
 	Format(query, sizeof(query), "SELECT name, captured, kills FROM dod_stats ORDER BY kills DESC LIMIT 10;");
@@ -235,7 +236,7 @@ public QueryTopGrades(client)
  *
  * Executes a query Handle for receiving the results for stats. (threaded)
  * --------------------------------------------------------------------- */
-public QueryStats(client)
+QueryStats(client)
 {
 	decl String:query[512];
 	Format(query, sizeof(query), "SELECT DISTINCT score FROM dod_stats WHERE score > %i ORDER BY score ASC;", dod_stats_score[client]);
@@ -251,9 +252,9 @@ public QueryStats(client)
 public QueryStatsMe(Handle:owner, Handle:handle, const String:error[], any:data)
 {
 	// Almost same as rank
-	new client;
 	if (handle != INVALID_HANDLE)
 	{
+		new client;
 		if ((client = GetClientOfUserId(data)) > 0)
 		{
 			new rank = SQL_GetRowCount(handle),
@@ -288,13 +289,13 @@ public PlayerCountCallback(Handle:owner, Handle:handle, const String:error[], an
  *
  * Querying last connect and delete a player if inactive > days.
  * --------------------------------------------------------------------- */
-public RemoveOldPlayers()
+RemoveOldPlayers()
 {
 	// If purge value is initialized - check last connect of all players from a database
 	if (GetConVarInt(dodstats_purge) > 0)
 	{
 		// Create a single query for purge.
-		decl String:query[255];
+		decl String:query[512];
 
 		// Current date - purge value * 24 hours.
 		new days = GetTime() - (GetConVarInt(dodstats_purge) * 86400);
@@ -309,7 +310,7 @@ public RemoveOldPlayers()
  *
  * Sets all database characters to UTF-8 encode.
  * --------------------------------------------------------------------- */
-public SetEncoding()
+SetEncoding()
 {
 	if (!sqlite)
 	{
@@ -325,7 +326,7 @@ public SetEncoding()
  *
  * Updates notiy preferences via a thread.
  * --------------------------------------------------------------------- */
-public ToggleNotify(client)
+ToggleNotify(client)
 {
 	if (db != INVALID_HANDLE)
 	{
@@ -386,7 +387,7 @@ public DB_PurgeCallback(Handle:owner, Handle:handle, const String:error[], any:d
 		// If more or equal rows was changed - log message
 		if (SQL_GetAffectedRows(owner) > 0)
 		{
-			LogMessage("%i players was removed due of inactivity", SQL_GetAffectedRows(owner));
+			LogMessage("%i players was removed due of inactivity.", SQL_GetAffectedRows(owner));
 			dod_global_player_count -= SQL_GetAffectedRows(owner);
 		}
 	}
@@ -397,7 +398,7 @@ public DB_PurgeCallback(Handle:owner, Handle:handle, const String:error[], any:d
  *
  * Update and save player's stats into database.
  * --------------------------------------------------------------------- */
-public SavePlayer(client)
+SavePlayer(client)
 {
 	if (db != INVALID_HANDLE)
 	{

@@ -4,7 +4,7 @@
 * Description:
 *    A stats plugin (SQLite/MySQL) with many features, full point customization and GunGame/DeathMatch support.
 *
-* Version 1.6
+* Version 1.7
 * Changelog & more info at http://goo.gl/4nKhJ
 */
 
@@ -15,11 +15,8 @@
 #include <colors>
 
 // ====[ CONSTANTS ]================================================
-#define PLUGIN_NAME        "DoD:S Stats"
-#define PLUGIN_AUTHOR      "Root"
-#define PLUGIN_DESCRIPTION "A stats with awards, captures, headshots & more..."
-#define PLUGIN_VERSION     "1.6"
-#define PLUGIN_CONTACT     "http://www.dodsplugins.com/"
+#define PLUGIN_NAME    "DoD:S Stats"
+#define PLUGIN_VERSION "1.7"
 
 // ====[ PLUGIN ]===================================================
 #include "dodstats/init.sp"
@@ -32,10 +29,10 @@
 public Plugin:myinfo =
 {
 	name        = PLUGIN_NAME,
-	author      = PLUGIN_AUTHOR,
-	description = PLUGIN_DESCRIPTION,
+	author      = "Root",
+	description = "A stats with awards, captures, headshots & more...",
 	version     = PLUGIN_VERSION,
-	url         = PLUGIN_CONTACT
+	url         = "http://dodsplugins.com/"
 };
 
 
@@ -47,6 +44,9 @@ public OnMapStart()
 {
 	// Update global player count at every mapchange for servers with MySQL database
 	if (!sqlite) GetPlayerCount();
+
+	// Get previous connects of all players from a database and remove inactive ones
+	RemoveOldPlayers();
 }
 
 /* OnClientPutInServer()
@@ -65,6 +65,10 @@ public OnClientPutInServer(client)
 
 			// Show welcome message to a player
 			dodstats_info[client] = CreateTimer(30.0, Timer_WelcomePlayer, client, TIMER_FLAG_NO_MAPCHANGE);
+
+			// Enable stats if there is enough players on a server right now
+			if (!roundend && GetClientCount() >= GetConVarInt(dodstats_minplayers))
+				rankactive = true;
 		}
 	}
 }
@@ -84,6 +88,7 @@ public OnClientDisconnect(client)
 			CloseHandle(dodstats_info[client]);
 			dodstats_info[client] = INVALID_HANDLE;
 		}
+
 		// Save stats for a player
 		SavePlayer(client);
 	}
@@ -95,10 +100,13 @@ public OnClientDisconnect(client)
  * ------------------------------------------------------------------ */
 public Action:Command_Say(client, const String:command[], argc)
 {
+	// Variables will start with "garbage" contents.
 	decl String:text[192];
 
+	// Retrieves the entire command argument string in one lump from the current console or server command.
 	if (!GetCmdArgString(text, sizeof(text))) return Plugin_Continue;
 
+	// Refine & safe strings
 	new trigger = 0;
 	if (text[strlen(text)-1] == '"')
 	{
@@ -107,44 +115,76 @@ public Action:Command_Say(client, const String:command[], argc)
 	}
 
 	// Rank triggers
-	if (strcmp(text[trigger], "rank") == 0 || strcmp(text[trigger], "!rank") == 0 || strcmp(text[trigger], "/rank") == 0)
+	if (StrEqual(text[trigger], "rank")
+	||	StrEqual(text[trigger], "!rank")
+	||	StrEqual(text[trigger], "/rank"))
 	{
 		QueryRankStats(client);
-		if (GetConVarBool(dodstats_hidechat)) return Plugin_Handled;
+		if (GetConVarBool(dodstats_hidechat))
+			return Plugin_Handled;
 	}
+
 	// Top10 triggers
-	else if (strcmp(text[trigger], "top10") == 0 || strcmp(text[trigger], "!top10") == 0 || strcmp(text[trigger], "/top10") == 0)
+	if (StrEqual(text[trigger], "top10")
+	||	StrEqual(text[trigger], "!top10")
+	||	StrEqual(text[trigger], "/top10"))
 	{
-		QueryTop10(client); /* Aren't triggers should be hidden? */
-		if (GetConVarBool(dodstats_hidechat)) return Plugin_Handled;
+		QueryTop10(client);
+
+		// Arent triggers should be hidden?
+		if (GetConVarBool(dodstats_hidechat))
+			return Plugin_Handled;
 	}
+
 	// TopGrades triggers
-	else if (strcmp(text[trigger], "top") == 0 || strcmp(text[trigger], "!top") == 0 || strcmp(text[trigger], "/top") == 0 || strcmp(text[trigger], "topgrades") == 0 || strcmp(text[trigger], "!topgrades") == 0 || strcmp(text[trigger], "/topgrades") == 0)
+	if (StrEqual(text[trigger], "top")
+	||	StrEqual(text[trigger], "topgrades")
+	||	StrEqual(text[trigger], "!top")
+	||	StrEqual(text[trigger], "!topgrades")
+	||	StrEqual(text[trigger], "/top")
+	||	StrEqual(text[trigger], "/topgrades"))
 	{
 		QueryTopGrades(client);
-		if (GetConVarBool(dodstats_hidechat)) return Plugin_Handled;
+		if (GetConVarBool(dodstats_hidechat))
+			return Plugin_Handled;
 	}
+
 	// Stats triggers
-	else if (strcmp(text[trigger], "stats") == 0 || strcmp(text[trigger], "statsme") == 0 || strcmp(text[trigger], "!stats") == 0 || strcmp(text[trigger], "!statsme") == 0 || strcmp(text[trigger], "/stats") == 0 || strcmp(text[trigger], "/statsme") == 0)
+	if (StrEqual(text[trigger], "stats")
+	||	StrEqual(text[trigger], "statsme")
+	||	StrEqual(text[trigger], "!stats")
+	||	StrEqual(text[trigger], "!statsme")
+	||	StrEqual(text[trigger], "/stats")
+	||	StrEqual(text[trigger], "/statsme"))
 	{
 		QueryStats(client);
-		if (GetConVarBool(dodstats_hidechat)) return Plugin_Handled;
+		if (GetConVarBool(dodstats_hidechat))
+			return Plugin_Handled;
 	}
+
 	// Session triggers
-	else if (strcmp(text[trigger], "session") == 0 || strcmp(text[trigger], "!session") == 0 || strcmp(text[trigger], "/session") == 0)
+	if (StrEqual(text[trigger], "session")
+	||	StrEqual(text[trigger], "!session")
+	||	StrEqual(text[trigger], "/session"))
 	{
 		// No need to query database for session, enough to show it
 		ShowSession(client);
-		if (GetConVarBool(dodstats_hidechat)) return Plugin_Handled;
-	}
-	// Notify triggers
-	else if (strcmp(text[trigger], "notify") == 0 || strcmp(text[trigger], "!notify") == 0 || strcmp(text[trigger], "/notify") == 0)
-	{
-		// Enable or disable notify
-		ToggleNotify(client);
-		if (GetConVarBool(dodstats_hidechat)) return Plugin_Handled;
+		if (GetConVarBool(dodstats_hidechat))
+			return Plugin_Handled;
 	}
 
+	// Notify triggers
+	if (StrEqual(text[trigger], "notify")
+	||	StrEqual(text[trigger], "!notify")
+	||	StrEqual(text[trigger], "/notify"))
+	{
+		// Enable or disable notifications
+		ToggleNotify(client);
+		if (GetConVarBool(dodstats_hidechat))
+			return Plugin_Handled;
+	}
+
+	// Continue, otherwise no messages will be received
 	return Plugin_Continue;
 }
 

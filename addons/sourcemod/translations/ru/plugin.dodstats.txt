@@ -13,13 +13,17 @@
 	{
 		"ru"		"Оповещения {olive}отключены{default}. Напишите {green}!notify{default} снова чтобы включить."
 	}
+	"Not enough players"
+	{
+		"ru"		"Необходимо как минимум {green}{1}{default} игроков для включения {green}статистики{default}."
+	}
 	"Ranking enabled"
 	{
-		"ru"		"Раунд начался: статистика {green}включена.{default}"
+		"ru"		"Раунд начался: статистика {green}включена{default}."
 	}
 	"Ranking disabled"
 	{
-		"ru"		"Раунд окончен: статистика {green}отключена{default}"
+		"ru"		"Раунд окончен: статистика {green}отключена{default}."
 	}
 	"Welcome message"
 	{
@@ -101,7 +105,7 @@
 	{
 		"ru"		"Вы получили {green}{1}{default} очка за {green}Установку взрывчатки."
 	}
-	"Defused points"
+	"Defuse points"
 	{
 		"ru"		"Вы получили {green}{1}{default} очка за {green}Обезвреживание взрывчатки."
 	}

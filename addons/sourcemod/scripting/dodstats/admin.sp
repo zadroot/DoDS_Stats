@@ -4,7 +4,9 @@
  * --------------------------------------------------------------------- */
 public Action:Command_Reset(client, args)
 {
-	SQL_TQuery(db, DB_CheckErrors, "DELETE FROM dod_stats");
+	decl String:query[128];
+	Format(query, sizeof(query), "DELETE FROM dod_stats");
+	SQL_TQuery(db, DB_CheckErrors, query);
 
 	// Log action.
 	LogAction(client, -1, "\"%L\" have been reset all stats.", client);

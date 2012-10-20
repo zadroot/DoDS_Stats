@@ -2,7 +2,7 @@
  *
  * Prints player's points & grade on connect.
  * --------------------------------------------------------------------- */
-public ShowInfo(client)
+ShowInfo(client)
 {
 	decl String:client_name[MAX_NAME_LENGTH];
 	GetClientName(client, client_name, sizeof(client_name));
@@ -32,7 +32,7 @@ public ShowInfo(client)
  *
  * Prints player's rank in chat.
  * --------------------------------------------------------------------- */
-public ShowRank(client, rank, next_score)
+ShowRank(client, rank, next_score)
 {
 	// No need to refine nicknames here.
 	decl String:client_name[MAX_NAME_LENGTH];
@@ -66,7 +66,7 @@ public ShowRank(client, rank, next_score)
  *
  * Displays a current client session stats.
  * --------------------------------------------------------------------- */
-public ShowSession(client)
+ShowSession(client)
 {
 	decl String:data[16], String:title[32];
 
@@ -120,7 +120,7 @@ public ShowSession(client)
  *
  * Displays a stats to a client
  * --------------------------------------------------------------------- */
-public ShowStats(target, client, rank)
+ShowStats(target, client, rank)
 {
 	// Is client & target is valid and not a server?
 	if (client > 0 && target > 0)
@@ -247,15 +247,14 @@ public ShowStats(target, client, rank)
  * --------------------------------------------------------------------- */
 public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:data)
 {
-	new client;
 	if (handle != INVALID_HANDLE)
 	{
+		new client, row;
+
 		// Data is always zero. Stop threading if client is zero.
 		if ((client = GetClientOfUserId(data)) > 0)
 		{
-			new row = 0, top_score, top_kills, top_deaths;
-
-			decl String:top_name[MAX_NAME_LENGTH], String:title[32], String:buffer[TOP_PLAYERS+1][64];
+			decl top_score, top_kills, top_deaths, String:top_name[MAX_NAME_LENGTH], String:title[32], String:buffer[TOP_PLAYERS + 1][64];
 
 			new Handle:top10 = CreatePanel();
 			Format(title, sizeof(title), "%T:", "Top10", client);
@@ -268,8 +267,8 @@ public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:data)
 				{
 					row++;
 					SQL_FetchString(handle, 0, top_name, sizeof(top_name));
-					top_score = SQL_FetchInt(handle, 1);
-					top_kills = SQL_FetchInt(handle, 2);
+					top_score  = SQL_FetchInt(handle, 1);
+					top_kills  = SQL_FetchInt(handle, 2);
 					top_deaths = SQL_FetchInt(handle, 3);
 
 					// If there is more than 3 players in top10, but less than 10 - show their numbers (because this is a PanelText)
@@ -303,13 +302,12 @@ public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:data)
  * --------------------------------------------------------------------- */
 public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data)
 {
-	new client;
 	if (handle != INVALID_HANDLE)
 	{
+		new client, row;
 		if ((client = GetClientOfUserId(data)) > 0)
 		{
-			new row = 0, top_flags, top_kills;
-			decl String:top_name[MAX_NAME_LENGTH], String:title[48], String:buffer[TOP_PLAYERS+1][96];
+			decl top_flags, top_kills, String:top_name[MAX_NAME_LENGTH], String:title[48], String:buffer[TOP_PLAYERS + 1][96];
 
 			new Handle:top10_awards = CreatePanel();
 			Format(title, sizeof(title), "%T:", "TopGrades", client);
@@ -326,8 +324,8 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data
 					top_kills = SQL_FetchInt(handle, 2);
 
 					// Grades
-					decl award;
-					for (new i = 0; i < AWARDS; i++)
+					decl award, i;
+					for (i = 0; i < AWARDS; i++)
 					{
 						if (gameplay == 0)
 						{

@@ -1,3 +1,26 @@
+/* Event_Round_Start()
+ *
+ * Called when a round starts.
+ * --------------------------------------------------------------------- */
+public Event_Round_Start(Handle:event, const String:name[], bool:dontBroadcast)
+{
+	roundend = false;
+
+	// Enable ranking now
+	if (!rankactive && GetClientCount() >= GetConVarInt(dodstats_minplayers))
+	{
+		rankactive = true;
+		CPrintToChatAll("%t", "Ranking enabled");
+	}
+
+	// If rank is not active and player count not exceeded minimum player count, disable rank active 
+	else if (GetClientCount() < GetConVarInt(dodstats_minplayers))
+	{
+		rankactive = false;
+		CPrintToChatAll("%t", "Not enough players", GetConVarInt(dodstats_minplayers));
+	}
+}
+
 /* Event_Round_End()
  *
  * Called when a round ends.
@@ -9,7 +32,7 @@ public Event_Round_End(Handle:event, const String:name[], bool:dontBroadcast)
 
 	for (new client = 1; client <= MaxClients; client++)
 	{
-		// Encourage players from victory team
+		// Encourage players from winner's team
 		if (IsClientInGame(client) && GetClientTeam(client) == win_team)
 		{
 			// POINTS!
@@ -28,22 +51,10 @@ public Event_Round_End(Handle:event, const String:name[], bool:dontBroadcast)
 	// If ranking at bonusround should be disabled - turn it off
 	if (!GetConVarBool(dodstats_bonusround))
 	{
+		// Added:minplayers update
+		roundend   = true;
 		rankactive = false;
 		CPrintToChatAll("%t", "Ranking disabled");
-	}
-}
-
-/* Event_Round_Start()
- *
- * Called when a round starts.
- * --------------------------------------------------------------------- */
-public Event_Round_Start(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	// Enable ranking now
-	if (!rankactive)
-	{
-		rankactive = true;
-		CPrintToChatAll("%t", "Ranking enabled");
 	}
 }
 
@@ -70,6 +81,9 @@ public Event_Player_Disconnect(Handle:event, const String:name[], bool:dontBroad
 				Format(query, sizeof(query), "UPDATE dod_stats SET online = 0 WHERE steamid = '%s'", client_steamid);
 				SQL_TQuery(db, DB_CheckErrors, query);
 			}
+
+			if (GetClientCount() < GetConVarInt(dodstats_minplayers))
+				rankactive = false;
 		}
 	}
 }
@@ -355,28 +369,31 @@ public Event_Player_Hurt(Handle:event, const String:name[], bool:dontBroadcast)
  * --------------------------------------------------------------------- */
 public Event_Point_Captured(Handle:event, const String:name[], bool:dontBroadcast)
 {
-	new client;
-
-	// Because there may be more than 1 capper
-	decl String:cappers[256];
-	GetEventString(event, "cappers", cappers, sizeof(cappers));
-
-	for (new i = 0 ; i < strlen(cappers); i++)
+	if (rankactive)
 	{
-		// Track captures for all invaders!
-		client = cappers[i];
+		new client;
 
-		dod_stats_captures[client]++;
+		// Because there may be more than 1 capper
+		decl String:cappers[256];
+		GetEventString(event, "cappers", cappers, sizeof(cappers));
 
-		if (GetConVarInt(stats_points_capture) > 0)
+		for (new i = 0 ; i < strlen(cappers); i++)
 		{
-			// And add points.
-			dod_stats_score[client] += GetConVarInt(stats_points_capture);
-			dod_stats_session_score[client] += GetConVarInt(stats_points_capture);
+			// Track captures for all invaders!
+			client = cappers[i];
 
-			if (dod_stats_client_notify[client])
+			dod_stats_captures[client]++;
+
+			if (GetConVarInt(stats_points_capture) > 0)
 			{
-				CPrintToChat(client, "%t", "Capture points", GetConVarInt(stats_points_capture));
+				// And add points.
+				dod_stats_score[client] += GetConVarInt(stats_points_capture);
+				dod_stats_session_score[client] += GetConVarInt(stats_points_capture);
+
+				if (dod_stats_client_notify[client])
+				{
+					CPrintToChat(client, "%t", "Capture points", GetConVarInt(stats_points_capture));
+				}
 			}
 		}
 	}
@@ -388,19 +405,22 @@ public Event_Point_Captured(Handle:event, const String:name[], bool:dontBroadcas
  * --------------------------------------------------------------------- */
 public Event_Capture_Blocked(Handle:event, const String:name[], bool:dontBroadcast)
 {
-	// Because blocker is only one.
-	new client = GetEventInt(event, "blocker");
-
-	dod_stats_capblocks[client]++;
-
-	if (GetConVarInt(stats_points_block) > 0)
+	if (rankactive)
 	{
-		dod_stats_score[client] += GetConVarInt(stats_points_block);
-		dod_stats_session_score[client] += GetConVarInt(stats_points_block);
+		// Because blocker is only one.
+		new client = GetEventInt(event, "blocker");
 
-		if (dod_stats_client_notify[client])
+		dod_stats_capblocks[client]++;
+
+		if (GetConVarInt(stats_points_block) > 0)
 		{
-			CPrintToChat(client, "%t", "Block points", GetConVarInt(stats_points_block));
+			dod_stats_score[client] += GetConVarInt(stats_points_block);
+			dod_stats_session_score[client] += GetConVarInt(stats_points_block);
+
+			if (dod_stats_client_notify[client])
+			{
+				CPrintToChat(client, "%t", "Block points", GetConVarInt(stats_points_block));
+			}
 		}
 	}
 }
@@ -412,7 +432,7 @@ public Event_Capture_Blocked(Handle:event, const String:name[], bool:dontBroadca
 public Event_Bomb_Exploded(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	// Event_Point_Captured() is also called with this event, so we'll just add points, not captures.
-	if (GetConVarInt(stats_points_bomb_explode) > 0)
+	if (rankactive && GetConVarInt(stats_points_bomb_explode) > 0)
 	{
 		new client = GetClientOfUserId(GetEventInt(event, "userid"));
 
@@ -433,7 +453,7 @@ public Event_Bomb_Exploded(Handle:event, const String:name[], bool:dontBroadcast
 public Event_Bomb_Blocked(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	// Event_Capture_Blocked() is also called with this event, so we'll just add points, not captures.
-	if (GetConVarInt(stats_points_block) > 0)
+	if (rankactive && GetConVarInt(stats_points_block) > 0)
 	{
 		new client = GetClientOfUserId(GetEventInt(event, "userid"));
 
@@ -455,19 +475,22 @@ public Event_Bomb_Blocked(Handle:event, const String:name[], bool:dontBroadcast)
  * --------------------------------------------------------------------- */
 public Event_Bomb_Planted(Handle:event, const String:name[], bool:dontBroadcast)
 {
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-
-	// Player is planted a bomb - track it into database.
-	dod_stats_planted[client]++;
-
-	if (GetConVarInt(stats_points_bomb_planted) > 0)
+	if (rankactive)
 	{
-		dod_stats_score[client] += GetConVarInt(stats_points_bomb_planted);
-		dod_stats_session_score[client] += GetConVarInt(stats_points_bomb_planted);
+		new client = GetClientOfUserId(GetEventInt(event, "userid"));
 
-		if (dod_stats_client_notify[client])
+		// Player is planted a bomb - track it into database.
+		dod_stats_planted[client]++;
+
+		if (GetConVarInt(stats_points_bomb_planted) > 0)
 		{
-			CPrintToChat(client, "%t", "Plant points", GetConVarInt(stats_points_bomb_planted));
+			dod_stats_score[client] += GetConVarInt(stats_points_bomb_planted);
+			dod_stats_session_score[client] += GetConVarInt(stats_points_bomb_planted);
+
+			if (dod_stats_client_notify[client])
+			{
+				CPrintToChat(client, "%t", "Plant points", GetConVarInt(stats_points_bomb_planted));
+			}
 		}
 	}
 }
@@ -478,19 +501,22 @@ public Event_Bomb_Planted(Handle:event, const String:name[], bool:dontBroadcast)
  * --------------------------------------------------------------------- */
 public Event_Bomb_Defused(Handle:event, const String:name[], bool:dontBroadcast)
 {
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
-
-	dod_stats_defused[client]++;
-
-	if (GetConVarInt(stats_points_bomb_defused) > 0)
+	if (rankactive)
 	{
-		// Player is defused a bomb - he deserve a ... points!
-		dod_stats_score[client] += GetConVarInt(stats_points_bomb_defused);
-		dod_stats_session_score[client] += GetConVarInt(stats_points_bomb_defused);
+		new client = GetClientOfUserId(GetEventInt(event, "userid"));
 
-		if (dod_stats_client_notify[client])
+		dod_stats_defused[client]++;
+
+		if (GetConVarInt(stats_points_bomb_defused) > 0)
 		{
-			CPrintToChat(client, "%t", "Defuse points", GetConVarInt(stats_points_bomb_defused));
+			// Player is defused a bomb - he deserve a ... points!
+			dod_stats_score[client] += GetConVarInt(stats_points_bomb_defused);
+			dod_stats_session_score[client] += GetConVarInt(stats_points_bomb_defused);
+
+			if (dod_stats_client_notify[client])
+			{
+				CPrintToChat(client, "%t", "Defuse points", GetConVarInt(stats_points_bomb_defused));
+			}
 		}
 	}
 }
