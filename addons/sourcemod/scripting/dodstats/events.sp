@@ -27,22 +27,25 @@ public Event_Round_Start(Handle:event, const String:name[], bool:dontBroadcast)
  * --------------------------------------------------------------------- */
 public Event_Round_End(Handle:event, const String:name[], bool:dontBroadcast)
 {
-	// Round ended only if any of team is won
-	new win_team = GetEventInt(event, "team");
-
-	for (new client = 1; client <= MaxClients; client++)
+	if (rankactive)
 	{
-		// Encourage players from winner's team
-		if (IsClientInGame(client) && GetClientTeam(client) == win_team)
-		{
-			// POINTS!
-			if (GetConVarInt(stats_points_victory) > 0)
-			{
-				dod_stats_score[client] += GetConVarInt(stats_points_victory);
+		// Round ended only if any of team is won
+		new win_team = GetEventInt(event, "team");
 
-				if (dod_stats_client_notify[client])
+		for (new client = 1; client <= MaxClients; client++)
+		{
+			// Encourage players from winner's team
+			if (IsClientInGame(client) && GetClientTeam(client) == win_team)
+			{
+				// POINTS!
+				if (GetConVarInt(stats_points_victory) > 0)
 				{
-					CPrintToChat(client, "%t", "Victory points", GetConVarInt(stats_points_victory));
+					dod_stats_score[client] += GetConVarInt(stats_points_victory);
+
+					if (dod_stats_client_notify[client])
+					{
+						CPrintToChat(client, "%t", "Victory points", GetConVarInt(stats_points_victory));
+					}
 				}
 			}
 		}
