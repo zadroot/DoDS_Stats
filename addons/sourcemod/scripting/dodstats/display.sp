@@ -293,7 +293,7 @@ public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:data)
 			CloseHandle(top10);
 		}
 	}
-	else LogError("Top10 command error: %s", error);
+	else LogError("Top10 callback error: %s", error);
 }
 
 /* ShowTopGrades()
@@ -362,7 +362,7 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data
 			CloseHandle(top10_awards);
 		}
 	}
-	else LogError("TopGrades command error: %s", error);
+	else LogError("TopGrades callback error: %s", error);
 }
 
 /* Handler_DoNothing()

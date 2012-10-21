@@ -272,7 +272,7 @@ public QueryStatsMe(Handle:owner, Handle:handle, const String:error[], any:data)
 			ShowStats(client, client, rank);
 		}
 	}
-	else LogError("Could not query player stats: %s", error);
+	else LogError("Could not query player's stats: %s", error);
 }
 
 /* PlayerCountCallback()
@@ -387,7 +387,7 @@ public DB_PurgeCallback(Handle:owner, Handle:handle, const String:error[], any:d
 		// If more or equal rows was changed - log message
 		if (SQL_GetAffectedRows(owner) > 0)
 		{
-			LogMessage("%i players was removed due of inactivity.", SQL_GetAffectedRows(owner));
+			LogMessage("Stats purged: %i player(s) was removed due of inactivity.", SQL_GetAffectedRows(owner));
 			dod_global_player_count -= SQL_GetAffectedRows(owner);
 		}
 	}
