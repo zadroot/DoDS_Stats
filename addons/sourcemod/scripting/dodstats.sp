@@ -2,9 +2,9 @@
 * DoD:S Stats by Root
 *
 * Description:
-*    A stats plugin (SQLite/MySQL) with many features, full point customization and GunGame/DeathMatch support.
+*    A stats plugin (SQLite/MySQL) with many features, full point customization and DeathMatch support.
 *
-* Version 1.7
+* Version 1.7.1
 * Changelog & more info at http://goo.gl/4nKhJ
 */
 
@@ -16,7 +16,7 @@
 
 // ====[ CONSTANTS ]================================================
 #define PLUGIN_NAME    "DoD:S Stats"
-#define PLUGIN_VERSION "1.7"
+#define PLUGIN_VERSION "1.7.1"
 
 // ====[ PLUGIN ]===================================================
 #include "dodstats/init.sp"
@@ -45,7 +45,7 @@ public OnMapStart()
 	// Update global player count at every mapchange for servers with MySQL database
 	if (!sqlite) GetPlayerCount();
 
-	// Get previous connects of all players from a database and remove inactive ones
+	// Get previous connects of all players from a database and remove inactive player's
 	RemoveOldPlayers();
 }
 

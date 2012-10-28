@@ -15,9 +15,9 @@ CreateTables()
 {
 	// For simplest queries are ones which do not return results ( CREATE, DROP, UPDATE, INSERT, and DELETE ) use SQL_FastQuery
 	if (sqlite)
-		SQL_FastQuery(db, "CREATE TABLE IF NOT EXISTS dod_stats (steamid TEXT, name TEXT, score INTEGER, kills INTEGER, deaths INTEGER, headshots INTEGER, teamkills INTEGER, teamkilled INTEGER, captured INTEGER, blocked INTEGER, planted INTEGER, defused INTEGER, gg_played INTEGER, gg_won INTEGER, gg_levelsteal INTEGER, gg_leveldown INTEGER, online BOOL, notify BOOL, timeplayed INTEGER, last_connect INTEGER, PRIMARY KEY (steamid));");
+		SQL_FastQuery(db, "CREATE TABLE IF NOT EXISTS dod_stats (steamid TEXT, name TEXT, score INTEGER, kills INTEGER, deaths INTEGER, headshots INTEGER, teamkills INTEGER, teamkilled INTEGER, captured INTEGER, blocked INTEGER, planted INTEGER, defused INTEGER, online BOOL, notify BOOL, timeplayed INTEGER, last_connect INTEGER);");
 	else /* And dont forget to create tables for MySQL */
-		SQL_FastQuery(db, "CREATE TABLE IF NOT EXISTS dod_stats (steamid varchar(64) NOT NULL, name varchar(32) NOT NULL, score int(6) NOT NULL, kills int(6) NOT NULL, deaths int(6) NOT NULL, headshots int(6) NOT NULL, teamkills int(6) NOT NULL, teamkilled int(6) NOT NULL, captured int(6) NOT NULL, blocked int(6) NOT NULL, planted int(6) NOT NULL, defused int(6) NOT NULL, gg_played int(6) NOT NULL, gg_won int(6) NOT NULL, gg_levelsteal int(6) NOT NULL, gg_leveldown int(6) NOT NULL, online BOOL, notify BOOL, timeplayed int(32) NOT NULL, last_connect int(32) NOT NULL, PRIMARY KEY (steamid)) ENGINE = MyISAM DEFAULT CHARSET = utf8;");
+		SQL_FastQuery(db, "CREATE TABLE IF NOT EXISTS dod_stats (steamid varchar(64) NOT NULL, name varchar(32) NOT NULL, score int(6) NOT NULL, kills int(6) NOT NULL, deaths int(6) NOT NULL, headshots int(6) NOT NULL, teamkills int(6) NOT NULL, teamkilled int(6) NOT NULL, captured int(6) NOT NULL, blocked int(6) NOT NULL, planted int(6) NOT NULL, defused int(6) NOT NULL, online BOOL, notify BOOL, timeplayed int(32) NOT NULL, last_connect int(32) NOT NULL) ENGINE = MyISAM DEFAULT CHARSET = utf8;");
 }
 
 /* GetPlayerCount()
@@ -46,7 +46,7 @@ PrepareClient(client)
 	GetClientAuthString(client, client_steamid, sizeof(client_steamid));
 
 	// last_connect ?
-	Format(query, sizeof(query), "SELECT score, kills, deaths, headshots, teamkills, teamkilled, captured, blocked, planted, defused, gg_played, gg_won, gg_levelsteal, gg_leveldown, online, notify, timeplayed FROM dod_stats WHERE steamid = '%s'", client_steamid);
+	Format(query, sizeof(query), "SELECT score, kills, deaths, headshots, teamkills, teamkilled, captured, blocked, planted, defused, online, notify, timeplayed FROM dod_stats WHERE steamid = '%s'", client_steamid);
 
 	SQL_TQuery(db, PrepareClientData, query, GetClientUserId(client));
 }
@@ -83,54 +83,46 @@ public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:
 				// And get player's previous data.
 				while(SQL_FetchRow(handle))
 				{
-					dod_stats_score[client]           = SQL_FetchInt(handle, 0);
-					dod_stats_kills[client]           = SQL_FetchInt(handle, 1);
-					dod_stats_deaths[client]          = SQL_FetchInt(handle, 2);
-					dod_stats_headshots[client]       = SQL_FetchInt(handle, 3);
-					dod_stats_teamkills[client]       = SQL_FetchInt(handle, 4);
-					dod_stats_teamkilled[client]      = SQL_FetchInt(handle, 5);
-					dod_stats_captures[client]        = SQL_FetchInt(handle, 6);
-					dod_stats_capblocks[client]       = SQL_FetchInt(handle, 7);
-					dod_stats_planted[client]         = SQL_FetchInt(handle, 8);
-					dod_stats_defused[client]         = SQL_FetchInt(handle, 9);
-					dod_stats_gg_roundsplayed[client] = SQL_FetchInt(handle, 10);
-					dod_stats_gg_roundswon[client]    = SQL_FetchInt(handle, 11);
-					dod_stats_gg_levelsteal[client]   = SQL_FetchInt(handle, 12);
-					dod_stats_gg_leveldown[client]    = SQL_FetchInt(handle, 13);
-					dod_stats_online[client]          = SQL_FetchInt(handle, 14);
-					dod_stats_client_notify[client]   = SQL_FetchInt(handle, 15);
-					dod_stats_time_played[client]     = SQL_FetchInt(handle, 16);
+					dod_stats_score[client]         = SQL_FetchInt(handle, 0);
+					dod_stats_kills[client]         = SQL_FetchInt(handle, 1);
+					dod_stats_deaths[client]        = SQL_FetchInt(handle, 2);
+					dod_stats_headshots[client]     = SQL_FetchInt(handle, 3);
+					dod_stats_teamkills[client]     = SQL_FetchInt(handle, 4);
+					dod_stats_teamkilled[client]    = SQL_FetchInt(handle, 5);
+					dod_stats_captures[client]      = SQL_FetchInt(handle, 6);
+					dod_stats_capblocks[client]     = SQL_FetchInt(handle, 7);
+					dod_stats_planted[client]       = SQL_FetchInt(handle, 8);
+					dod_stats_defused[client]       = SQL_FetchInt(handle, 9);
+					dod_stats_online[client]        = SQL_FetchInt(handle, 10);
+					dod_stats_client_notify[client] = SQL_FetchInt(handle, 11);
+					dod_stats_time_played[client]   = SQL_FetchInt(handle, 12);
 				}
 			}
 			else // Nope player is new
 			{
 				// Yep. Creating tables.
 				if (sqlite)
-					Format(query, sizeof(query), "INSERT INTO dod_stats VALUES ('%s', '%s', %i, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %i)", client_steamid, safe_name, GetConVarInt(stats_points_start), GetTime());
+					Format(query, sizeof(query), "INSERT INTO dod_stats VALUES ('%s', '%s', %i, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %i)", client_steamid, safe_name, GetConVarInt(stats_points_start), GetTime());
 				else /* Because MySQL is different */
-					Format(query, sizeof(query), "INSERT INTO dod_stats (steamid, name, score, kills, deaths, headshots, teamkills, teamkilled, captured, blocked, planted, defused, gg_played, gg_won, gg_levelsteal, gg_leveldown, online, notify, timeplayed, last_connect) VALUES ('%s', '%s', %i, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %i)", client_steamid, safe_name, GetConVarInt(stats_points_start), GetTime());
+					Format(query, sizeof(query), "INSERT INTO dod_stats (steamid, name, score, kills, deaths, headshots, teamkills, teamkilled, captured, blocked, planted, defused, online, notify, timeplayed, last_connect) VALUES ('%s', '%s', %i, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %i)", client_steamid, safe_name, GetConVarInt(stats_points_start), GetTime());
 				SQL_TQuery(db, DB_CheckErrors, query);
 
 				/** Initialize tables. */
 				// Start score depends on start points value.
-				dod_stats_score[client] = GetConVarInt(stats_points_start);
-				dod_stats_kills[client] = 0;
-				dod_stats_deaths[client] = 0;
-				dod_stats_headshots[client] = 0;
-				dod_stats_teamkills[client] = 0;
-				dod_stats_teamkilled[client] = 0;
-				dod_stats_captures[client] = 0;
-				dod_stats_capblocks[client] = 0;
-				dod_stats_planted[client] = 0;
-				dod_stats_defused[client] = 0;
-				dod_stats_gg_roundsplayed[client] = 0;
-				dod_stats_gg_roundswon[client] = 0;
-				dod_stats_gg_levelsteal[client] = 0;
-				dod_stats_gg_leveldown[client] = 0;
-				dod_stats_online[client] = false;
+				dod_stats_score[client]         = GetConVarInt(stats_points_start);
+				dod_stats_kills[client]         = 0;
+				dod_stats_deaths[client]        = 0;
+				dod_stats_headshots[client]     = 0;
+				dod_stats_teamkills[client]     = 0;
+				dod_stats_teamkilled[client]    = 0;
+				dod_stats_captures[client]      = 0;
+				dod_stats_capblocks[client]     = 0;
+				dod_stats_planted[client]       = 0;
+				dod_stats_defused[client]       = 0;
+				dod_stats_online[client]        = false;
 				dod_stats_client_notify[client] = false;
-				dod_stats_time_played[client] = 0;
-				dod_stats_time_joined[client] = time;
+				dod_stats_time_played[client]   = 0;
+				dod_stats_time_joined[client]   = time;
 				dod_global_player_count++;
 			}
 
@@ -146,9 +138,9 @@ public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:
 				dod_stats_time_joined[client] = time;
 
 				// Session stats
-				dod_stats_session_score[client] = 0;
-				dod_stats_session_kills[client] = 0;
-				dod_stats_session_deaths[client] = 0;
+				dod_stats_session_score[client]     = 0;
+				dod_stats_session_kills[client]     = 0;
+				dod_stats_session_deaths[client]    = 0;
 				dod_stats_session_headshots[client] = 0;
 
 				Format(query, sizeof(query), "UPDATE dod_stats SET online = 1 WHERE steamid = '%s'", client_steamid);
@@ -165,11 +157,14 @@ public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:
  * --------------------------------------------------------------------- */
 QueryRankStats(client)
 {
-	decl String:query[512];
-	Format(query, sizeof(query), "SELECT DISTINCT score FROM dod_stats WHERE score > %i ORDER BY score ASC;", dod_stats_score[client]);
+	if (IsClientConnected(client))
+	{
+		decl String:query[512];
+		Format(query, sizeof(query), "SELECT DISTINCT score FROM dod_stats WHERE score > %i ORDER BY score ASC;", dod_stats_score[client]);
 
-	// We need handles for getting positions. Query database again...
-	SQL_TQuery(db, QueryRank, query, GetClientUserId(client));
+		// We need handles for getting positions. Query database again...
+		SQL_TQuery(db, QueryRank, query, GetClientUserId(client));
+	}
 }
 
 /* QueryRank()
@@ -181,7 +176,7 @@ public QueryRank(Handle:owner, Handle:handle, const String:error[], any:data)
 	if (handle != INVALID_HANDLE)
 	{
 		new client;
-		if ((client = GetClientOfUserId(data)) > 0)
+		if ((client = GetClientOfUserId(data)) > 0 && IsClientConnected(client))
 		{
 			// Getting rank position of all players.
 			new rank = SQL_GetRowCount(handle),
@@ -238,11 +233,14 @@ QueryTopGrades(client)
  * --------------------------------------------------------------------- */
 QueryStats(client)
 {
-	decl String:query[512];
-	Format(query, sizeof(query), "SELECT DISTINCT score FROM dod_stats WHERE score > %i ORDER BY score ASC;", dod_stats_score[client]);
+	if (IsClientConnected(client))
+	{
+		decl String:query[512];
+		Format(query, sizeof(query), "SELECT DISTINCT score FROM dod_stats WHERE score > %i ORDER BY score ASC;", dod_stats_score[client]);
 
-	// We need handles for getting positions. Query database again...
-	SQL_TQuery(db, QueryStatsMe, query, GetClientUserId(client));
+		// We need handles for getting positions. Query database again...
+		SQL_TQuery(db, QueryStatsMe, query, GetClientUserId(client));
+	}
 }
 
 /* QueryStats()
@@ -255,7 +253,7 @@ public QueryStatsMe(Handle:owner, Handle:handle, const String:error[], any:data)
 	if (handle != INVALID_HANDLE)
 	{
 		new client;
-		if ((client = GetClientOfUserId(data)) > 0)
+		if ((client = GetClientOfUserId(data)) > 0 && IsClientConnected(client))
 		{
 			new rank = SQL_GetRowCount(handle),
 				bool:rankup = true;
@@ -413,7 +411,20 @@ SavePlayer(client)
 		SQL_EscapeString(db, client_name, safe_name, sizeof(safe_name));
 
 		decl String:query[512];
-		Format(query, sizeof(query), "UPDATE dod_stats SET name = '%s', score = %i, kills = %i, deaths = %i, headshots = %i, teamkills = %i, teamkilled = %i, captured = %i, blocked = %i, planted = %i, defused = %i, gg_played = %i, gg_won = %i, gg_levelsteal = %i, gg_leveldown = %i, timeplayed = %i WHERE steamid = '%s'", safe_name, dod_stats_score[client], dod_stats_kills[client], dod_stats_deaths[client], dod_stats_headshots[client], dod_stats_teamkills[client], dod_stats_teamkilled[client], dod_stats_captures[client], dod_stats_capblocks[client], dod_stats_planted[client], dod_stats_defused[client], dod_stats_gg_roundsplayed[client], dod_stats_gg_roundswon[client], dod_stats_gg_levelsteal[client], dod_stats_gg_leveldown[client], dod_stats_time_played[client] + (time - dod_stats_time_joined[client]), client_steamid);
+		Format(query, sizeof(query), "UPDATE dod_stats SET name = '%s', score = %i, kills = %i, deaths = %i, headshots = %i, teamkills = %i, teamkilled = %i, captured = %i, blocked = %i, planted = %i, defused = %i, timeplayed = %i WHERE steamid = '%s'",
+		safe_name,
+		dod_stats_score[client],
+		dod_stats_kills[client],
+		dod_stats_deaths[client],
+		dod_stats_headshots[client],
+		dod_stats_teamkills[client],
+		dod_stats_teamkilled[client],
+		dod_stats_captures[client],
+		dod_stats_capblocks[client],
+		dod_stats_planted[client],
+		dod_stats_defused[client],
+		dod_stats_time_played[client] + (time - dod_stats_time_joined[client]),
+		client_steamid);
 
 		// Queries can cause noticeable gameplay lag, and supporting threading is often a good idea if your queries occur in the middle of gameplay.
 		SQL_TQuery(db, DB_CheckErrors, query);

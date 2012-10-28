@@ -23,16 +23,13 @@ new	Handle:dodstats_info[DOD_MAXPLAYERS],
 	Handle:stats_points_bomb_defused  = INVALID_HANDLE,
 	Handle:stats_points_victory       = INVALID_HANDLE,
 	Handle:stats_points_headshot      = INVALID_HANDLE,
-	Handle:stats_points_gg_levelsteal = INVALID_HANDLE,
-	Handle:stats_points_gg_maxlevel   = INVALID_HANDLE,
 	Handle:db                         = INVALID_HANDLE;
 
 // Other
-new Handle:gungame_custom = INVALID_HANDLE,
-	bool:rankactive = true,
-	bool:roundend   = false,
-	bool:sqlite     = false,
-	gameplay = 0, /* 0 = Normal. 1 = DeathMatch. 2 = GunGame */
+new bool:rankactive,
+	bool:roundend,
+	bool:sqlite,
+	gameplay, /* 0 = Normal. 1 = DeathMatch */
 	dod_global_player_count;
 
 // Awards
@@ -83,8 +80,4 @@ new dod_stats_online[DOD_MAXPLAYERS],
 	dod_stats_session_kills[DOD_MAXPLAYERS],
 	dod_stats_session_deaths[DOD_MAXPLAYERS],
 	dod_stats_session_headshots[DOD_MAXPLAYERS],
-	dod_stats_client_notify[DOD_MAXPLAYERS],
-	dod_stats_gg_roundsplayed[DOD_MAXPLAYERS],
-	dod_stats_gg_roundswon[DOD_MAXPLAYERS],
-	dod_stats_gg_levelsteal[DOD_MAXPLAYERS],
-	dod_stats_gg_leveldown[DOD_MAXPLAYERS];
+	dod_stats_client_notify[DOD_MAXPLAYERS];

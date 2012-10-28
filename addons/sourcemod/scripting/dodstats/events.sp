@@ -14,7 +14,7 @@ public Event_Round_Start(Handle:event, const String:name[], bool:dontBroadcast)
 	}
 
 	// If rank is not active and player count not exceeded minimum player count, disable rank active 
-	else if (GetClientCount() < GetConVarInt(dodstats_minplayers))
+	else if (rankactive && GetClientCount() < GetConVarInt(dodstats_minplayers))
 	{
 		rankactive = false;
 		CPrintToChatAll("%t", "Not enough players", GetConVarInt(dodstats_minplayers));
@@ -100,15 +100,11 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 	if (rankactive)
 	{
 		new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-		new victim = GetClientOfUserId(GetEventInt(event, "userid"));
+		new victim   = GetClientOfUserId(GetEventInt(event, "userid"));
 
-		if (attacker > 0 && victim > 0 && IsClientInGame(attacker) && IsClientInGame(victim) && !IsFakeClient(attacker) && !IsFakeClient(victim))
+		if (attacker > 0 && victim > 0 && !IsFakeClient(attacker))
 		{
-			// Get involved names. These names will be shown only if notify = 1
-			decl String:attacker_name[MAX_NAME_LENGTH], String:victim_name[MAX_NAME_LENGTH], String:weapon[32];
-
-			GetClientName(attacker, attacker_name, sizeof(attacker_name));
-			GetClientName(victim, victim_name, sizeof(victim_name));
+			decl String:weapon[32];
 
 			// Check for suicide
 			if (attacker == victim)
@@ -116,13 +112,10 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 				dod_stats_deaths[victim]++;
 				dod_stats_session_deaths[victim]++;
 
-				// In GG client usually lost level for suicide
-				if (gameplay == 2) dod_stats_gg_leveldown[victim]++;
-
 				// If points to take on suicide is specified - continue. Skip otherwise
 				if (GetConVarInt(stats_points_suicide) > 0)
 				{
-					dod_stats_score[victim] -= GetConVarInt(stats_points_suicide);
+					dod_stats_score[victim]         -= GetConVarInt(stats_points_suicide);
 					dod_stats_session_score[victim] -= GetConVarInt(stats_points_suicide);
 
 					if (dod_stats_client_notify[victim])
@@ -147,28 +140,28 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 					{
 						// ELO formula. Divider = 400 by default.
 						new Float:ELO = 1 / (Pow(10.0, float((dod_stats_score[victim] - dod_stats_score[attacker])) / 100) + 1);
-						new score = RoundFloat(GetConVarFloat(stats_points_k_value) * (1 - ELO));
+						new score     = RoundToNearest(GetConVarFloat(stats_points_k_value) * (1 - ELO));
 
 						// Forcing minimal value on kill.
 						if (score < GetConVarInt(stats_points_min))
 							score = GetConVarInt(stats_points_min);
 
-						dod_stats_score[attacker] += score;
+						dod_stats_score[attacker]         += score;
 						dod_stats_session_score[attacker] += score;
-						dod_stats_score[victim] -= score;
-						dod_stats_session_score[victim] -= score;
+						dod_stats_score[victim]           -= score;
+						dod_stats_session_score[victim]   -= score;
 
 						if (dod_stats_client_notify[attacker])
 						{
-							CPrintToChat(attacker, "%t", "Kill points", score, victim_name);
+							CPrintToChat(attacker, "%t", "Kill points", score, victim);
 						}
 						else if (dod_stats_client_notify[victim])
 						{
-							CPrintToChat(victim, "%t", "Death points", attacker_name, score);
+							CPrintToChat(victim, "%t", "Death points", attacker, score);
 						}
 					}
 				}
-				// Punish player for teamkill in gungame & normal mode.
+				// Punish player for teamkill in normal mode.
 				else
 				{
 					// Detecting a bomb
@@ -180,9 +173,6 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 						dod_stats_teamkills[attacker]++;
 						dod_stats_teamkilled[victim]++;
 
-						// And for teamkill
-						if (gameplay == 2) dod_stats_gg_leveldown[attacker]++;
-
 						// Still not sure about that. Should I decrease kills amount on tk or just take points?
 						dod_stats_kills[attacker]--;
 						dod_stats_session_kills[attacker]--;
@@ -190,7 +180,7 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 						// If points to take on tk is specified - continue.
 						if (GetConVarInt(stats_points_tk_penalty) > 0)
 						{
-							dod_stats_score[attacker] -= GetConVarInt(stats_points_tk_penalty);
+							dod_stats_score[attacker]         -= GetConVarInt(stats_points_tk_penalty);
 							dod_stats_session_score[attacker] -= GetConVarInt(stats_points_tk_penalty);
 
 							// And show message for attacker if notifications is enabled for him.
@@ -216,94 +206,23 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 				{
 					// I use divider = 100 because start points < 1600
 					new Float:ELO = 1 / (Pow(10.0, float((dod_stats_score[victim] - dod_stats_score[attacker])) / 100 ) + 1);
-					new score = RoundFloat(GetConVarFloat(stats_points_k_value) * (1 - ELO));
+					new score     = RoundToNearest(GetConVarFloat(stats_points_k_value) * (1 - ELO));
 
 					if (score < GetConVarInt(stats_points_min))
 						score = GetConVarInt(stats_points_min);
 
-					dod_stats_score[attacker] += score;
+					dod_stats_score[attacker]         += score;
 					dod_stats_session_score[attacker] += score;
-					dod_stats_score[victim] -= score;
-					dod_stats_session_score[victim] -= score;
+					dod_stats_score[victim]           -= score;
+					dod_stats_session_score[victim]   -= score;
 
 					if (dod_stats_client_notify[attacker])
 					{
-						CPrintToChat(attacker, "%t", "Kill points", score, victim_name);
+						CPrintToChat(attacker, "%t", "Kill points", score, victim);
 					}
 					else if (dod_stats_client_notify[victim])
 					{
-						CPrintToChat(victim, "%t", "Death points", attacker_name, score);
-					}
-				}
-				if (gameplay == 2)
-				{
-					// Checking for custom gungame mode
-					gungame_custom = FindConVar("sm_gungame_custom");
-
-					// Melee
-					GetClientWeapon(attacker, weapon, sizeof(weapon));
-
-					// Player killed another w/ spade - he steal level...
-					if (StrEqual(weapon, "weapon_spade"))
-					{
-						// Oh its latest gungame.
-						if (gungame_custom != INVALID_HANDLE)
-						{
-							// Its isnt custom gungame
-							if (GetConVarInt(gungame_custom) == 0)
-							{
-								// Give points for stealing level
-								dod_stats_score[attacker] += GetConVarInt(stats_points_gg_levelsteal);
-								dod_stats_session_score[attacker] += GetConVarInt(stats_points_gg_levelsteal);
-
-								dod_stats_gg_levelsteal[attacker]++;
-								dod_stats_gg_leveldown[victim]++;
-							}
-						}
-						// That's not latest gungame, so its isnt custom then
-						else
-						{
-							dod_stats_score[attacker] += GetConVarInt(stats_points_gg_levelsteal);
-							dod_stats_session_score[attacker] += GetConVarInt(stats_points_gg_levelsteal);
-
-							dod_stats_gg_levelsteal[attacker]++;
-							dod_stats_gg_leveldown[victim]++;
-						}
-
-						// GunGame message on spade kill.
-						if (dod_stats_client_notify[attacker])
-						{
-							CPrintToChat(attacker, "%t", "Level steal", GetConVarInt(stats_points_gg_levelsteal));
-						}
-					}
-					// Player killed another with amerknife. It means he won GunGame!
-					else if (StrEqual(weapon, "weapon_amerknife"))
-					{
-						// Client won the round - save it to database.
-						dod_stats_gg_roundswon[attacker]++;
-
-						// Write Roundsplayed into database for all ingame players.
-						for (new client = 1; client <= MaxClients; client++)
-						{
-							if (IsClientInGame(client))
-							{
-								dod_stats_gg_roundsplayed[client]++;
-							}
-						}
-
-						// Check points for victory.
-						if (GetConVarInt(stats_points_gg_maxlevel) > 0)
-						{
-							// And encourage.
-							dod_stats_score[attacker] += GetConVarInt(stats_points_gg_maxlevel);
-							dod_stats_session_score[attacker] += GetConVarInt(stats_points_gg_maxlevel);
-
-							// And notify winner!
-							if (dod_stats_client_notify[attacker])
-							{
-								CPrintToChat(attacker, "%t", "GunGame victory", GetConVarInt(stats_points_gg_maxlevel));
-							}
-						}
+						CPrintToChat(victim, "%t", "Death points", attacker, score);
 					}
 				}
 			}
@@ -320,9 +239,9 @@ public Event_Player_Hurt(Handle:event, const String:name[], bool:dontBroadcast)
 	if (rankactive)
 	{
 		new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
-		new victim = GetClientOfUserId(GetEventInt(event, "userid"));
+		new victim   = GetClientOfUserId(GetEventInt(event, "userid"));
 
-		if (attacker > 0 && victim > 0 && IsClientInGame(attacker) && IsClientInGame(victim) && !IsFakeClient(attacker) && !IsFakeClient(victim))
+		if (attacker > 0 && victim > 0 && !IsFakeClient(attacker))
 		{
 			// Code taken from SuperLogs. Victim should be dead, because direct headshot from any weapon takes at least 100 health.
 			if (GetEventInt(event, "health") < 1 && GetEventInt(event, "hitgroup") == 1)
@@ -335,7 +254,7 @@ public Event_Player_Hurt(Handle:event, const String:name[], bool:dontBroadcast)
 
 					if (GetConVarInt(stats_points_headshot) > 0)
 					{
-						dod_stats_score[attacker] += GetConVarInt(stats_points_headshot);
+						dod_stats_score[attacker]         += GetConVarInt(stats_points_headshot);
 						dod_stats_session_score[attacker] += GetConVarInt(stats_points_headshot);
 
 						if (dod_stats_client_notify[attacker])
@@ -344,7 +263,7 @@ public Event_Player_Hurt(Handle:event, const String:name[], bool:dontBroadcast)
 						}
 					}
 				}
-				else if (gameplay != 1 && GetClientTeam(attacker) != GetClientTeam(victim))
+				else if (gameplay == 0 && GetClientTeam(attacker) != GetClientTeam(victim))
 				{
 					// Thats no DM, we wont`t count a headshot for teamkill
 					dod_stats_headshots[attacker]++;
@@ -352,7 +271,7 @@ public Event_Player_Hurt(Handle:event, const String:name[], bool:dontBroadcast)
 
 					if (GetConVarInt(stats_points_headshot) > 0)
 					{
-						dod_stats_score[attacker] += GetConVarInt(stats_points_headshot);
+						dod_stats_score[attacker]         += GetConVarInt(stats_points_headshot);
 						dod_stats_session_score[attacker] += GetConVarInt(stats_points_headshot);
 
 						if (dod_stats_client_notify[attacker])
@@ -390,7 +309,7 @@ public Event_Point_Captured(Handle:event, const String:name[], bool:dontBroadcas
 			if (GetConVarInt(stats_points_capture) > 0)
 			{
 				// And add points.
-				dod_stats_score[client] += GetConVarInt(stats_points_capture);
+				dod_stats_score[client]         += GetConVarInt(stats_points_capture);
 				dod_stats_session_score[client] += GetConVarInt(stats_points_capture);
 
 				if (dod_stats_client_notify[client])
@@ -417,7 +336,7 @@ public Event_Capture_Blocked(Handle:event, const String:name[], bool:dontBroadca
 
 		if (GetConVarInt(stats_points_block) > 0)
 		{
-			dod_stats_score[client] += GetConVarInt(stats_points_block);
+			dod_stats_score[client]         += GetConVarInt(stats_points_block);
 			dod_stats_session_score[client] += GetConVarInt(stats_points_block);
 
 			if (dod_stats_client_notify[client])
@@ -439,7 +358,7 @@ public Event_Bomb_Exploded(Handle:event, const String:name[], bool:dontBroadcast
 	{
 		new client = GetClientOfUserId(GetEventInt(event, "userid"));
 
-		dod_stats_score[client] += GetConVarInt(stats_points_bomb_explode);
+		dod_stats_score[client]         += GetConVarInt(stats_points_bomb_explode);
 		dod_stats_session_score[client] += GetConVarInt(stats_points_bomb_explode);
 
 		if (dod_stats_client_notify[client])
@@ -460,7 +379,7 @@ public Event_Bomb_Blocked(Handle:event, const String:name[], bool:dontBroadcast)
 	{
 		new client = GetClientOfUserId(GetEventInt(event, "userid"));
 
-		dod_stats_score[client] += GetConVarInt(stats_points_block);
+		dod_stats_score[client]         += GetConVarInt(stats_points_block);
 
 		// Also add for session.
 		dod_stats_session_score[client] += GetConVarInt(stats_points_block);
@@ -487,7 +406,7 @@ public Event_Bomb_Planted(Handle:event, const String:name[], bool:dontBroadcast)
 
 		if (GetConVarInt(stats_points_bomb_planted) > 0)
 		{
-			dod_stats_score[client] += GetConVarInt(stats_points_bomb_planted);
+			dod_stats_score[client]         += GetConVarInt(stats_points_bomb_planted);
 			dod_stats_session_score[client] += GetConVarInt(stats_points_bomb_planted);
 
 			if (dod_stats_client_notify[client])
@@ -513,7 +432,7 @@ public Event_Bomb_Defused(Handle:event, const String:name[], bool:dontBroadcast)
 		if (GetConVarInt(stats_points_bomb_defused) > 0)
 		{
 			// Player is defused a bomb - he deserve a ... points!
-			dod_stats_score[client] += GetConVarInt(stats_points_bomb_defused);
+			dod_stats_score[client]         += GetConVarInt(stats_points_bomb_defused);
 			dod_stats_session_score[client] += GetConVarInt(stats_points_bomb_defused);
 
 			if (dod_stats_client_notify[client])

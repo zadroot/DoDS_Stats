@@ -3,7 +3,7 @@
 	// Chat messages
 	"Connected stats"
 	{
-		"#format"	"{1:s},{2:i},{3:s}"
+		"#format"	"{1:N},{2:i},{3:s}"
 		"en"		"{olive}{1}{default} connected ({green}{2}{default} points / {olive}Grade - {3}{default})"
 	}
 	"Notifications enabled"
@@ -50,12 +50,12 @@
 	}
 	"First in rank"
 	{
-		"#format"	"{1:s},{2:s},{3:i},{4:i}"
+		"#format"	"{1:N},{2:s},{3:i},{4:i}"
 		"en"		"{olive}{1}{default} is on a {green}first place{default} ({olive}Grade: {green}{2}{default}) got {green}{3}{default} points - {green}{4}{default} kills."
 	}
 	"Rank display"
 	{
-		"#format"	"{1:s},{2:i},{3:i},{4:i},{5:i},{6:i},{7:i}"
+		"#format"	"{1:N},{2:i},{3:i},{4:i},{5:i},{6:i},{7:i}"
 		"en"		"{olive}{1}{default} is rank {green}{2}{default}/{green}{3}{default} with {green}{4}{default} points ({olive}{5} to next rank{default}), {green}{6}{default} kills & {green}{7}{default} deaths."
 	}
 	"Suicide penalty"
@@ -70,12 +70,12 @@
 	}
 	"Kill points"
 	{
-		"#format"	"{1:i},{2:s}"
+		"#format"	"{1:i},{2:N}"
 		"en"		"You gained {green}{1}{default} points for killing {olive}{2}"
 	}
 	"Death points"
 	{
-		"#format"	"{1:s},{2:i}"
+		"#format"	"{1:N},{2:i}"
 		"en"		"You were killed by {olive}{1}{default} and lost {green}{2}{default} points."
 	}
 	"Level steal"
@@ -168,7 +168,7 @@
 	}
 	"Nickname"
 	{
-		"#format"	"{1:s}"
+		"#format"	"{1:N}"
 		"en"		"Nickname: {1}"
 	}
 	"Position"

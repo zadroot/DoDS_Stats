@@ -4,9 +4,6 @@
  * --------------------------------------------------------------------- */
 ShowInfo(client)
 {
-	decl String:client_name[MAX_NAME_LENGTH];
-	GetClientName(client, client_name, sizeof(client_name));
-
 	// That's how we can define awards.
 	new award;
 	for (new i = 0; i < AWARDS; i++)
@@ -17,7 +14,7 @@ ShowInfo(client)
 			if (dod_stats_captures[client] >= grade_captures[i] && dod_stats_kills[client] >= grade_kills[i])
 			award = i;
 		}
-		else /* but DM & GG has no flags */
+		else /* but DM has no flags */
 		{
 			if (dod_stats_kills[client] >= grade_kills[i])
 			award = i;
@@ -25,7 +22,7 @@ ShowInfo(client)
 	}
 
 	// Player is ingame and fully authorized - show message to everybody!
-	CPrintToChatAll("%t", "Connected stats", client_name, dod_stats_score[client], grade_names[award]);
+	CPrintToChatAll("%t", "Connected stats", client, dod_stats_score[client], grade_names[award]);
 }
 
 /* ShowRank()
@@ -34,10 +31,6 @@ ShowInfo(client)
  * --------------------------------------------------------------------- */
 ShowRank(client, rank, next_score)
 {
-	// No need to refine nicknames here.
-	decl String:client_name[MAX_NAME_LENGTH];
-	GetClientName(client, client_name, sizeof(client_name));
-
 	// Calc points to next position
 	new delta = 0;
 	if (next_score > dod_stats_score[client]) delta = next_score - dod_stats_score[client];
@@ -51,15 +44,15 @@ ShowRank(client, rank, next_score)
 			if (dod_stats_captures[client] >= grade_captures[i] && dod_stats_kills[client] >= grade_kills[i])
 			award = i;
 		}
-		else /* I anyway want to use awards for DM & GG */
+		else /* I anyway want to use awards for DM */
 		{
 			if (dod_stats_kills[client] >= grade_kills[i])
 			award = i;
 		}
 	}
 
-	if (delta == 0) CPrintToChatAll("%t", "First in rank", client_name, grade_names[award], dod_stats_score[client], dod_stats_kills[client]);
-	else            CPrintToChatAll("%t", "Rank display",  client_name, rank, dod_global_player_count, dod_stats_score[client], delta, dod_stats_kills[client], dod_stats_deaths[client]);
+	if (delta == 0) CPrintToChatAll("%t", "First in rank", client, grade_names[award], dod_stats_score[client], dod_stats_kills[client]);
+	else            CPrintToChatAll("%t", "Rank display",  client, rank, dod_global_player_count, dod_stats_score[client], delta, dod_stats_kills[client], dod_stats_deaths[client]);
 }
 
 /* ShowSession()
@@ -125,8 +118,7 @@ ShowStats(target, client, rank)
 	// Is client & target is valid and not a server?
 	if (client > 0 && target > 0)
 	{
-		decl String:data[128], String:title[64], String:client_name[MAX_NAME_LENGTH];
-		GetClientName(client, client_name, sizeof(client_name));
+		decl String:data[128], String:title[64];
 
 		// Creates a MenuPanel from a MenuStyle.
 		new Handle:statsinfo = CreatePanel();
@@ -135,7 +127,7 @@ ShowStats(target, client, rank)
 		Format(title, sizeof(title), "%T", "Player Stats", client);
 		DrawPanelItem(statsinfo, title);
 
-		Format(data, sizeof(data), "%T", "Nickname", client, client_name);
+		Format(data, sizeof(data), "%T", "Nickname", client, client);
 		DrawPanelText(statsinfo, data);
 
 		Format(data, sizeof(data), "%T", "Position", client, rank, dod_global_player_count);
@@ -162,7 +154,7 @@ ShowStats(target, client, rank)
 				if (dod_stats_captures[client] >= grade_captures[i] && dod_stats_kills[client] >= grade_kills[i])
 				award = i;
 			}
-			else /* For DM & GG we will sort grades only by kills */
+			else /* For DM we will sort grades only by kills */
 			{
 				if (dod_stats_kills[client] >= grade_kills[i])
 				award = i;
@@ -216,19 +208,6 @@ ShowStats(target, client, rank)
 				Format(data, sizeof(data), "%T", "Bombs defused", client, dod_stats_defused[client]);
 				DrawPanelText(statsinfo, data);
 			}
-		}
-
-		// Show GG stats
-		if (gameplay == 2)
-		{
-			Format(title, sizeof(title), "%T", "GunGame Stats", client);
-			DrawPanelItem(statsinfo, title);
-
-			Format(data, sizeof(data), "%T", "Played & won", client, dod_stats_gg_roundsplayed[client], dod_stats_gg_roundswon[client]);
-			DrawPanelText(statsinfo, data);
-
-			Format(data, sizeof(data), "%T", "Steal & lost", client, dod_stats_gg_levelsteal[client], dod_stats_gg_leveldown[client]);
-			DrawPanelText(statsinfo, data);
 		}
 
 		SendPanelToClient(statsinfo, client, Handler_DoNothing, 20);
@@ -324,8 +303,8 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data
 					top_kills = SQL_FetchInt(handle, 2);
 
 					// Grades
-					decl award, i;
-					for (i = 0; i < AWARDS; i++)
+					new award;
+					for (new i = 0; i < AWARDS; i++)
 					{
 						if (gameplay == 0)
 						{

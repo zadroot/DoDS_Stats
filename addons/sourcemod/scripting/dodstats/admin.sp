@@ -67,7 +67,7 @@ public Action:Command_ShowTargetStats(client, args)
 		new rank, target = FindTarget(client, name);
 
 		// Target found?
-		if (target > 0 && IsClientInGame(target))
+		if (target > 0 && IsClientConnected(target))
 		{
 			// Yeah, query his stats
 			QueryStats(target);
