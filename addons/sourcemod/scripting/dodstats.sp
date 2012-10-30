@@ -4,7 +4,7 @@
 * Description:
 *    A stats plugin (SQLite/MySQL) with many features, full point customization and DeathMatch support.
 *
-* Version 1.7.1
+* Version 1.7.2
 * Changelog & more info at http://goo.gl/4nKhJ
 */
 
@@ -16,7 +16,7 @@
 
 // ====[ CONSTANTS ]================================================
 #define PLUGIN_NAME    "DoD:S Stats"
-#define PLUGIN_VERSION "1.7.1"
+#define PLUGIN_VERSION "1.7.2"
 
 // ====[ PLUGIN ]===================================================
 #include "dodstats/init.sp"
@@ -39,20 +39,20 @@ public Plugin:myinfo =
 /* OnMapStart()
  *
  * When the map starts.
- * ------------------------------------------------------------------ */
+ * ----------------------------------------------------------------- */
 public OnMapStart()
 {
 	// Update global player count at every mapchange for servers with MySQL database
 	if (!sqlite) GetPlayerCount();
 
-	// Get previous connects of all players from a database and remove inactive player's
+	// Get previous connects of all players from a database and remove inactives
 	RemoveOldPlayers();
 }
 
 /* OnClientPutInServer()
  *
  * Called when a client is entering the game.
- * ------------------------------------------------------------------ */
+ * ----------------------------------------------------------------- */
 public OnClientPutInServer(client)
 {
 	// Take player stats if database is ok
@@ -61,6 +61,7 @@ public OnClientPutInServer(client)
 		// Checking if client is valid and not a bot
 		if (client > 0 && !IsFakeClient(client))
 		{
+			// Load or create client stats
 			PrepareClient(client);
 
 			// Show welcome message to a player
@@ -76,7 +77,7 @@ public OnClientPutInServer(client)
 /* OnClientDisconnect(client)
  *
  * When a client disconnects from the server.
- * ------------------------------------------------------------------ */
+ * ----------------------------------------------------------------- */
 public OnClientDisconnect(client)
 {
 	// Once again check if player is valid
@@ -97,7 +98,7 @@ public OnClientDisconnect(client)
 /* Command_Say()
  *
  * Hook the say and say_team cmds for chat triggers.
- * ------------------------------------------------------------------ */
+ * ----------------------------------------------------------------- */
 public Action:Command_Say(client, const String:command[], argc)
 {
 	// Variables will start with "garbage" contents.
@@ -138,11 +139,11 @@ public Action:Command_Say(client, const String:command[], argc)
 
 	// TopGrades triggers
 	if (StrEqual(text[trigger], "top")
-	||	StrEqual(text[trigger], "topgrades")
-	||	StrEqual(text[trigger], "!top")
-	||	StrEqual(text[trigger], "!topgrades")
-	||	StrEqual(text[trigger], "/top")
-	||	StrEqual(text[trigger], "/topgrades"))
+	||  StrEqual(text[trigger], "topgrades")
+	||  StrEqual(text[trigger], "!top")
+	||  StrEqual(text[trigger], "!topgrades")
+	||  StrEqual(text[trigger], "/top")
+	||  StrEqual(text[trigger], "/topgrades"))
 	{
 		QueryTopGrades(client);
 		if (GetConVarBool(dodstats_hidechat))
@@ -151,11 +152,11 @@ public Action:Command_Say(client, const String:command[], argc)
 
 	// Stats triggers
 	if (StrEqual(text[trigger], "stats")
-	||	StrEqual(text[trigger], "statsme")
-	||	StrEqual(text[trigger], "!stats")
-	||	StrEqual(text[trigger], "!statsme")
-	||	StrEqual(text[trigger], "/stats")
-	||	StrEqual(text[trigger], "/statsme"))
+	||  StrEqual(text[trigger], "statsme")
+	||  StrEqual(text[trigger], "!stats")
+	||  StrEqual(text[trigger], "!statsme")
+	||  StrEqual(text[trigger], "/stats")
+	||  StrEqual(text[trigger], "/statsme"))
 	{
 		QueryStats(client);
 		if (GetConVarBool(dodstats_hidechat))
@@ -164,8 +165,8 @@ public Action:Command_Say(client, const String:command[], argc)
 
 	// Session triggers
 	if (StrEqual(text[trigger], "session")
-	||	StrEqual(text[trigger], "!session")
-	||	StrEqual(text[trigger], "/session"))
+	||  StrEqual(text[trigger], "!session")
+	||  StrEqual(text[trigger], "/session"))
 	{
 		// No need to query database for session, enough to show it
 		ShowSession(client);
@@ -174,27 +175,26 @@ public Action:Command_Say(client, const String:command[], argc)
 	}
 
 	// Notify triggers
-	if (StrEqual(text[trigger], "notify")
-	||	StrEqual(text[trigger], "!notify")
-	||	StrEqual(text[trigger], "/notify"))
+	if (StrEqual(text[trigger], "!notify")
+	||  StrEqual(text[trigger], "/notify"))
 	{
-		// Enable or disable notifications
+		// Enable/disable notifications
 		ToggleNotify(client);
 		if (GetConVarBool(dodstats_hidechat))
 			return Plugin_Handled;
 	}
 
-	// Continue, otherwise no messages will be received
+	// Continue, otherwise no messages will be sended!
 	return Plugin_Continue;
 }
 
 /* Timer_WelcomePlayer()
  *
  * Shows welcome message to a client.
- * ------------------------------------------------------------------ */
+ * ----------------------------------------------------------------- */
 public Action:Timer_WelcomePlayer(Handle:timer, any:client)
 {
-	// Client is already received a message - kill timer
+	// Client is already received a message - kill timer for now
 	dodstats_info[client] = INVALID_HANDLE;
 	if (IsClientInGame(client)) CPrintToChat(client, "%t", "Welcome message");
 }

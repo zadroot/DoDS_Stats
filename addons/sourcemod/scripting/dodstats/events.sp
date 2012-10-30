@@ -1,7 +1,7 @@
 /* Event_Round_Start()
  *
  * Called when a round starts.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public Event_Round_Start(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	roundend = false;
@@ -24,7 +24,7 @@ public Event_Round_Start(Handle:event, const String:name[], bool:dontBroadcast)
 /* Event_Round_End()
  *
  * Called when a round ends.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public Event_Round_End(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	if (rankactive)
@@ -64,7 +64,7 @@ public Event_Round_End(Handle:event, const String:name[], bool:dontBroadcast)
 /* Event_Player_Disconnect()
  *
  * Called when a client disconnects from the server.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public Event_Player_Disconnect(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	if (db != INVALID_HANDLE)
@@ -94,7 +94,7 @@ public Event_Player_Disconnect(Handle:event, const String:name[], bool:dontBroad
 /* Event_Player_Death()
  *
  * Called when a player dies.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	if (rankactive)
@@ -233,7 +233,7 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 /* Event_Player_Hurt()
  *
  * Called when a player getting/taking damage.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public Event_Player_Hurt(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	if (rankactive)
@@ -288,7 +288,7 @@ public Event_Player_Hurt(Handle:event, const String:name[], bool:dontBroadcast)
 /* Event_Point_Captured()
  *
  * When a client(s) captured point.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public Event_Point_Captured(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	if (rankactive)
@@ -324,7 +324,7 @@ public Event_Point_Captured(Handle:event, const String:name[], bool:dontBroadcas
 /* Event_Capture_Blocked()
  *
  * When a player blocked capture.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public Event_Capture_Blocked(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	if (rankactive)
@@ -350,7 +350,7 @@ public Event_Capture_Blocked(Handle:event, const String:name[], bool:dontBroadca
 /* Event_Bomb_Exploded()
  *
  * When a TNT on objective is exploded.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public Event_Bomb_Exploded(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	// Event_Point_Captured() is also called with this event, so we'll just add points, not captures.
@@ -371,7 +371,7 @@ public Event_Bomb_Exploded(Handle:event, const String:name[], bool:dontBroadcast
 /* Event_Bomb_Blocked()
  *
  * Called when a player killed defuser or planter.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public Event_Bomb_Blocked(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	// Event_Capture_Blocked() is also called with this event, so we'll just add points, not captures.
@@ -394,7 +394,7 @@ public Event_Bomb_Blocked(Handle:event, const String:name[], bool:dontBroadcast)
 /* Event_Bomb_Planted()
  *
  * When a player planted bomb.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public Event_Bomb_Planted(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	if (rankactive)
@@ -420,7 +420,7 @@ public Event_Bomb_Planted(Handle:event, const String:name[], bool:dontBroadcast)
 /* Event_Bomb_Defused()
  *
  * When a player defused bomb.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public Event_Bomb_Defused(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	if (rankactive)

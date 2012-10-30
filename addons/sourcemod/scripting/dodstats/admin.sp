@@ -1,7 +1,7 @@
 /* Command_Reset()
  *
  * Admin command to reset stats database.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public Action:Command_Reset(client, args)
 {
 	decl String:query[128];
@@ -21,7 +21,7 @@ public Action:Command_Reset(client, args)
 /* Command_DeletePlayer()
  *
  * Admin command to delete player from database.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public Action:Command_DeletePlayer(client, args)
 {
 	if (args == 0) ReplyToCommand(client, "%t", "Delete player");
@@ -49,7 +49,7 @@ public Action:Command_DeletePlayer(client, args)
 /* Command_ShowTargetStats()
  *
  * Admin command to view target's stats.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public Action:Command_ShowTargetStats(client, args)
 {
 	if (args == 0) ReplyToCommand(client, "%t", "Show target");

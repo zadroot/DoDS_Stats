@@ -10,7 +10,7 @@
 /* CreateTables()
  *
  * Creates database tables when the plugin starts.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 CreateTables()
 {
 	// For simplest queries are ones which do not return results ( CREATE, DROP, UPDATE, INSERT, and DELETE ) use SQL_FastQuery
@@ -23,7 +23,7 @@ CreateTables()
 /* GetPlayerCount()
  *
  * Gets global count of players from database.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 GetPlayerCount()
 {
 	if (db != INVALID_HANDLE)
@@ -38,7 +38,7 @@ GetPlayerCount()
 /* PrepareClient()
  *
  * Loads a client's stats on connect.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 PrepareClient(client)
 {
 	// It is important to check steamid of every connected player. Otherwise on every disconnect client will lost his stats.
@@ -54,7 +54,7 @@ PrepareClient(client)
 /* PrepareClientData()
  *
  * Connects to a database via a thread.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:data)
 {
 	if (handle != INVALID_HANDLE)
@@ -153,8 +153,8 @@ public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:
 
 /* QueryRankStats()
  *
- * Executes a query Handle for receiving the results for rank. (threaded)
- * --------------------------------------------------------------------- */
+ * Executes a query Handle for receiving the results for rank.
+ * ----------------------------------------------------------------- */
 QueryRankStats(client)
 {
 	if (IsClientConnected(client))
@@ -170,7 +170,7 @@ QueryRankStats(client)
 /* QueryRank()
  *
  * Executes a simple query via a thread for rank.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public QueryRank(Handle:owner, Handle:handle, const String:error[], any:data)
 {
 	if (handle != INVALID_HANDLE)
@@ -203,7 +203,7 @@ public QueryRank(Handle:owner, Handle:handle, const String:error[], any:data)
 /* QueryTop10()
  *
  * Executes a query Handle for receiving the results for top10.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 QueryTop10(client)
 {
 	decl String:query[512];
@@ -217,7 +217,7 @@ QueryTop10(client)
 /* QueryTopGrades()
  *
  * Executes a query Handle for receiving the results for topgrades.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 QueryTopGrades(client)
 {
 	decl String:query[512];
@@ -229,8 +229,8 @@ QueryTopGrades(client)
 
 /* QueryStats()
  *
- * Executes a query Handle for receiving the results for stats. (threaded)
- * --------------------------------------------------------------------- */
+ * Executes a query Handle for receiving the results for stats.
+ * ----------------------------------------------------------------- */
 QueryStats(client)
 {
 	if (IsClientConnected(client))
@@ -246,7 +246,7 @@ QueryStats(client)
 /* QueryStats()
  *
  * Executes a simple query via a thread for statsme.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public QueryStatsMe(Handle:owner, Handle:handle, const String:error[], any:data)
 {
 	// Almost same as rank
@@ -276,7 +276,7 @@ public QueryStatsMe(Handle:owner, Handle:handle, const String:error[], any:data)
 /* PlayerCountCallback()
  *
  * Getting number of all players from the database via a thread.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public PlayerCountCallback(Handle:owner, Handle:handle, const String:error[], any:data)
 {
 	// SQL_FetchInt are not working with MySQL, I try SQL_GetRowCount instead
@@ -286,7 +286,7 @@ public PlayerCountCallback(Handle:owner, Handle:handle, const String:error[], an
 /* RemoveOldPlayers()
  *
  * Querying last connect and delete a player if inactive > days.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 RemoveOldPlayers()
 {
 	// If purge value is initialized - check last connect of all players from a database
@@ -307,7 +307,7 @@ RemoveOldPlayers()
 /* SetEncoding()
  *
  * Sets all database characters to UTF-8 encode.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 SetEncoding()
 {
 	if (!sqlite)
@@ -323,7 +323,7 @@ SetEncoding()
 /* ToggleNotify()
  *
  * Updates notiy preferences via a thread.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 ToggleNotify(client)
 {
 	if (db != INVALID_HANDLE)
@@ -359,7 +359,7 @@ ToggleNotify(client)
 /* DB_CheckErrors()
  *
  * Checks errors on every query.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public DB_CheckErrors(Handle:owner, Handle:handle, const String:error[], any:data)
 {
 	if (!StrEqual(NULL_STRING, error)) LogError("Database Error: %s", error);
@@ -368,7 +368,7 @@ public DB_CheckErrors(Handle:owner, Handle:handle, const String:error[], any:dat
 /* DB_SetEncoding()
  *
  * Set characters to UTF-8.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public DB_SetEncoding(Handle:owner, Handle:handle, const String:error[], any:data)
 {
 	if (!StrEqual(NULL_STRING, error)) LogError("Could not set encoding to UTF-8: %s", error);
@@ -377,7 +377,7 @@ public DB_SetEncoding(Handle:owner, Handle:handle, const String:error[], any:dat
 /* DB_PurgeCallback()
  *
  * Set characters to UTF-8.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public DB_PurgeCallback(Handle:owner, Handle:handle, const String:error[], any:data)
 {
 	if (handle != INVALID_HANDLE)
@@ -395,7 +395,7 @@ public DB_PurgeCallback(Handle:owner, Handle:handle, const String:error[], any:d
 /* SavePlayer()
  *
  * Update and save player's stats into database.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 SavePlayer(client)
 {
 	if (db != INVALID_HANDLE)

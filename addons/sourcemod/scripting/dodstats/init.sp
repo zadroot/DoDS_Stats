@@ -5,28 +5,28 @@
 
 // Create Handles
 new	Handle:dodstats_info[DOD_MAXPLAYERS],
-	Handle:dodstats_announce          = INVALID_HANDLE,
-	Handle:dodstats_hidechat          = INVALID_HANDLE,
-	Handle:dodstats_purge             = INVALID_HANDLE,
-	Handle:dodstats_bonusround        = INVALID_HANDLE,
-	Handle:dodstats_minplayers        = INVALID_HANDLE,
-	Handle:dodstats_gameplay          = INVALID_HANDLE,
-	Handle:stats_points_start         = INVALID_HANDLE,
-	Handle:stats_points_k_value       = INVALID_HANDLE,
-	Handle:stats_points_min           = INVALID_HANDLE,
-	Handle:stats_points_tk_penalty    = INVALID_HANDLE,
-	Handle:stats_points_suicide       = INVALID_HANDLE,
-	Handle:stats_points_capture       = INVALID_HANDLE,
-	Handle:stats_points_block         = INVALID_HANDLE,
-	Handle:stats_points_bomb_explode  = INVALID_HANDLE,
-	Handle:stats_points_bomb_planted  = INVALID_HANDLE,
-	Handle:stats_points_bomb_defused  = INVALID_HANDLE,
-	Handle:stats_points_victory       = INVALID_HANDLE,
-	Handle:stats_points_headshot      = INVALID_HANDLE,
-	Handle:db                         = INVALID_HANDLE;
+	Handle:dodstats_announce         = INVALID_HANDLE,
+	Handle:dodstats_hidechat         = INVALID_HANDLE,
+	Handle:dodstats_purge            = INVALID_HANDLE,
+	Handle:dodstats_bonusround       = INVALID_HANDLE,
+	Handle:dodstats_minplayers       = INVALID_HANDLE,
+	Handle:dodstats_gameplay         = INVALID_HANDLE,
+	Handle:stats_points_start        = INVALID_HANDLE,
+	Handle:stats_points_k_value      = INVALID_HANDLE,
+	Handle:stats_points_min          = INVALID_HANDLE,
+	Handle:stats_points_tk_penalty   = INVALID_HANDLE,
+	Handle:stats_points_suicide      = INVALID_HANDLE,
+	Handle:stats_points_capture      = INVALID_HANDLE,
+	Handle:stats_points_block        = INVALID_HANDLE,
+	Handle:stats_points_bomb_explode = INVALID_HANDLE,
+	Handle:stats_points_bomb_planted = INVALID_HANDLE,
+	Handle:stats_points_bomb_defused = INVALID_HANDLE,
+	Handle:stats_points_victory      = INVALID_HANDLE,
+	Handle:stats_points_headshot     = INVALID_HANDLE,
+	Handle:db                        = INVALID_HANDLE;
 
 // Other
-new bool:rankactive,
+new	bool:rankactive = true,
 	bool:roundend,
 	bool:sqlite,
 	gameplay, /* 0 = Normal. 1 = DeathMatch */
@@ -63,7 +63,7 @@ new grade_captures[] = { 0, 10, 63,  125, 196, 244, 305,  477,  596,  745,  1164
 new grade_kills[]    = { 0, 40, 250, 500, 781, 977, 1221, 1907, 2384, 2980, 3725, 5821, 7276, 9095, 11369, 14211, 17500, 22500, 30000, 40000, 50000 };
 
 // For database tracking
-new dod_stats_online[DOD_MAXPLAYERS],
+new	dod_stats_online[DOD_MAXPLAYERS],
 	dod_stats_score[DOD_MAXPLAYERS],
 	dod_stats_kills[DOD_MAXPLAYERS],
 	dod_stats_deaths[DOD_MAXPLAYERS],

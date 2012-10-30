@@ -1,7 +1,7 @@
 /* OnPluginStart()
  *
  * When the plugin starts up.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public OnPluginStart()
 {
 	decl String:error[256];
@@ -101,7 +101,7 @@ public OnPluginStart()
 /* OnAllPluginsLoaded()
  *
  * Called after all plugins have been loaded.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public OnAllPluginsLoaded()
 {
 	// Checking if server is running DeathMatch

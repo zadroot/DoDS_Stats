@@ -1,7 +1,7 @@
 /* ShowInfo()
  *
  * Prints player's points & grade on connect.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 ShowInfo(client)
 {
 	// That's how we can define awards.
@@ -28,7 +28,7 @@ ShowInfo(client)
 /* ShowRank()
  *
  * Prints player's rank in chat.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 ShowRank(client, rank, next_score)
 {
 	// Calc points to next position
@@ -58,7 +58,7 @@ ShowRank(client, rank, next_score)
 /* ShowSession()
  *
  * Displays a current client session stats.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 ShowSession(client)
 {
 	decl String:data[16], String:title[32];
@@ -112,7 +112,7 @@ ShowSession(client)
 /* ShowStats()
  *
  * Displays a stats to a client
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 ShowStats(target, client, rank)
 {
 	// Is client & target is valid and not a server?
@@ -223,7 +223,7 @@ ShowStats(target, client, rank)
 /* ShowTop10()
  *
  * Displays top10 to a client.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:data)
 {
 	if (handle != INVALID_HANDLE)
@@ -278,7 +278,7 @@ public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:data)
 /* ShowTopGrades()
  *
  * Displays topgrades to a client.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data)
 {
 	if (handle != INVALID_HANDLE)
@@ -347,5 +347,5 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data
 /* Handler_DoNothing()
  *
  * Called when a menu action is completed.
- * --------------------------------------------------------------------- */
+ * ----------------------------------------------------------------- */
 public Handler_DoNothing(Handle:menu, MenuAction:action, param1, param2){}
