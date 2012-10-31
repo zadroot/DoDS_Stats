@@ -67,27 +67,24 @@ public Event_Round_End(Handle:event, const String:name[], bool:dontBroadcast)
  * ----------------------------------------------------------------- */
 public Event_Player_Disconnect(Handle:event, const String:name[], bool:dontBroadcast)
 {
-	if (db != INVALID_HANDLE)
+	new client = GetClientOfUserId(GetEventInt(event, "userid"));
+
+	if (client > 0 && !IsFakeClient(client))
 	{
-		new client = GetClientOfUserId(GetEventInt(event, "userid"));
+		decl String:client_steamid[64], String:query[128];
+		GetClientAuthString(client, client_steamid, sizeof(client_steamid));
 
-		if (client > 0 && !IsFakeClient(client))
+		// Reset session status when client disconnected.
+		if (dod_stats_online[client])
 		{
-			decl String:client_steamid[64], String:query[128];
-			GetClientAuthString(client, client_steamid, sizeof(client_steamid));
+			dod_stats_online[client] = false;
 
-			// Reset session status when client disconnected.
-			if (dod_stats_online[client])
-			{
-				dod_stats_online[client] = false;
-
-				Format(query, sizeof(query), "UPDATE dod_stats SET online = 0 WHERE steamid = '%s'", client_steamid);
-				SQL_TQuery(db, DB_CheckErrors, query);
-			}
-
-			if (GetClientCount() < GetConVarInt(dodstats_minplayers))
-				rankactive = false;
+			Format(query, sizeof(query), "UPDATE dod_stats SET online = 0 WHERE steamid = '%s'", client_steamid);
+			SQL_TQuery(db, DB_CheckErrors, query);
 		}
+
+		if (GetClientCount() < GetConVarInt(dodstats_minplayers))
+			rankactive = false;
 	}
 }
 

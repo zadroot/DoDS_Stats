@@ -4,7 +4,7 @@
 * Description:
 *    A stats plugin (SQLite/MySQL) with many features, full point customization and DeathMatch support.
 *
-* Version 1.7.2
+* Version 1.7.3
 * Changelog & more info at http://goo.gl/4nKhJ
 */
 
@@ -16,7 +16,7 @@
 
 // ====[ CONSTANTS ]================================================
 #define PLUGIN_NAME    "DoD:S Stats"
-#define PLUGIN_VERSION "1.7.2"
+#define PLUGIN_VERSION "1.7.3"
 
 // ====[ PLUGIN ]===================================================
 #include "dodstats/init.sp"
@@ -43,9 +43,10 @@ public Plugin:myinfo =
 public OnMapStart()
 {
 	// Update global player count at every mapchange for servers with MySQL database
-	if (!sqlite) GetPlayerCount();
+	if (!sqlite)
+		GetPlayerCount();
 
-	// Get previous connects of all players from a database and remove inactives
+	// Get previous connects of all players from a database and remove inactive players
 	RemoveOldPlayers();
 }
 
@@ -55,22 +56,18 @@ public OnMapStart()
  * ----------------------------------------------------------------- */
 public OnClientPutInServer(client)
 {
-	// Take player stats if database is ok
-	if (db != INVALID_HANDLE)
+	// Checking if client is valid and not a bot
+	if (client > 0 && !IsFakeClient(client))
 	{
-		// Checking if client is valid and not a bot
-		if (client > 0 && !IsFakeClient(client))
-		{
-			// Load or create client stats
-			PrepareClient(client);
+		// Load or create client stats
+		PrepareClient(client);
 
-			// Show welcome message to a player
-			dodstats_info[client] = CreateTimer(30.0, Timer_WelcomePlayer, client, TIMER_FLAG_NO_MAPCHANGE);
+		// Show welcome message to a player then
+		dodstats_info[client] = CreateTimer(30.0, Timer_WelcomePlayer, client, TIMER_FLAG_NO_MAPCHANGE);
 
-			// Enable stats if there is enough players on a server right now
-			if (!roundend && GetClientCount() >= GetConVarInt(dodstats_minplayers))
-				rankactive = true;
-		}
+		// Enable stats if there is enough players on a server right now
+		if (!roundend && GetClientCount() >= GetConVarInt(dodstats_minplayers))
+			rankactive = true;
 	}
 }
 
@@ -83,7 +80,7 @@ public OnClientDisconnect(client)
 	// Once again check if player is valid
 	if (client > 0 && !IsFakeClient(client))
 	{
-		// Is player disconnected in <30 seconds? kill timer
+		// If player disconnected in <30 seconds, kill timer
 		if (dodstats_info[client] != INVALID_HANDLE)
 		{
 			CloseHandle(dodstats_info[client]);
@@ -101,11 +98,12 @@ public OnClientDisconnect(client)
  * ----------------------------------------------------------------- */
 public Action:Command_Say(client, const String:command[], argc)
 {
-	// Variables will start with "garbage" contents.
+	// Variables will start with "garbage" contents
 	decl String:text[192];
 
-	// Retrieves the entire command argument string in one lump from the current console or server command.
-	if (!GetCmdArgString(text, sizeof(text))) return Plugin_Continue;
+	// Retrieves the entire command argument string in one lump from the current console or server command
+	if (!GetCmdArgString(text, sizeof(text)))
+		return Plugin_Continue;
 
 	// Refine & safe strings
 	new trigger = 0;
@@ -184,7 +182,7 @@ public Action:Command_Say(client, const String:command[], argc)
 			return Plugin_Handled;
 	}
 
-	// Continue, otherwise no messages will be sended!
+	// Continue, otherwise plugin will block say/say_team commands
 	return Plugin_Continue;
 }
 
@@ -196,5 +194,7 @@ public Action:Timer_WelcomePlayer(Handle:timer, any:client)
 {
 	// Client is already received a message - kill timer for now
 	dodstats_info[client] = INVALID_HANDLE;
-	if (IsClientInGame(client)) CPrintToChat(client, "%t", "Welcome message");
+
+	if (IsClientInGame(client))
+		CPrintToChat(client, "%t", "Welcome message");
 }

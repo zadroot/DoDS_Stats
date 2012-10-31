@@ -20,17 +20,17 @@ public OnPluginStart()
 	decl String:driver[16];
 	SQL_ReadDriver(db, driver, sizeof(driver));
 
-	if (strcmp(driver, "mysql") == 0 && db != INVALID_HANDLE)
+	if (StrEqual(driver, "mysql") && db != INVALID_HANDLE)
 	{
 		sqlite = false;
 		LogMessage("Connected to a MySQL database.");
 	}
-	else if (strcmp(driver, "sqlite") == 0 && db != INVALID_HANDLE)
+	else if (StrEqual(driver, "sqlite") && db != INVALID_HANDLE)
 	{
 		sqlite = true;
 		LogMessage("Using SQLite database.");
 	}
-	else SetFailState("Fatal Error: Invalid database type: driver should be \"mysql\" or \"sqlite\"");
+	else SetFailState("Fatal Error: Invalid database type! Driver should be \"mysql\" or \"sqlite\"!");
 
 	// Load common.phrases as well to prevent some errors with targeting.
 	LoadTranslations("common.phrases");

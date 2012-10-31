@@ -26,13 +26,10 @@ CreateTables()
  * ----------------------------------------------------------------- */
 GetPlayerCount()
 {
-	if (db != INVALID_HANDLE)
-	{
-		decl String:query[128];
+	decl String:query[128];
 
-		Format(query, sizeof(query), "SELECT * FROM dod_stats");
-		SQL_TQuery(db, PlayerCountCallback, query);
-	}
+	Format(query, sizeof(query), "SELECT * FROM dod_stats");
+	SQL_TQuery(db, PlayerCountCallback, query);
 }
 
 /* PrepareClient()
@@ -326,33 +323,30 @@ SetEncoding()
  * ----------------------------------------------------------------- */
 ToggleNotify(client)
 {
-	if (db != INVALID_HANDLE)
+	// Get client data.
+	decl String:client_steamid[64], String:query[128];
+	GetClientAuthString(client, client_steamid, sizeof(client_steamid));
+
+	// Client's preferences of `notify` is enabled.
+	if (dod_stats_client_notify[client])
 	{
-		// Get client data.
-		decl String:client_steamid[64], String:query[128];
-		GetClientAuthString(client, client_steamid, sizeof(client_steamid));
+		dod_stats_client_notify[client] = false;
 
-		// Client's preferences of `notify` is enabled.
-		if (dod_stats_client_notify[client])
-		{
-			dod_stats_client_notify[client] = false;
+		CPrintToChat(client, "%t", "Notifications disabled");
 
-			CPrintToChat(client, "%t", "Notifications disabled");
+		// No need to save notify all time, just update it once.
+		Format(query, sizeof(query), "UPDATE dod_stats SET notify = 0 WHERE steamid = '%s'", client_steamid);
+		SQL_TQuery(db, DB_CheckErrors, query);
+	}
+	else /* Notify was disabled. Enable it now. */
+	{
+		dod_stats_client_notify[client] = true;
 
-			// No need to save notify all time, just update it once.
-			Format(query, sizeof(query), "UPDATE dod_stats SET notify = 0 WHERE steamid = '%s'", client_steamid);
-			SQL_TQuery(db, DB_CheckErrors, query);
-		}
-		else /* Notify was disabled. Enable it now. */
-		{
-			dod_stats_client_notify[client] = true;
+		// Player changed his notify preferences - notify him 8)
+		CPrintToChat(client, "%t", "Notifications enabled");
 
-			// Player changed his notify preferences - notify him 8)
-			CPrintToChat(client, "%t", "Notifications enabled");
-
-			Format(query, sizeof(query), "UPDATE dod_stats SET notify = 1 WHERE steamid = '%s'", client_steamid);
-			SQL_TQuery(db, DB_CheckErrors, query);
-		}
+		Format(query, sizeof(query), "UPDATE dod_stats SET notify = 1 WHERE steamid = '%s'", client_steamid);
+		SQL_TQuery(db, DB_CheckErrors, query);
 	}
 }
 
@@ -385,7 +379,7 @@ public DB_PurgeCallback(Handle:owner, Handle:handle, const String:error[], any:d
 		// If more or equal rows was changed - log message
 		if (SQL_GetAffectedRows(owner) > 0)
 		{
-			LogMessage("Stats purged: %i player(s) was removed due of inactivity.", SQL_GetAffectedRows(owner));
+			LogMessage("DoDStats purged: %i player(s) was removed due of inactivity.", SQL_GetAffectedRows(owner));
 			dod_global_player_count -= SQL_GetAffectedRows(owner);
 		}
 	}
@@ -398,35 +392,32 @@ public DB_PurgeCallback(Handle:owner, Handle:handle, const String:error[], any:d
  * ----------------------------------------------------------------- */
 SavePlayer(client)
 {
-	if (db != INVALID_HANDLE)
-	{
-		new time = GetTime();
-		decl String:client_name[MAX_NAME_LENGTH], String:client_steamid[64], String:safe_name[(MAX_NAME_LENGTH*2)+1];
+	new time = GetTime();
+	decl String:client_name[MAX_NAME_LENGTH], String:client_steamid[64], String:safe_name[(MAX_NAME_LENGTH*2)+1];
 
-		// "Dirty" name
-		GetClientName(client, client_name, sizeof(client_name));
-		GetClientAuthString(client, client_steamid, sizeof(client_steamid));
+	// "Dirty" name
+	GetClientName(client, client_name, sizeof(client_name));
+	GetClientAuthString(client, client_steamid, sizeof(client_steamid));
 
-		// Make SQL safer
-		SQL_EscapeString(db, client_name, safe_name, sizeof(safe_name));
+	// Make SQL safer
+	SQL_EscapeString(db, client_name, safe_name, sizeof(safe_name));
 
-		decl String:query[512];
-		Format(query, sizeof(query), "UPDATE dod_stats SET name = '%s', score = %i, kills = %i, deaths = %i, headshots = %i, teamkills = %i, teamkilled = %i, captured = %i, blocked = %i, planted = %i, defused = %i, timeplayed = %i WHERE steamid = '%s'",
-		safe_name,
-		dod_stats_score[client],
-		dod_stats_kills[client],
-		dod_stats_deaths[client],
-		dod_stats_headshots[client],
-		dod_stats_teamkills[client],
-		dod_stats_teamkilled[client],
-		dod_stats_captures[client],
-		dod_stats_capblocks[client],
-		dod_stats_planted[client],
-		dod_stats_defused[client],
-		dod_stats_time_played[client] + (time - dod_stats_time_joined[client]),
-		client_steamid);
+	decl String:query[512];
+	Format(query, sizeof(query), "UPDATE dod_stats SET name = '%s', score = %i, kills = %i, deaths = %i, headshots = %i, teamkills = %i, teamkilled = %i, captured = %i, blocked = %i, planted = %i, defused = %i, timeplayed = %i WHERE steamid = '%s'",
+	safe_name,
+	dod_stats_score[client],
+	dod_stats_kills[client],
+	dod_stats_deaths[client],
+	dod_stats_headshots[client],
+	dod_stats_teamkills[client],
+	dod_stats_teamkilled[client],
+	dod_stats_captures[client],
+	dod_stats_capblocks[client],
+	dod_stats_planted[client],
+	dod_stats_defused[client],
+	dod_stats_time_played[client] + (time - dod_stats_time_joined[client]),
+	client_steamid);
 
-		// Queries can cause noticeable gameplay lag, and supporting threading is often a good idea if your queries occur in the middle of gameplay.
-		SQL_TQuery(db, DB_CheckErrors, query);
-	}
+	// Queries can cause noticeable gameplay lag, and supporting threading is often a good idea if your queries occur in the middle of gameplay.
+	SQL_TQuery(db, DB_CheckErrors, query);
 }

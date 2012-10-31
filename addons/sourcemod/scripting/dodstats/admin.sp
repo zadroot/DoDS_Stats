@@ -5,7 +5,7 @@
 public Action:Command_Reset(client, args)
 {
 	decl String:query[128];
-	Format(query, sizeof(query), "DELETE FROM dod_stats");
+	Format(query, sizeof(query), "DROP TABLE dod_stats");
 	SQL_TQuery(db, DB_CheckErrors, query);
 
 	// Log action.
