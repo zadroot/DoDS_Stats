@@ -1,0 +1,28 @@
+"Updater"
+{
+	"Information"
+	{
+		"Version"
+		{
+			"Latest"		"1.8"
+			"Previous"		"1.7.3"
+		}
+
+		"Notes"	"Changes in 1.8"
+		"Notes"	"Full changelog here http://dodsplugins.com/viewtopic.php?f=4&t=245&p=1704#p1704"
+	}
+
+	"Files"
+	{
+		"Plugin"		"Path_SM/plugins/dodstats.smx"
+		"Source"		"Path_SM/scripting/dodstats.sp"
+		"Source"		"Path_SM/scripting/dodstats/admin.sp"
+		"Source"		"Path_SM/scripting/dodstats/database.sp"
+		"Source"		"Path_SM/scripting/dodstats/display.sp"
+		"Source"		"Path_SM/scripting/dodstats/events.sp"
+		"Source"		"Path_SM/scripting/dodstats/gg_natives.sp"
+		"Source"		"Path_SM/scripting/dodstats/init.sp"
+		"Source"		"Path_SM/scripting/dodstats/init_ru.sp"
+		"Source"		"Path_SM/scripting/dodstats/pluginstart.sp"
+	}
+}
