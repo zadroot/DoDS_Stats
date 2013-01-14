@@ -47,11 +47,11 @@
 	}
 	"First in rank"
 	{
-		"de"		"{olive}{1}{default} ist auf dem {green}ersten Platz{default} ({olive}Rang: {green}{2}{default}) bekommt {green}{3}{default} Punkte - {green}{4}{default} Kills."
+		"de"		"{1}{2}{default} ist auf dem {green}ersten Platz{default} ({olive}Rang: {green}{3}{default}) bekommt {green}{4}{default} Punkte - {green}{5}{default} Kills."
 	}
 	"Rank display"
 	{
-		"de"		"{olive}{1}{default} ist auf Platz {green}{2}{default}/{green}{3}{default} mit {green}{4}{default} Punkten ({olive}{5} fuer den naechsten Rang{default}), {green}{6}{default} Kills & {green}{7}{default} Tode."
+		"de"		"{1}{2}{default} ist auf Platz {green}{3}{default}/{green}{4}{default} mit {green}{5}{default} Punkten ({olive}{6} fuer den naechsten Rang{default}), {green}{7}{default} Kills & {green}{8}{default} Tode."
 	}
 	"Suicide penalty"
 	{
@@ -59,55 +59,59 @@
 	}
 	"Teamkill penalty"
 	{
-		"de"		"Du verlierst {green}{1}{default} Punkte wegen {olive} Teamkill."
+		"de"		"Du verlierst {green}{1}{default} Punkte wegen {2}Teamkill."
 	}
 	"Kill points"
 	{
-		"de"		"Du bekommst {green}{1}{default} Punkte fuer das killen von {olive}{2}"
+		"de"		"Du bekommst {green}{1}{default} Punkte fuer das killen von {2}{3}"
 	}
 	"Death points"
 	{
-		"de"		"Du wurdest getoetet von {olive}{1}{default} und verlierst {green}{2}{default} Punkte."
+		"de"		"Du wurdest getoetet von {1}{2}{default} und verlierst {green}{3}{default} Punkte."
 	}
-	"Level steal"
+	"Level up"
 	{
-		"de"		"Du bekommst {green}{1}{default} Punkte weil du {green}einen Level gestohlen hast."
+		"de"		"Du bekommst {green}{1}{default} Punkte weil du {2}einen Level gestohlen hast."
+	}
+	"Level down"
+	{
+		"de"		"Du {1}verlierst einen Level{default} und {green}{2}{default} Punkte."
 	}
 	"GunGame victory"
 	{
-		"de"		"Du hast den max. Level in {olive}GunGame{default} erreicht und bekommst {green}{1}{default} Punkte fuer den Sieg!"
+		"de"		"{1}Du hast den max. Level in {olive}GunGame{default} erreicht und bekommst {green}{2}{default} Punkte fuer den Sieg!"
 	}
 	"Headshot points"
 	{
-		"de"		"Du bekommst {green}{1}{default} Punkte fuer einen {green}Kopfschuss."
+		"de"		"Du bekommst {green}{1}{default} Punkte fuer einen {olive}Kopfschuss."
 	}
 	"Victory points"
 	{
-		"de"		"Dein Team hat die Runde gewonnen und jeder erhaelt {green}{1}{default} Punkte."
+		"de"		"{1}Dein Team hat die Runde gewonnen und jeder erhaelt {green}{2} Punkte."
 	}
 	"Capture points"
 	{
-		"de"		"Du bekommst {green}{1}{default} Punkte fuer {green}Gebiet einnehmen."
+		"de"		"Du bekommst {green}{1}{default} Punkte fuer {2}Gebiet einnehmen."
 	}
 	"Block points"
 	{
-		"de"		"Du bekommst {green}{1}{default} punkte fuer {green}Gebiet blockieren."
+		"de"		"Du bekommst {green}{1}{default} punkte fuer {2}Gebiet blockieren."
 	}
 	"Explode points"
 	{
-		"de"		"Du bekommst {green}{1}{default} Punkte fuer {green}Zerstoerung eines Ziels."
+		"de"		"Du bekommst {green}{1}{default} Punkte fuer {2}Zerstoerung eines Ziels."
 	}
 	"Protect points"
 	{
-		"de"		"Du bekommst {green}{1}{default} Punkte fuer {green} beschuetzen eines Objekts/Bombe."
+		"de"		"Du bekommst {green}{1}{default} Punkte fuer {2}beschuetzen eines Objekts/Bombe."
 	}
 	"Plant points"
 	{
-		"de"		"Du bekommst {green}{1}{default} Punkte fuer {green}anbringen einer Bombe."
+		"de"		"Du bekommst {green}{1}{default} Punkte fuer {2}anbringen einer Bombe."
 	}
 	"Defuse points"
 	{
-		"de"		"Du bekommst {green}{1}{default} Punkte fuer {green}entschaerfen einer Bombe."
+		"de"		"Du bekommst {green}{1}{default} Punkte fuer {2}entschaerfen einer Bombe."
 	}
 	// Menu items: no colors here
 	"Session Stats"
@@ -152,7 +156,7 @@
 	}
 	"Position"
 	{
-		"de"		"Position: №{1} von {2} Spielern"
+		"de"		"Position: #{1} von {2} Spielern"
 	}
 	"Points earned"
 	{
@@ -173,6 +177,10 @@
 	"Kills & deaths"
 	{
 		"de"		"{1}:{2} Frags ({3})"
+	}
+	"Accuracy"
+	{
+		"de"		"Genauigkeit: {1}%%"
 	}
 	"Overall headshots"
 	{
@@ -208,11 +216,11 @@
 	}
 	"Played & won"
 	{
-		"de"		"Runden gespielt: {1} / Runden gewonnen: {2}"
+		"de"		"Runden gespielt: {1} / Runden gewonnen: {2} ({3})"
 	}
 	"Steal & lost"
 	{
-		"de"		"Levels gestohlen: {1} / Levels verloren: {2}"
+		"de"		"Levels gestohlen: {1} / Levels verloren: {2} ({3})"
 	}
 	"Top10"
 	{
@@ -235,6 +243,18 @@
 		"de"		"{1} | {2} | {3} kills"
 	}
 	"TopGrades > 3"
+	{
+		"de"		"{1} | {2} | {3}"
+	}
+	"TopGG"
+	{
+		"de"		"Top 10 Players - GG"
+	}
+	"TopGG stats"
+	{
+		"de"		"{1} | {2} gewonnen | {3} gestohlen"
+	}
+	"TopGG > 3"
 	{
 		"de"		"{1} | {2} | {3}"
 	}

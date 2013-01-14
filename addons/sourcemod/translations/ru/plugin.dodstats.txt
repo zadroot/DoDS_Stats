@@ -47,11 +47,11 @@
 	}
 	"First in rank"
 	{
-		"ru"		"{olive}{1}{default} находится на {green}первом месте{default} ({olive}Звание: {green}{2}{default}) набрано {green}{3}{default} очков - {4} убил"
+		"ru"		"{1}{2}{default} находится на {green}первом месте{default} ({olive}Звание: {green}{3}{default}) набрано {green}{4}{default} очков - {5} убил"
 	}
 	"Rank display"
 	{
-		"ru"		"{olive}{1}{default} в ранге {green}{2}{default}/{green}{3}{default} набрано {green}{4}{default} очков ({olive}{5} до следующей позиции{default}), {6} убил и {7} смертей."
+		"ru"		"{1}{2}{default} в ранге {green}{3}{default}/{green}{4}{default} набрано {green}{5}{default} очков ({olive}{6} до нового ранга{default}), {7} убил и {8} умер."
 	}
 	"Suicide penalty"
 	{
@@ -59,55 +59,59 @@
 	}
 	"Teamkill penalty"
 	{
-		"ru"		"Вы потеряли {green}{1}{default} очков за {olive}убийство союзника."
+		"ru"		"Вы потеряли {green}{1}{default} очков за {2}убийство союзника."
 	}
 	"Kill points"
 	{
-		"ru"		"Вы получили {green}{1}{default} очков за убийство {olive}{2}"
+		"ru"		"Вы получили {green}{1}{default} очков за убийство {2}{3}"
 	}
 	"Death points"
 	{
-		"ru"		"Вас убил {olive}{1}{default} и Вы потеряли {green}{2}{default} очков."
+		"ru"		"Вас убил {1}{2}{default} и Вы потеряли {green}{3}{default} очков."
 	}
-	"Level steal"
+	"Level up"
 	{
-		"ru"		"Вы получили {green}{1}{default} очков и {green}+1 уровень{default}"
+		"ru"		"Вы получили {green}{1}{default} очков и {2}+1 уровень"
+	}
+	"Level down"
+	{
+		"ru"		"Вы {1}потеряли уровень{default} и {green}{2}{default} очков."
 	}
 	"GunGame victory"
 	{
-		"ru"		"Вы достигли максимального уровня в {olive}GunGame{default} и получили {green}{1}{default} очков за победу!"
+		"ru"		"{1}Вы достигли максимального уровня в {olive}GunGame{default} и получили {green}{2}{default} очков за победу!"
 	}
 	"Headshot points"
 	{
-		"ru"		"Вы получили {green}{1}{default} очко за {green}хэдшот."
+		"ru"		"Вы получили {green}{1}{default} очко за {olive}хэдшот."
 	}
 	"Victory points"
 	{
-		"ru"		"Ваша команда победила в этом раунде и каждый игрок получает по {green}{1}{default} очка."
+		"ru"		"{1}Ваша команда победила в этом раунде и каждый игрок получает по {green}{2} очка."
 	}
 	"Capture points"
 	{
-		"ru"		"Вы получили {green}{1}{default} очка за {green}Захват объекта."
+		"ru"		"Вы получили {green}{1}{default} очка за {2}Захват объекта."
 	}
 	"Block points"
 	{
-		"ru"		"Вы получили {green}{1}{default} очка за {green}Защиту флага."
+		"ru"		"Вы получили {green}{1}{default} очка за {2}Защиту флага."
 	}
 	"Explode points"
 	{
-		"ru"		"Вы получили {green}{1}{default} очка за {green}Подрыв объекта."
+		"ru"		"Вы получили {green}{1}{default} очка за {2}Подрыв объекта."
 	}
 	"Protect points"
 	{
-		"ru"		"Вы получили {green}{1}{default} очка за {green}Защиту."
+		"ru"		"Вы получили {green}{1}{default} очка за {2}Защиту."
 	}
 	"Plant points"
 	{
-		"ru"		"Вы получили {green}{1}{default} очка за {green}Установку взрывчатки."
+		"ru"		"Вы получили {green}{1}{default} очка за {2}Установку взрывчатки."
 	}
 	"Defuse points"
 	{
-		"ru"		"Вы получили {green}{1}{default} очка за {green}Обезвреживание взрывчатки."
+		"ru"		"Вы получили {green}{1}{default} очка за {2}Обезвреживание взрывчатки."
 	}
 	// Menu items: no colors here
 	"Session Stats"
@@ -152,7 +156,7 @@
 	}
 	"Position"
 	{
-		"ru"		"Позиция: №{1} из {2} игроков"
+		"ru"		"Позиция: #{1} из {2} игроков"
 	}
 	"Points earned"
 	{
@@ -173,6 +177,10 @@
 	"Kills & deaths"
 	{
 		"ru"		"{1}:{2} фрагов ({3})"
+	}
+	"Accuracy"
+	{
+		"ru"		"Точность: {1}%%"
 	}
 	"Overall headshots"
 	{
@@ -208,11 +216,11 @@
 	}
 	"Played & won"
 	{
-		"ru"		"Раундов сыграно: {1} / Выиграно: {2}"
+		"ru"		"Раундов сыграно: {1} / Выиграно: {2} ({3})"
 	}
 	"Steal & lost"
 	{
-		"ru"		"Уровней украдено: {1} / Потеряно: {2}"
+		"ru"		"Уровней украдено: {1} / Потеряно: {2} ({3})"
 	}
 	"Top10"
 	{
@@ -235,6 +243,18 @@
 		"ru"		"{1} | {2} | {3} убил"
 	}
 	"TopGrades > 3"
+	{
+		"ru"		"{1} | {2} | {3}"
+	}
+	"TopGG"
+	{
+		"ru"		"Десятка лучших - GG"
+	}
+	"TopGG stats"
+	{
+		"ru"		"{1} | {2} побед | {3} украл"
+	}
+	"TopGG > 3"
 	{
 		"ru"		"{1} | {2} | {3}"
 	}

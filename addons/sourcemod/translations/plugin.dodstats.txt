@@ -50,83 +50,88 @@
 	}
 	"First in rank"
 	{
-		"#format"	"{1:N},{2:s},{3:i},{4:i}"
-		"en"		"{olive}{1}{default} is on a {green}first place{default} ({olive}Grade: {green}{2}{default}) got {green}{3}{default} points - {green}{4}{default} kills."
+		"#format"	"{1:s},{2:N},{3:s},{4:i},{5:i}"
+		"en"		"{1}{2}{default} is on a {green}first place{default} ({olive}Grade: {green}{3}{default}) got {green}{4}{default} points - {green}{5}{default} kills."
 	}
 	"Rank display"
 	{
-		"#format"	"{1:N},{2:i},{3:i},{4:i},{5:i},{6:i},{7:i}"
-		"en"		"{olive}{1}{default} is rank {green}{2}{default}/{green}{3}{default} with {green}{4}{default} points ({olive}{5} to next rank{default}), {green}{6}{default} kills & {green}{7}{default} deaths."
+		"#format"	"{1:s},{2:N},{3:i},{4:i},{5:i},{6:i},{7:i},{8:i}"
+		"en"		"{1}{2}{default} is rank {green}{3}{default}/{green}{4}{default} with {green}{5}{default} points ({olive}{6} to next rank{default}), {green}{7}{default} kills & {green}{8}{default} deaths."
 	}
 	"Suicide penalty"
 	{
 		"#format"	"{1:i}"
-		"en"		"You lost {green}{1}{default} points for {olive}dying."
+		"en"		"You lost {green}{1}{default} points for {olive}suicide."
 	}
 	"Teamkill penalty"
 	{
-		"#format"	"{1:i}"
-		"en"		"You lost {green}{1}{default} points for {olive}killing a teammate."
+		"#format"	"{1:i},{2:s}"
+		"en"		"You lost {green}{1}{default} points for {2}killing a teammate."
 	}
 	"Kill points"
 	{
-		"#format"	"{1:i},{2:N}"
-		"en"		"You gained {green}{1}{default} points for killing {olive}{2}"
+		"#format"	"{1:i},{2:s},{3:N}"
+		"en"		"You gained {green}{1}{default} points for killing {2}{3}"
 	}
 	"Death points"
 	{
-		"#format"	"{1:N},{2:i}"
-		"en"		"You were killed by {olive}{1}{default} and lost {green}{2}{default} points."
+		"#format"	"{1:s},{2:N},{3:i}"
+		"en"		"You were killed by {1}{2}{default} and lost {green}{3}{default} points."
 	}
-	"Level steal"
+	"Level up"
 	{
-		"#format"	"{1:i}"
-		"en"		"You gained {green}{1}{default} points for {green}stealing a level."
+		"#format"	"{1:i},{2:s}"
+		"en"		"You gained {green}{1}{default} points for {2}stealing a level."
+	}
+	"Level down"
+	{
+		"#format"	"{1:s},{2:i}"
+		"en"		"You {1}lost a level{default} and {green}{2}{default} points."
 	}
 	"GunGame victory"
 	{
-		"#format"	"{1:i}"
-		"en"		"You reached max level in {olive}GunGame{default} and got {green}{1}{default} points for victory!"
+		"#format"	"{1:s},{2:i}"
+		"en"		"{1}You reached max level {olive}in GunGame{default} and got {green}{2}{default} points for victory!"
 	}
 	"Headshot points"
 	{
 		"#format"	"{1:i}"
-		"en"		"You gained {green}{1}{default} points for making a {green}headshot."
+		"en"		"You gained {green}{1}{default} points for a {olive}headshot kill."
 	}
 	"Victory points"
 	{
-		"#format"	"{1:i}"
-		"en"		"Your team won the round and all team members gained {green}{1}{default} points."
+		"#format"	"{1:s},{2:i}"
+		"en"		"{1}Your team won the round and all team members gained {green}{2} points."
 	}
 	"Capture points"
 	{
-		"#format"	"{1:i}"
-		"en"		"You gained {green}{1}{default} points for {green}Area Capture."
+		"#format"	"{1:i},{2:s}"
+		"en"		"You gained {green}{1}{default} points for {2}Area Capture."
 	}
 	"Block points"
 	{
-		"#format"	"{1:i}"
-		"en"		"You gained {green}{1}{default} points for {green}Blocking Capture."
+		"#format"	"{1:i},{2:s}"
+		"en"		"You gained {green}{1}{default} points for {2}Blocking Capture."
 	}
 	"Explode points"
 	{
-		"#format"	"{1:i}"
-		"en"		"You gained {green}{1}{default} points for {green}Exploding an object."
+		"#format"	"{1:i},{2:s}"
+		"en"		"You gained {green}{1}{default} points for {2}Exploding an object."
 	}
 	"Protect points"
 	{
-		"#format"	"{1:i}"
-		"en"		"You gained {green}{1}{default} points for {green}Protecting object/bomb."
+		"#format"	"{1:i},{2:s}"
+		"en"		"You gained {green}{1}{default} points for {2}Protecting object/bomb."
 	}
 	"Plant points"
 	{
-		"#format"	"{1:i}"
-		"en"		"You gained {green}{1}{default} points for {green}Planting a bomb."
+		"#format"	"{1:i},{2:s}"
+		"en"		"You gained {green}{1}{default} points for {2}Planting a bomb."
 	}
 	"Defuse points"
 	{
-		"#format"	"{1:i}"
-		"en"		"You gained {green}{1}{default} points for {green}Defusing a bomb."
+		"#format"	"{1:i},{2:s}"
+		"en"		"You gained {green}{1}{default} points for {2}Defusing a bomb."
 	}
 	// Menu items: no colors here
 	"Session Stats"
@@ -174,7 +179,7 @@
 	"Position"
 	{
 		"#format"	"{1:i},{2:i}"
-		"en"		"Position: №{1} of {2} players"
+		"en"		"Position: #{1} of {2} players"
 	}
 	"Points earned"
 	{
@@ -199,6 +204,11 @@
 	{
 		"#format"	"{1:i},{2:i},{3:.2f}"
 		"en"		"{1}:{2} Frags ({3})"
+	}
+	"Accuracy"
+	{
+		"#format"	"{1:.0f}"
+		"en"		"Accuracy: {1}%%"
 	}
 	"Overall headshots"
 	{
@@ -240,13 +250,13 @@
 	}
 	"Played & won"
 	{
-		"#format"	"{1:i},{2:i}"
-		"en"		"Rounds played: {1} / Rounds won: {2}"
+		"#format"	"{1:i},{2:i},{3:.2f}"
+		"en"		"Rounds played: {1} / Rounds won: {2} ({3})"
 	}
 	"Steal & lost"
 	{
-		"#format"	"{1:i},{2:i}"
-		"en"		"Levels stolen: {1} / Levels lost: {2}"
+		"#format"	"{1:i},{2:i},{3:.2f}"
+		"en"		"Levels stolen: {1} / Levels lost: {2} ({3})"
 	}
 	"Top10"
 	{
@@ -274,6 +284,20 @@
 	"TopGrades > 3"
 	{
 		"#format"	"{1:s},{2:s},{3:i}"
+		"en"		"{1} | {2} | {3}"
+	}
+	"TopGG"
+	{
+		"en"		"Top 10 Players - GG"
+	}
+	"TopGG stats"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} | {2} wins | {3} stolen"
+	}
+	"TopGG > 3"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
 		"en"		"{1} | {2} | {3}"
 	}
 }

@@ -4,9 +4,7 @@
  * ----------------------------------------------------------------- */
 public Action:Command_Reset(client, args)
 {
-	decl String:query[128];
-	Format(query, sizeof(query), "DROP TABLE dod_stats");
-	SQL_TQuery(db, DB_CheckErrors, query);
+	SQL_TQuery(db, DB_CheckErrors, "DELETE FROM dodstats");
 
 	// Log action.
 	LogAction(client, -1, "\"%L\" have been reset all stats.", client);
@@ -24,25 +22,24 @@ public Action:Command_Reset(client, args)
  * ----------------------------------------------------------------- */
 public Action:Command_DeletePlayer(client, args)
 {
-	if (args == 0) ReplyToCommand(client, "%t", "Delete player");
-	else if (args == 1)
+	if (args == 1)
 	{
-		decl String:arg[64], String:query[128];
+		decl String:arg[MAX_STEAMID_LENGTH], String:query[128];
 		GetCmdArg(1, arg, sizeof(arg));
 
-		Format(query, sizeof(query), "DELETE FROM dod_stats WHERE steamid = '%s';", arg);
+		Format(query, sizeof(query), "DELETE FROM dodstats WHERE steamid = '%s'", arg);
 		SQL_TQuery(db, DB_CheckErrors, query);
 
 		LogAction(client, -1, "\"%L\" have been removed \"%s\" from the database.", client, arg);
 
 		// Notify admin about deleted steamid.
-		if (client > 0) CPrintToChat(client, "%t", "Removed from database", arg);
+		if (client > 0) CReplyToCommand(client, "%t", "Removed from database", arg);
 
 		// Duplicates: fuck 'em.
 		dod_global_player_count--;
 		return Plugin_Handled;
 	}
-	else if (args > 1) ReplyToCommand(client, "%t", "Delete player");
+	else ReplyToCommand(client, "%t", "Delete player");
 	return Plugin_Handled;
 }
 
@@ -52,22 +49,21 @@ public Action:Command_DeletePlayer(client, args)
  * ----------------------------------------------------------------- */
 public Action:Command_ShowTargetStats(client, args)
 {
-	if (args == 0) ReplyToCommand(client, "%t", "Show target");
-	else if (args == 1)
+	if (args == 1)
 	{
 		decl String:name[MAX_NAME_LENGTH];
 
 		// If more than 1 client matches.
 		if (!GetCmdArgString(name, sizeof(name)))
 		{
-			ReplyToCommand(client, "%t", "Show target");
+			CReplyToCommand(client, "%t", "Show target");
 			return Plugin_Handled;
 		}
 
 		new rank, target = FindTarget(client, name);
 
 		// Target found?
-		if (target > 0 && IsClientConnected(target))
+		if (IsValidClient(client) && IsClientConnected(target))
 		{
 			// Yeah, query his stats
 			QueryStats(target);
@@ -76,5 +72,6 @@ public Action:Command_ShowTargetStats(client, args)
 			ShowStats(client, target, rank);
 		}
 	}
+	else ReplyToCommand(client, "%t", "Show target");
 	return Plugin_Handled;
 }

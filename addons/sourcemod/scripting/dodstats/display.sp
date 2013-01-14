@@ -6,7 +6,7 @@ ShowInfo(client)
 {
 	// That's how we can define awards.
 	new award;
-	for (new i = 0; i < AWARDS; i++)
+	for (new i = 0; i < sizeof(grade_names); i++)
 	{
 		// Get kills & captures only for normal gameplay
 		if (gameplay == 0)
@@ -31,13 +31,15 @@ ShowInfo(client)
  * ----------------------------------------------------------------- */
 ShowRank(client, rank, next_score)
 {
+	decl String:color[10]; Format(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
+
 	// Calc points to next position
 	new delta = 0;
 	if (next_score > dod_stats_score[client]) delta = next_score - dod_stats_score[client];
 
 	// Grades
 	new award;
-	for (new i = 0; i < AWARDS; i++)
+	for (new i = 0; i < sizeof(grade_names); i++)
 	{
 		if (gameplay == 0)
 		{
@@ -51,8 +53,8 @@ ShowRank(client, rank, next_score)
 		}
 	}
 
-	if (delta == 0) CPrintToChatAll("%t", "First in rank", client, grade_names[award], dod_stats_score[client], dod_stats_kills[client]);
-	else            CPrintToChatAll("%t", "Rank display",  client, rank, dod_global_player_count, dod_stats_score[client], delta, dod_stats_kills[client], dod_stats_deaths[client]);
+	if (delta == 0) CPrintToChatAll("%t", "First in rank", color, client, grade_names[award], dod_stats_score[client], dod_stats_kills[client]);
+	else            CPrintToChatAll("%t", "Rank display",  color, client, rank, dod_global_player_count, dod_stats_score[client], delta, dod_stats_kills[client], dod_stats_deaths[client]);
 }
 
 /* ShowSession()
@@ -92,7 +94,7 @@ ShowSession(client)
 	DrawPanelText(sessioninfo, data);
 
 	Format(title, sizeof(title), "%T", "Session KDR", client);
-	Format(data, sizeof(data), "%.2f", float(dod_stats_session_kills[client]) / (dod_stats_session_deaths[client]/*  > 0 ? float(dod_stats_session_deaths[client]) : 1.0 */));
+	Format(data, sizeof(data), "%.2f", float(dod_stats_session_kills[client]) / (dod_stats_session_deaths[client] > 0 ? float(dod_stats_session_deaths[client]) : 1.0));
 	DrawPanelItem(sessioninfo, title);
 	DrawPanelText(sessioninfo, data);
 
@@ -116,7 +118,7 @@ ShowSession(client)
 ShowStats(target, client, rank)
 {
 	// Is client & target is valid and not a server?
-	if (client > 0 && target > 0)
+	if (IsValidClient(client) && IsValidClient(target))
 	{
 		decl String:data[128], String:title[64];
 
@@ -147,7 +149,7 @@ ShowStats(target, client, rank)
 
 		// Grade
 		new award;
-		for (new i = 0; i < AWARDS; i++)
+		for (new i = 0; i < sizeof(grade_names); i++)
 		{
 			if (gameplay == 0)
 			{
@@ -164,7 +166,10 @@ ShowStats(target, client, rank)
 		Format(data, sizeof(data), "%T", "Grade", client, grade_names[award]);
 		DrawPanelText(statsinfo, data);
 
-		Format(data, sizeof(data), "%T", "Kills & deaths", client, dod_stats_kills[client], dod_stats_deaths[client], float(dod_stats_kills[client]) / (dod_stats_deaths[client]/*  > 0 ? float(dod_stats_deaths[client]) : 1.0 */));
+		Format(data, sizeof(data), "%T", "Kills & deaths", client, dod_stats_kills[client], dod_stats_deaths[client], float(dod_stats_kills[client]) / (dod_stats_deaths[client] > 0 ? float(dod_stats_deaths[client]) : 1.0));
+		DrawPanelText(statsinfo, data);
+
+		Format(data, sizeof(data), "%T", "Accuracy", client, float(dod_stats_weaponhits[client]) / (dod_stats_weaponshots[client]) * 100);
 		DrawPanelText(statsinfo, data);
 
 		Format(data, sizeof(data), "%T", "Overall headshots", client, dod_stats_headshots[client], float(dod_stats_headshots[client]) / (dod_stats_kills[client]) * 100);
@@ -178,7 +183,10 @@ ShowStats(target, client, rank)
 		}
 
 		// Show objective stats only for normal gameplay
-		if (dod_stats_captures[client] > 0 || dod_stats_capblocks[client] > 0 || dod_stats_planted[client] > 0 || dod_stats_defused[client] > 0)
+		if (dod_stats_captures[client] > 0
+		|| dod_stats_capblocks[client] > 0
+		|| dod_stats_planted[client]   > 0
+		|| dod_stats_defused[client]   > 0)
 		{
 			Format(title, sizeof(title), "%T", "Objective Stats", client);
 			DrawPanelItem(statsinfo, title);
@@ -210,10 +218,21 @@ ShowStats(target, client, rank)
 			}
 		}
 
-		SendPanelToClient(statsinfo, client, Handler_DoNothing, 20);
+		if (gameplay == 2)
+		{
+			Format(title, sizeof(title), "%T", "GunGame Stats", client);
+			DrawPanelItem(statsinfo, title);
+
+			Format(data, sizeof(data), "%T", "Played & won", client, dod_stats_gg_roundsplayed[client], dod_stats_gg_roundswon[client], float(dod_stats_gg_roundswon[client]) / (dod_stats_gg_roundsplayed[client] > 0 ? float(dod_stats_gg_roundsplayed[client]) : 1.0));
+			DrawPanelText(statsinfo, data);
+
+			Format(data, sizeof(data), "%T", "Steal & lost", client, dod_stats_gg_levelup[client], dod_stats_gg_leveldown[client], float(dod_stats_gg_levelup[client]) / (dod_stats_gg_leveldown[client] > 0 ? float(dod_stats_gg_leveldown[client]) : 1.0));
+			DrawPanelText(statsinfo, data);
+		}
 
 		// If command wasnt called by client, then that was an admin
 		if (client != target) SendPanelToClient(statsinfo, target, Handler_DoNothing, 20);
+		else                  SendPanelToClient(statsinfo, client, Handler_DoNothing, 20);
 
 		// If the menu has ended, destroy it
 		CloseHandle(statsinfo);
@@ -272,7 +291,7 @@ public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:data)
 			CloseHandle(top10);
 		}
 	}
-	else LogError("Top10 callback error: %s", error);
+	else LogError("Top10 command error: %s", error);
 }
 
 /* ShowTopGrades()
@@ -304,7 +323,7 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data
 
 					// Grades
 					new award;
-					for (new i = 0; i < AWARDS; i++)
+					for (new i = 0; i < sizeof(grade_names); i++)
 					{
 						if (gameplay == 0)
 						{
@@ -341,7 +360,59 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data
 			CloseHandle(top10_awards);
 		}
 	}
-	else LogError("TopGrades callback error: %s", error);
+	else LogError("TopGrades command error: %s", error);
+}
+
+/* ShowTopGG()
+ *
+ * Displays topgg to a client.
+ * ----------------------------------------------------------------- */
+public ShowTopGG(Handle:owner, Handle:handle, const String:error[], any:data)
+{
+	if (handle != INVALID_HANDLE)
+	{
+		new client, row;
+
+		// Data is always zero. Stop threading if client is zero.
+		if ((client = GetClientOfUserId(data)) > 0)
+		{
+			decl top_wins, top_steal, String:top_name[MAX_NAME_LENGTH], String:title[32], String:buffer[TOP_PLAYERS + 1][64];
+
+			new Handle:topGG = CreatePanel();
+			Format(title, sizeof(title), "%T:", "TopGG", client);
+			SetPanelTitle(topGG, title);
+
+			// Yay we've got a result.
+			if (SQL_HasResultSet(handle))
+			{
+				while(SQL_FetchRow(handle))
+				{
+					row++;
+					SQL_FetchString(handle, 0, top_name, sizeof(top_name));
+					top_wins   = SQL_FetchInt(handle, 1);
+					top_steal  = SQL_FetchInt(handle, 2);
+
+					if (row > 3 && row <= TOP_PLAYERS)
+						Format(buffer[row], 96, "%i. %t", row, "TopGG > 3", top_name, top_wins, top_steal);
+					/* If there is less than 10 players AND less than 3 - dont show numbers, because this is PanelItem. */
+					else if (row <= TOP_PLAYERS)
+						Format(buffer[row], 96, "%t", "TopGG stats", top_name, top_wins, top_steal);
+				}
+				// Is good if there is more than 10 players stored in database, but we gonna show only 10!
+				if (row > TOP_PLAYERS)
+					row = TOP_PLAYERS;
+
+				for (new i = 1; i <= row; i++)
+				{
+					if (i > 3) DrawPanelText(topGG, buffer[i]);
+					else DrawPanelItem(topGG, buffer[i]);
+				}
+			}
+			SendPanelToClient(topGG, client, Handler_DoNothing, 20);
+			CloseHandle(topGG);
+		}
+	}
+	else LogError("topGG command error: %s", error);
 }
 
 /* Handler_DoNothing()
