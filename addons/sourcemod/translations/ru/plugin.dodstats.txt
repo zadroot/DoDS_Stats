@@ -3,15 +3,11 @@
 	// Chat messages
 	"Connected stats"
 	{
-		"ru"		"{olive}{1}{default} присоединился ({green}{2}{default} очков / {olive}Звание - {3}{default})"
+		"ru"		"{lightgreen}{1}{default} присоединился ({green}{2}{default} очков / {lightgreen}Звание - {3}{default})"
 	}
-	"Notifications enabled"
+	"Toggled notifications"
 	{
-		"ru"		"Оповещения {olive}включены{default}. Напишите {green}!notify{default} снова чтобы отключить."
-	}
-	"Notifications disabled"
-	{
-		"ru"		"Оповещения {olive}отключены{default}. Напишите {green}!notify{default} снова чтобы включить."
+		"ru"		"Оповещения {lightgreen}{1}{default}. Напишите {green}!notify{default} снова чтобы отключить."
 	}
 	"Not enough players"
 	{
@@ -31,11 +27,11 @@
 	}
 	"Stats have been reset"
 	{
-		"ru"		"{olive}Статистика была обнулена"
+		"ru"		"{lightgreen}Статистика была обнулена"
 	}
 	"Removed from database"
 	{
-		"ru"		"{olive}{1}{default} был удален из базы данных."
+		"ru"		"{lightgreen}{1}{default} был удален из базы данных."
 	}
 	"Delete player"
 	{
@@ -47,15 +43,15 @@
 	}
 	"First in rank"
 	{
-		"ru"		"{1}{2}{default} находится на {green}первом месте{default} ({olive}Звание: {green}{3}{default}) набрано {green}{4}{default} очков - {5} убил"
+		"ru"		"{1}{2}{default} находится на {green}первом месте{default} ({lightgreen}Звание: {green}{3}{default}) набрано {green}{4}{default} очков - {5} убил"
 	}
 	"Rank display"
 	{
-		"ru"		"{1}{2}{default} в ранге {green}{3}{default}/{green}{4}{default} набрано {green}{5}{default} очков ({olive}{6} до нового ранга{default}), {7} убил и {8} умер."
+		"ru"		"{1}{2}{default} в ранге {green}{3}{default}/{green}{4}{default} набрано {lightgreen}{5}{default} очков ({lightgreen}{6} до нового ранга{default}), {7} убил и {8} умер."
 	}
 	"Suicide penalty"
 	{
-		"ru"		"Вы потеряли {green}{1}{default} очков за {olive}самоубийство."
+		"ru"		"Вы потеряли {green}{1}{default} очков за {lightgreen}самоубийство."
 	}
 	"Teamkill penalty"
 	{
@@ -79,11 +75,11 @@
 	}
 	"GunGame victory"
 	{
-		"ru"		"{1}Вы достигли максимального уровня в {olive}GunGame{default} и получили {green}{2}{default} очков за победу!"
+		"ru"		"{1}Вы достигли максимального уровня в {lightgreen}GunGame{default} и получили {green}{2}{default} очков за победу!"
 	}
 	"Headshot points"
 	{
-		"ru"		"Вы получили {green}{1}{default} очко за {olive}хэдшот."
+		"ru"		"Вы получили {green}{1}{default} очко за {lightgreen}хэдшот."
 	}
 	"Victory points"
 	{
@@ -252,10 +248,10 @@
 	}
 	"TopGG stats"
 	{
-		"ru"		"{1} | {2} побед | {3} украл"
+		"ru"		"{1} - {2} победил ({3} уровней украл)"
 	}
 	"TopGG > 3"
 	{
-		"ru"		"{1} | {2} | {3}"
+		"ru"		"{1} - {2} побед ({3} украл)"
 	}
 }

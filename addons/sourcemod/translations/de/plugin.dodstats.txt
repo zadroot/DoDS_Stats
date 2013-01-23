@@ -3,15 +3,11 @@
 	// Chat messages
 	"Connected stats"
 	{
-		"de"		"{olive}{1}{default} connected ({green}{2}{default} punkte / {olive}Rang - {3}{default})"
+		"de"		"{lightgreen}{1}{default} connected ({green}{2}{default} punkte / {lightgreen}Rang - {3}{default})"
 	}
-	"Notifications enabled"
+	"Toggled notifications"
 	{
-		"de"		"Rang Benachrichtigung {olive}eingeschaltet{default}. Schreibe {green}!notify{default} zum ausschalten."
-	}
-	"Notifications disabled"
-	{
-		"de"		"Rang Benachrichtigung {olive}ausgeschalten{default}. Schreibe {green}!notify{default} zum einschalten."
+		"de"		"Rang Benachrichtigung {lightgreen}{1}{default}. Schreibe {green}!notify{default} zum einschalten."
 	}
 	"Not enough players"
 	{
@@ -31,11 +27,11 @@
 	}
 	"Stats have been reset"
 	{
-		"de"		"{olive}Alle Statistiken wurden zurueckgesetzt."
+		"de"		"{lightgreen}Alle Statistiken wurden zurueckgesetzt."
 	}
 	"Removed from database"
 	{
-		"de"		"{olive}{1}{default} wurde aus der Datenbank entfernt."
+		"de"		"{lightgreen}{1}{default} wurde aus der Datenbank entfernt."
 	}
 	"Delete player"
 	{
@@ -47,15 +43,15 @@
 	}
 	"First in rank"
 	{
-		"de"		"{1}{2}{default} ist auf dem {green}ersten Platz{default} ({olive}Rang: {green}{3}{default}) bekommt {green}{4}{default} Punkte - {green}{5}{default} Kills."
+		"de"		"{1}{2}{default} ist auf dem {green}ersten Platz{default} ({lightgreen}Rang: {green}{3}{default}) bekommt {green}{4}{default} Punkte - {green}{5}{default} Kills."
 	}
 	"Rank display"
 	{
-		"de"		"{1}{2}{default} ist auf Platz {green}{3}{default}/{green}{4}{default} mit {green}{5}{default} Punkten ({olive}{6} fuer den naechsten Rang{default}), {green}{7}{default} Kills & {green}{8}{default} Tode."
+		"de"		"{1}{2}{default} ist auf Platz {green}{3}{default}/{green}{4}{default} mit {lightgreen}{5}{default} Punkten ({lightgreen}{6} fuer den naechsten Rang{default}), {green}{7}{default} Kills & {green}{8}{default} Tode."
 	}
 	"Suicide penalty"
 	{
-		"de"		"Du hast {green}{1}{default} Punkte verloren {olive}weil du tot bist."
+		"de"		"Du hast {green}{1}{default} Punkte verloren {lightgreen}weil du tot bist."
 	}
 	"Teamkill penalty"
 	{
@@ -79,11 +75,11 @@
 	}
 	"GunGame victory"
 	{
-		"de"		"{1}Du hast den max. Level in {olive}GunGame{default} erreicht und bekommst {green}{2}{default} Punkte fuer den Sieg!"
+		"de"		"{1}Du hast den max. Level in {lightgreen}GunGame{default} erreicht und bekommst {green}{2}{default} Punkte fuer den Sieg!"
 	}
 	"Headshot points"
 	{
-		"de"		"Du bekommst {green}{1}{default} Punkte fuer einen {olive}Kopfschuss."
+		"de"		"Du bekommst {green}{1}{default} Punkte fuer einen {lightgreen}Kopfschuss."
 	}
 	"Victory points"
 	{
@@ -252,10 +248,10 @@
 	}
 	"TopGG stats"
 	{
-		"de"		"{1} | {2} gewonnen | {3} gestohlen"
+		"de"		"{1} - {2} runden gewonnen ({3} levels gestohlen)"
 	}
 	"TopGG > 3"
 	{
-		"de"		"{1} | {2} | {3}"
+		"de"		"{1} - {2} gewonnen ({3} gestohlen)"
 	}
 }

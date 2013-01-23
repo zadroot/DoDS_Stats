@@ -4,13 +4,13 @@
 * Description:
 *    A stats plugin (SQLite & MySQL) with many features, full point customization and GunGame/DeathMatch support.
 *
-* Version 1.8
+* Version 1.9
 * Changelog & more info at http://goo.gl/4nKhJ
 */
 
 #pragma semicolon 1
 
-// ====[ INCLUDES ]============================================
+// ====[ INCLUDES ]==================================================================
 #include <sourcemod>
 
 // Added: 1.8
@@ -18,18 +18,19 @@
 #undef REQUIRE_PLUGIN
 #include <updater>
 
-// ====[ CONSTANTS ]===========================================
+// ====[ CONSTANTS ]=================================================================
 #define PLUGIN_NAME    "DoD:S Stats"
-#define PLUGIN_VERSION "1.8"
+#define PLUGIN_VERSION "1.9"
 
-// ====[ PLUGIN ]==============================================
+// ====[ PLUGIN ]====================================================================
 #include "dodstats/init.sp"
 #include "dodstats/pluginstart.sp"
+#include "dodstats/convars.sp"
 #include "dodstats/database.sp"
 #include "dodstats/display.sp"
-#include "dodstats/admin.sp"
+#include "dodstats/commands.sp"
 #include "dodstats/events.sp"
-#include "dodstats/gg_natives.sp" // New! Special GunGame natives (required GG version 4.1 and newer)
+#include "dodstats/gg_natives.sp"
 
 public Plugin:myinfo =
 {
@@ -43,7 +44,7 @@ public Plugin:myinfo =
 /* OnMapStart()
  *
  * When the map starts.
- * ------------------------------------------------------------ */
+ * ---------------------------------------------------------------------------------- */
 public OnMapStart()
 {
 	// Update global player count at every mapchange for servers with MySQL database
@@ -56,10 +57,10 @@ public OnMapStart()
 /* OnClientPutInServer()
  *
  * Called when a client is entering the game.
- * ------------------------------------------------------------ */
+ * ---------------------------------------------------------------------------------- */
 public OnClientPutInServer(client)
 {
-	// Checking if client is valid and was not online
+	// Checking if client is valid and wasn't online before
 	if (IsValidClient(client))
 	{
 		if (bool:dod_stats_online[client] == false)
@@ -71,8 +72,8 @@ public OnClientPutInServer(client)
 			dodstats_info[client] = CreateTimer(30.0, Timer_WelcomePlayer, client, TIMER_FLAG_NO_MAPCHANGE);
 		}
 
-		// Enable stats if there is enough humans on a server atm
-		if (!roundend && GetClientCount(true) >= GetConVarInt(dodstats_minplayers))
+		// Enable stats if there is enough players on a server
+		if (!roundend && GetClientCount(true) >= GetConVar[MinPlayers][Value])
 			rankactive = true;
 	}
 }
@@ -80,7 +81,7 @@ public OnClientPutInServer(client)
 /* OnClientDisconnect(client)
  *
  * When a client disconnects from the server.
- * ------------------------------------------------------------ */
+ * ---------------------------------------------------------------------------------- */
 public OnClientDisconnect(client)
 {
 	// Once again check if player is valid
@@ -93,110 +94,47 @@ public OnClientDisconnect(client)
 			dodstats_info[client] = INVALID_HANDLE;
 		}
 
-		// Save stats for a player
-		SavePlayer(client);
+		// Save stats only if client is connected before map change! Otherwise database tables may be corrupted (because stats wasnt loaded well and saved in same way)
+		if (bool:dod_stats_online[client] == true)
+		{
+			// Save stats for a player
+			SavePlayer(client);
+		}
 	}
 }
 
 /* OnSayCommand()
  *
  * Hook the say and say_team cmds for chat triggers.
- * ------------------------------------------------------------ */
+ * ---------------------------------------------------------------------------------- */
 public Action:OnSayCommand(client, const String:command[], argc)
 {
 	// Get the message
-	decl String:text[13];
+	decl String:text[13], index;
 
 	// Retrieves the entire command argument string in one lump from the message
 	GetCmdArgString(text, sizeof(text));
 
-	// Remove quotes from the argument, otherwise triggers will never be detected
+	// Remove quotes from the argument (otherwise triggers will never be detected)
 	StripQuotes(text);
 
-	// Rank triggers
-	if (StrEqual(text, "rank")
-	||	StrEqual(text, "!rank")
-	||	StrEqual(text, "/rank"))
+	// Get triggers value from trie
+	if (GetTrieValue(dodstats_triggers, text, index))
 	{
-		QueryRankStats(client);
-		if (GetConVarBool(dodstats_hidechat))
-			return Plugin_Handled;
-	}
-
-	// Top10 triggers
-	if (StrEqual(text, "top")
-	||	StrEqual(text, "top10")
-	||	StrEqual(text, "!top")
-	||	StrEqual(text, "!top10")
-	||	StrEqual(text, "/top")
-	||	StrEqual(text, "/top10"))
-	{
-		QueryTopPlayers(client, TOP_PLAYERS);
+		// Get trie index, and do action depends on defined trigger
+		switch (index)
+		{
+			case RANK:      QueryRankStats(client);
+			case STATSME:   QueryStats(client);
+			case SESSION:   ShowSession(client);
+			case NOTIFY:    ToggleNotify(client);
+			case TOP10:     QueryTopPlayers(client, TOP_PLAYERS);
+			case TOPGRADES: QueryTopGrades(client,  TOP_PLAYERS);
+			case TOPGG:     QueryTopGG(client,      TOP_PLAYERS);
+		}
 
 		// Arent triggers should be hidden?
-		if (GetConVarBool(dodstats_hidechat))
-			return Plugin_Handled;
-	}
-
-	// TopGrades triggers
-	// Renamed 'top' to 'topkills' in 1.8
-	if (StrEqual(text, "topgrades")
-	||  StrEqual(text, "topkills")
-	||  StrEqual(text, "!topgrades")
-	||  StrEqual(text, "!topkills")
-	||  StrEqual(text, "/topgrades")
-	||  StrEqual(text, "/topkills"))
-	{
-		QueryTopGrades(client, TOP_PLAYERS);
-		if (GetConVarBool(dodstats_hidechat))
-			return Plugin_Handled;
-	}
-
-	// TopGG triggers
-	if (StrEqual(text, "topgg")
-	||  StrEqual(text, "top10gg")
-	||  StrEqual(text, "!topgg")
-	||  StrEqual(text, "!top10gg")
-	||  StrEqual(text, "/topgg")
-	||  StrEqual(text, "/top10gg"))
-	{
-		// Added since 1.8
-		QueryTopGG(client, TOP_PLAYERS);
-		if (GetConVarBool(dodstats_hidechat))
-			return Plugin_Handled;
-	}
-
-	// Stats triggers
-	if (StrEqual(text, "stats")
-	||  StrEqual(text, "statsme")
-	||  StrEqual(text, "!stats")
-	||  StrEqual(text, "!statsme")
-	||  StrEqual(text, "/stats")
-	||  StrEqual(text, "/statsme"))
-	{
-		QueryStats(client);
-		if (GetConVarBool(dodstats_hidechat))
-			return Plugin_Handled;
-	}
-
-	// Session triggers
-	if (StrEqual(text, "session")
-	||  StrEqual(text, "!session")
-	||  StrEqual(text, "/session"))
-	{
-		// No need to query database for session, enough to show it
-		ShowSession(client);
-		if (GetConVarBool(dodstats_hidechat))
-			return Plugin_Handled;
-	}
-
-	// Notify triggers
-	if (StrEqual(text, "!notify")
-	||  StrEqual(text, "/notify"))
-	{
-		// Enable/disable notifications
-		ToggleNotify(client);
-		if (GetConVarBool(dodstats_hidechat))
+		if (GetConVar[HideChat][Value])
 			return Plugin_Handled;
 	}
 
@@ -207,7 +145,7 @@ public Action:OnSayCommand(client, const String:command[], argc)
 /* Timer_WelcomePlayer()
  *
  * Shows welcome message to a client.
- * ------------------------------------------------------------ */
+ * ---------------------------------------------------------------------------------- */
 public Action:Timer_WelcomePlayer(Handle:timer, any:client)
 {
 	// Client is already received a message - kill timer for now
@@ -218,5 +156,5 @@ public Action:Timer_WelcomePlayer(Handle:timer, any:client)
 /* IsValidClient()
  *
  * Checks if a client is valid.
- * ------------------------------------------------------------ */
+ * ---------------------------------------------------------------------------------- */
 bool:IsValidClient(client) return (client > 0 && !IsFakeClient(client)) ? true : false;

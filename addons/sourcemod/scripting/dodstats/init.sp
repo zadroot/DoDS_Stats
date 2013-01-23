@@ -6,34 +6,25 @@
 
 // Create Handles
 new	Handle:dodstats_info[DOD_MAXPLAYERS + 1],
-	Handle:dodstats_announce          = INVALID_HANDLE,
-	Handle:dodstats_hidechat          = INVALID_HANDLE,
-	Handle:dodstats_purge             = INVALID_HANDLE,
-	Handle:dodstats_bonusround        = INVALID_HANDLE,
-	Handle:dodstats_minplayers        = INVALID_HANDLE,
-	Handle:dodstats_gameplay          = INVALID_HANDLE,
-	Handle:stats_points_start         = INVALID_HANDLE,
-	Handle:stats_points_min           = INVALID_HANDLE,
-	Handle:stats_points_tk_penalty    = INVALID_HANDLE,
-	Handle:stats_points_suicide       = INVALID_HANDLE,
-	Handle:stats_points_capture       = INVALID_HANDLE,
-	Handle:stats_points_block         = INVALID_HANDLE,
-	Handle:stats_points_bomb_explode  = INVALID_HANDLE,
-	Handle:stats_points_bomb_planted  = INVALID_HANDLE,
-	Handle:stats_points_bomb_defused  = INVALID_HANDLE,
-	Handle:stats_points_victory       = INVALID_HANDLE,
-	Handle:stats_points_headshot      = INVALID_HANDLE,
-	Handle:stats_points_gg_levelup    = INVALID_HANDLE,
-	Handle:stats_points_gg_leveldown  = INVALID_HANDLE,
-	Handle:stats_points_gg_victory    = INVALID_HANDLE,
-	Handle:db                         = INVALID_HANDLE;
-
-// Other
-new	bool:rankactive = true,
+	Handle:dodstats_gameplay,
+	Handle:dodstats_triggers,
+	Handle:db,
+	bool:rankactive = true,
 	bool:roundend   = true,
 	bool:sqlite     = true,
 	gameplay, /* 0 = Normal. 1 = DeathMatch. 2 = GunGame */
 	dod_global_player_count;
+
+enum ChatTriggers
+{
+	RANK,
+	STATSME,
+	SESSION,
+	NOTIFY,
+	TOP10,
+	TOPGRADES,
+	TOPGG
+};
 
 // Awards
 new const String:grade_names[][] =

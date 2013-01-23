@@ -4,19 +4,26 @@
 	{
 		"Version"
 		{
-			"Latest"		"1.8"
-			"Previous"		"1.7.3"
+			"Latest"		"1.9"
+			"Previous"		"1.8"
 		}
 
-		"Notes"	"Changes in 1.8"
-		"Notes"	"Full changelog here http://dodsplugins.com/viewtopic.php?f=4&t=245&p=1704#p1704"
+		"Notes"	"See full changelog from 1.8 to 1.9 here:"
+		"Notes"	"http://dodsplugins.com/viewtopic.php?f=4&t=245&p=1735#p1735"
 	}
 
 	"Files"
 	{
 		"Plugin"		"Path_SM/plugins/dodstats.smx"
+
+		"Plugin"		"Path_SM/translations/plugin.dodstats.txt"
+		"Plugin"		"Path_SM/translations/de/plugin.dodstats.txt"
+		"Plugin"		"Path_SM/translations/fr/plugin.dodstats.txt"
+		"Plugin"		"Path_SM/translations/ru/plugin.dodstats.txt"
+
 		"Source"		"Path_SM/scripting/dodstats.sp"
-		"Source"		"Path_SM/scripting/dodstats/admin.sp"
+		"Source"		"Path_SM/scripting/dodstats/commands.sp"
+		"Source"		"Path_SM/scripting/dodstats/convars.sp"
 		"Source"		"Path_SM/scripting/dodstats/database.sp"
 		"Source"		"Path_SM/scripting/dodstats/display.sp"
 		"Source"		"Path_SM/scripting/dodstats/events.sp"

@@ -27,7 +27,7 @@ public OnPluginStart()
 			sqlite = true;
 			LogMessage("Using SQLite database.");
 		}
-		else SetFailState("Fatal Error: Invalid database type: driver should be \"mysql\" or \"sqlite\"!");
+		else SetFailState("Fatal Error: Check your database config! Driver should be \"mysql\" or \"sqlite\"!");
 	}
 	else SetFailState("Fatal Error: Could not connect to database: %s", error);
 
@@ -36,36 +36,18 @@ public OnPluginStart()
 	LoadTranslations("plugin.dodstats");
 
 	// Create CoVars
-	CreateConVar("sm_dodstats_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_NOTIFY|FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_REPLICATED);
+	CreateConVar("sm_dodstats_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_NOTIFY|FCVAR_PLUGIN|FCVAR_SPONLY);
 
-	dodstats_announce          = CreateConVar("dodstats_announce",         "1",    "Whether or not print player's information on connect ( points & grade )",         FCVAR_PLUGIN, true, 0.0, true, 1.0);
-	dodstats_hidechat          = CreateConVar("dodstats_hidechat",         "0",    "Whether or not hide chat triggers ( rank/top/top10/topgg/stats/session/notify )", FCVAR_PLUGIN, true, 0.0, true, 1.0);
-	dodstats_purge             = CreateConVar("dodstats_purge",            "0",    "Number of days to delete inactive players from the database",                     FCVAR_PLUGIN, true, 0.0);
-	dodstats_bonusround        = CreateConVar("dodstats_bonusround",       "1",    "Whether or not enable stats during bonusround",                                   FCVAR_PLUGIN, true, 0.0, true, 1.0);
-	dodstats_minplayers        = CreateConVar("dodstats_minplayers",       "4",    "Minimum players required to record stats\nSet to 0 to disable player check",      FCVAR_PLUGIN, true, 0.0, true, 32.0);
-	stats_points_start         = CreateConVar("dodstats_start_points",     "1000", "Sets the starting points for a new player",                                       FCVAR_PLUGIN, true, 0.0);
-	stats_points_min           = CreateConVar("dodstats_points_min",       "2",    "Sets the minimum points to take on kill\nSet 0 to disable kill points",           FCVAR_PLUGIN, true, 0.0, true, 25.0);
-	stats_points_tk_penalty    = CreateConVar("dodstats_tk_penalty",       "8",    "Amount of points to take on team kill (TNT kills will be ignored)",               FCVAR_PLUGIN, true, 0.0, true, 25.0);
-	stats_points_suicide       = CreateConVar("dodstats_points_suicide",   "5",    "Amount of points to take on suicide",                                             FCVAR_PLUGIN, true, 0.0, true, 25.0);
-	stats_points_capture       = CreateConVar("dodstats_points_capture",   "2",    "Amount of points to give for capturing area",                                     FCVAR_PLUGIN, true, 0.0, true, 25.0);
-	stats_points_block         = CreateConVar("dodstats_points_block",     "2",    "Amount of points to give for blocking capture",                                   FCVAR_PLUGIN, true, 0.0, true, 25.0);
-	stats_points_bomb_explode  = CreateConVar("dodstats_points_explode",   "3",    "Amount of points to add for exploding an object",                                 FCVAR_PLUGIN, true, 0.0, true, 25.0);
-	stats_points_bomb_planted  = CreateConVar("dodstats_points_plant",     "2",    "Amount of points to give for planting a TNT",                                     FCVAR_PLUGIN, true, 0.0, true, 25.0);
-	stats_points_bomb_defused  = CreateConVar("dodstats_points_defuse",    "2",    "Amount of points to add for defusing a TNT",                                      FCVAR_PLUGIN, true, 0.0, true, 25.0);
-	stats_points_headshot      = CreateConVar("dodstats_points_headshot",  "1",    "Amount of points to add for a headshot kill",                                     FCVAR_PLUGIN, true, 0.0, true, 25.0);
-	stats_points_victory       = CreateConVar("dodstats_points_victory",   "1",    "Amount of points to give for members of team which won the round",                FCVAR_PLUGIN, true, 0.0, true, 25.0);
-	stats_points_gg_levelup    = CreateConVar("dodstats_points_levelup",   "5",    "Amount of points to give for stealing a level (GG only)",                         FCVAR_PLUGIN, true, 0.0, true, 25.0);
-	stats_points_gg_leveldown  = CreateConVar("dodstats_points_leveldown", "5",    "Amount of points to take on level lost (GG only)",                                FCVAR_PLUGIN, true, 0.0, true, 25.0);
-	stats_points_gg_victory    = CreateConVar("dodstats_points_ggvictory", "10",   "Amount of points to give to a GunGame winner (GG only)",                          FCVAR_PLUGIN, true, 0.0, true, 25.0);
+	// Load all plugin convars
+	LoadConVars();
 
 	// Hook say messages for triggers
 	AddCommandListener(OnSayCommand, "say");
 	AddCommandListener(OnSayCommand, "say_team");
 
 	// Admin commands
-	RegAdminCmd("sm_resetstats",  Command_Reset,           ADMFLAG_ROOT,    "Reset all stats");
-	RegAdminCmd("sm_resetplayer", Command_DeletePlayer,    ADMFLAG_ROOT,    "Delete a steamid from the database");
-	RegAdminCmd("sm_pstats",      Command_ShowTargetStats, ADMFLAG_GENERIC, "Show target's stats");
+	RegAdminCmd("sm_resetstats",  Command_Reset,        ADMFLAG_ROOT, "Reset all stats");
+	RegAdminCmd("sm_resetplayer", Command_DeletePlayer, ADMFLAG_ROOT, "Delete a steamid from the database");
 
 	// Hook events
 	HookEvent("player_disconnect", Event_Player_Disconnect);
@@ -92,6 +74,9 @@ public OnPluginStart()
 
 	// Create and exec plugin.dodstats config in cfg/sourcemod folder
 	AutoExecConfig(true, "dod_stats");
+
+	// Register triggers
+	CreateTriggersTrie();
 
 	// Create database tables
 	CreateTables();

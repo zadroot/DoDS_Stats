@@ -115,10 +115,10 @@ ShowSession(client)
  *
  * Displays a stats to a client
  * ----------------------------------------------------------------- */
-ShowStats(target, client, rank)
+ShowStats(client, rank)
 {
 	// Is client & target is valid and not a server?
-	if (IsValidClient(client) && IsValidClient(target))
+	if (IsValidClient(client))
 	{
 		decl String:data[128], String:title[64];
 
@@ -230,9 +230,7 @@ ShowStats(target, client, rank)
 			DrawPanelText(statsinfo, data);
 		}
 
-		// If command wasnt called by client, then that was an admin
-		if (client != target) SendPanelToClient(statsinfo, target, Handler_DoNothing, 20);
-		else                  SendPanelToClient(statsinfo, client, Handler_DoNothing, 20);
+		SendPanelToClient(statsinfo, client, Handler_DoNothing, 20);
 
 		// If the menu has ended, destroy it
 		CloseHandle(statsinfo);
