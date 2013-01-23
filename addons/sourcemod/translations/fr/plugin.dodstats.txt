@@ -3,39 +3,35 @@
 	// Chat messages
 	"Connected stats"
 	{
-		"fr"		"{olive}{1}{default} connecte. ({green}{2}{default} points / {olive}Grade - {3}{default})"
+		"fr"		"{lightgreen}{1}{default} connecté. ({green}{2}{default} point(s) / {lightgreen}Grade - {3}{default})"
 	}
-	"Notifications enabled"
+	"Toggled notifications"
 	{
-		"fr"		"Affichage des Stats {olive}active{default}. Ecrire {green}!notify{default} pour les desactiver."
-	}
-	"Notifications disabled"
-	{
-		"fr"		"Affichage des Stats {olive}desactive{default}. Ecrire {green}!notify{default} pour les activer."
+		"fr"		"Affichage des Stats {lightgreen}{1}{default}. Ecrire {green}!notify{default} pour les activer."
 	}
 	"Not enough players"
 	{
-		"fr"		"Besoin d'au moins {green}{1}{default} pour permettre aux joueurs de {green}stats{default}."
+		"fr"		"Besoin d'au moins {green}{1}{default} joueurs pour permettre les {green}stats{default}."
 	}
 	"Ranking enabled"
 	{
-		"fr"		"Stats {green}activees:{default} chaque debut de Round."
+		"fr"		"Stats {green}activées:{default} chaque début de Round."
 	}
 	"Ranking disabled"
 	{
-		"fr"		"Stats {green}desactivees{default} pendant le Bonus Round."
+		"fr"		"Stats {green}désactivées:{default} pendant le Bonus Round."
 	}
 	"Welcome message"
 	{
-		"fr"		"Ce serveur utilise le plugin {green}DoD:S Stats{default}.\nVous pouvez ecrire {green}!notify{default} pour activer/desactiver l'affichage."
+		"fr"		"Ce serveur utilise le plugin {green}DoD:S Stats{default}.\nVous pouvez écrire {green}!notify{default} pour activer/désactiver l'affichage."
 	}
 	"Stats have been reset"
 	{
-		"fr"		"{olive}Toutes les Stats ont ete remises a zero."
+		"fr"		"{lightgreen}Toutes les Stats ont été remises à zéro."
 	}
 	"Removed from database"
 	{
-		"fr"		"{olive}{1}{default} a ete efface de la base de donnees."
+		"fr"		"{lightgreen}{1}{default} a été effacé de la base de données."
 	}
 	"Delete player"
 	{
@@ -47,71 +43,71 @@
 	}
 	"First in rank"
 	{
-		"fr"		"{1}{2}{default} detient {green}la premiere place{default} ({olive}Grade: {green}{3}{default}) avec {green}{4}{default} points - {green}{5}{default} kills."
+		"fr"		"{1}{2}{default} détient {green}la premiere place{default} ({lightgreen}Grade: {green}{3}{default}) avec {green}{4}{default} point(s) - {green}{5}{default} tué(s)."
 	}
 	"Rank display"
 	{
-		"fr"		"{1}{2}{default} est classe {green}{3}{default}/{green}{4}{default} avec {green}{5}{default} points ({olive}{6} du joueur precedent{default}), {green}{7}{default} kills & {green}{8}{default} deaths."
+		"fr"		"{1}{2}{default} est classé {green}{3}{default}/{green}{4}{default} avec {lightgreen}{5}{default} point(s) ({lightgreen}{6} du joueur précedent{default}), {green}{7}{default} tué(s) & {green}{8}{default} mort(s)."
 	}
 	"Suicide penalty"
 	{
-		"fr"		"Vous perdez {green}{1}{default} points car {olive}vous avez ete tue."
+		"fr"		"Vous perdez {green}{1}{default} point(s) car {lightgreen}vous vous êtes suicidé."
 	}
 	"Teamkill penalty"
 	{
-		"fr"		"Vous perdez {green}{1}{default} points pour {2}avoir tue un coequipier."
+		"fr"		"Vous perdez {green}{1}{default} point(s) pour {2}avoir tué un coequipier."
 	}
 	"Kill points"
 	{
-		"fr"		"Vous avez gagne {green}{1}{default} points pour avoir tue {2}{3}"
+		"fr"		"Vous avez gagné {green}{1}{default} point(s) pour avoir tué {2}{3}"
 	}
 	"Death points"
 	{
-		"fr"		"Vous venez d'etre tue par {1}{2}{default} et perdu {green}{3}{default} points."
+		"fr"		"Vous venez d'être tué par {1}{2}{default} et vous avez perdu {green}{3}{default} point(s)."
 	}
 	"Level steal"
 	{
-		"fr"		"Vous gagnez {green}{1}{default} points en passant au{2} niveau superieur."
+		"fr"		"Vous gagnez {green}{1}{default} point(s) pour avoir{2} volé un level."
 	}
 	"Level down"
 	{
-		"fr"		"Vous {1}avez perdu level{default} et perdu {green}{2}{default} points."
+		"fr"		"Vous avez perdu {green}{2}{default} point(s) pour avoir{1} perdu un level."
 	}
 	"GunGame victory"
 	{
-		"fr"		"{1}Vous avez atteint le dernier niveau du {olive}GunGame{default} , vous gagnez {green}{2}{default} points pour cette victoire!"
+		"fr"		"{1}Vous avez atteint le dernier niveau du {lightgreen}GunGame{default} , vous gagnez {green}{2}{default} point(s) pour cette victoire !"
 	}
 	"Headshot points"
 	{
-		"fr"		"Vous gagnez {green}{1}{default} points pour ce {olive}headshot."
+		"fr"		"Vous gagnez {green}{1}{default} point(s) pour ce {lightgreen}headshot."
 	}
 	"Victory points"
 	{
-		"fr"		"{1}Votre equipe gagne le Round ! Tous les coequipiers gagnent {green}{2} points."
+		"fr"		"{1}Votre équipe gagne le Round ! Tous les coequipiers gagnent {green}{2} point(s)."
 	}
 	"Capture points"
 	{
-		"fr"		"Vous gagnez {green}{1}{default} points pour {2}cette prise !"
+		"fr"		"Vous gagnez {green}{1}{default} point(s) pour {2}cette Capture !"
 	}
 	"Block points"
 	{
-		"fr"		"Vous gagnez {green}{1}{default} points pour avoir empeche la{2} Capture."
+		"fr"		"Vous gagnez {green}{1}{default} point(s) pour avoir empèche la{2} Capture !"
 	}
 	"Explode points"
 	{
-		"fr"		"Vous gagnez {green}{1}{default} points pour avoir {2}Explose un objet."
+		"fr"		"Vous gagnez {green}{1}{default} point(s) pour avoir {2}Explose un objet/une bombe."
 	}
 	"Protect points"
 	{
-		"fr"		"Vous gagnez {green}{1}{default} points pour avoir{2}Protege un objet/une bombe."
+		"fr"		"Vous gagnez {green}{1}{default} point(s) pour avoir{2}Protège un objet/une bombe."
 	}
 	"Plant points"
 	{
-		"fr"		"Vous gagnez {green}{1}{default} points pour avoir{2}Pose une bombe."
+		"fr"		"Vous gagnez {green}{1}{default} point(s) pour avoir{2}Pose une bombe."
 	}
 	"Defuse points"
 	{
-		"fr"		"Vous gagnez {green}{1}{default} points pour avoir {2}Desamorce une bombe."
+		"fr"		"Vous gagnez {green}{1}{default} point(s) pour avoir {2}Désamorce une bombe."
 	}
 	// Menu items: no colors here
 	"Session Stats"
@@ -120,19 +116,19 @@
 	}
 	"Session points"
 	{
-		"fr"		"Points"
+		"fr"		"Point(s)"
 	}
 	"Session kills"
 	{
-		"fr"		"Kills"
+		"fr"		"Tué(s)"
 	}
 	"Session deaths"
 	{
-		"fr"		"Deaths"
+		"fr"		"Mort(s)"
 	}
 	"Session headshots"
 	{
-		"fr"		"Headshots"
+		"fr"		"Headshot(s)"
 	}
 	"Session KDR"
 	{
@@ -144,11 +140,11 @@
 	}
 	"Session timestamp"
 	{
-		"fr"		"{1} h {2} m"
+		"fr"		"{1} heure(s) {2} minute(s)"
 	}
 	"Player Stats"
 	{
-		"fr"		"Player Stats"
+		"fr"		"Stats du joueur"
 	}
 	"Nickname"
 	{
@@ -160,15 +156,15 @@
 	}
 	"Points earned"
 	{
-		"fr"		"{1} Points gagnes"
+		"fr"		"{1} Point(s) gagné(s)"
 	}
 	"Overall timeplayed"
 	{
-		"fr"		"Temps joue: {1} days - {2} h {3} m"
+		"fr"		"Temps joué: {1} jour(s) - {2} heure(s) {3} minute(s)"
 	}
 	"Kill Stats"
 	{
-		"fr"		"Kill Stats"
+		"fr"		"Stats des tués"
 	}
 	"Grade"
 	{
@@ -176,11 +172,11 @@
 	}
 	"Kills & deaths"
 	{
-		"fr"		"{1}:{2} Frags ({3})"
+		"fr"		"{1}:{2} Frag(s) ({3})"
 	}
 	"Accuracy"
 	{
-		"fr"		"Precision: {1}%%"
+		"fr"		"Précision: {1}%%"
 	}
 	"Overall headshots"
 	{
@@ -200,15 +196,15 @@
 	}
 	"Blocked captures"
 	{
-		"fr"		"Captures bloquees: {1}"
+		"fr"		"Capture(s) bloquée(s): {1}"
 	}
 	"Bombs planted"
 	{
-		"fr"		"Bombes posees: {1}"
+		"fr"		"Bombe(s) posée(s): {1}"
 	}
 	"Bombs defused"
 	{
-		"fr"		"Bombes desamorcees: {1}"
+		"fr"		"Bombe(s) désamorcée(s): {1}"
 	}
 	"GunGame Stats"
 	{
@@ -216,11 +212,11 @@
 	}
 	"Played & won"
 	{
-		"fr"		"Rounds joues: {1} / Rounds gagnes: {2} ({3})"
+		"fr"		"Round(s) joué(s): {1} / Round(s) gagné(s): {2} ({3})"
 	}
 	"Steal & lost"
 	{
-		"fr"		"Niveaux voles: {1} / Niveaux perdus: {2} ({3})"
+		"fr"		"Niveau(x) volé(s): {1} / Niveau(x) perdu(s): {2} ({3})"
 	}
 	"Top10"
 	{
@@ -228,11 +224,11 @@
 	}
 	"Top10 stats"
 	{
-		"fr"		"{1} | {2} KDR | {3} points"
+		"fr"		"{1} | {2} KDR | {3} point(s)"
 	}
 	"Top10 > 3"
 	{
-		"fr"		"{1} | {2} KDR | {3}"
+		"fr"		"{1} | {2} KDR | {3} point(s)"
 	}
 	"TopGrades"
 	{
@@ -240,11 +236,11 @@
 	}
 	"TopGrades stats"
 	{
-		"fr"		"{1} | {2} | {3} kills"
+		"fr"		"{1} | {2} | {3} tué(s)"
 	}
 	"TopGrades > 3"
 	{
-		"fr"		"{1} | {2} | {3}"
+		"fr"		"{1} | {2} | {3} tué(s)"
 	}
 	"TopGG"
 	{
@@ -252,10 +248,10 @@
 	}
 	"TopGG stats"
 	{
-		"fr"		"{1} | {2} gagnes | {3} voles"
+		"fr"		"{1} - {2} gagné(s) ({3} level(s) volé(s))"
 	}
 	"TopGG > 3"
 	{
-		"fr"		"{1} | {2} | {3}"
+		"fr"		"{1} - {2} gagné(s) ({3} volé(s))"
 	}
 }
