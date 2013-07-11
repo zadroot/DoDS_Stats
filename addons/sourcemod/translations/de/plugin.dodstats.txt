@@ -220,7 +220,7 @@
 	}
 	"Top10"
 	{
-		"de"		"Top 10 Players"
+		"de"		"Top Players"
 	}
 	"Top10 stats"
 	{
@@ -232,7 +232,7 @@
 	}
 	"TopGrades"
 	{
-		"de"		"Top 10 Spieler Auszeichnungen"
+		"de"		"Top Spieler Auszeichnungen"
 	}
 	"TopGrades stats"
 	{
@@ -244,7 +244,7 @@
 	}
 	"TopGG"
 	{
-		"de"		"Top 10 Players - GG"
+		"de"		"Top Players - GG"
 	}
 	"TopGG stats"
 	{
@@ -253,5 +253,90 @@
 	"TopGG > 3"
 	{
 		"de"		"{1} - {2} gewonnen ({3} gestohlen)"
+	}
+	// Grades
+	"Civil"
+	{
+		"de"		"Civil"
+	}
+	"Private"
+	{
+		"de"		"Private"
+	}
+	"Corporal"
+	{
+		"de"		"Corporal"
+	}
+	"Sergeant"
+	{
+		"de"		"Sergeant"
+	}
+	"Staff Sergeant"
+	{
+		"de"		"Staff Sergeant"
+	}
+	"Sergeant First Class"
+	{
+		"de"		"Sergeant First Class"
+	}
+	"Sergeant Major"
+	{
+		"de"		"Sergeant Major"
+	}
+	"Command Sergeant Major"
+	{
+		"de"		"Command Sergeant Major"
+	}
+	"Warrant Officer One"
+	{
+		"de"		"Warrant Officer One"
+	}
+	"Second Lieutenant"
+	{
+		"de"		"Second Lieutenant"
+	}
+	"First Lieutenant"
+	{
+		"de"		"First Lieutenant"
+	}
+	"Captain"
+	{
+		"de"		"Captain"
+	}
+	"Major"
+	{
+		"de"		"Major"
+	}
+	"Lieutenant Colonel"
+	{
+		"de"		"Lieutenant Colonel"
+	}
+	"Colonel"
+	{
+		"de"		"Colonel"
+	}
+	"Brigadier General"
+	{
+		"de"		"Brigadier General"
+	}
+	"Major General"
+	{
+		"de"		"Major General"
+	}
+	"Lieutenant General"
+	{
+		"de"		"Lieutenant General"
+	}
+	"General"
+	{
+		"de"		"General"
+	}
+	"General of the Army"
+	{
+		"de"		"General of the Army"
+	}
+	"Marshal"
+	{
+		"de"		"Marshal"
 	}
 }

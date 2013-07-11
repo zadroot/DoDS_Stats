@@ -220,7 +220,7 @@
 	}
 	"Top10"
 	{
-		"ru"		"Десятка лучших"
+		"ru"		"Таблица игроков"
 	}
 	"Top10 stats"
 	{
@@ -244,7 +244,7 @@
 	}
 	"TopGG"
 	{
-		"ru"		"Десятка лучших - GG"
+		"ru"		"Лучшие игроки - GG"
 	}
 	"TopGG stats"
 	{
@@ -253,5 +253,90 @@
 	"TopGG > 3"
 	{
 		"ru"		"{1} - {2} побед ({3} украл)"
+	}
+	// Grades
+	"Civil"
+	{
+		"ru"		"Гражданский"
+	}
+	"Private"
+	{
+		"ru"		"Рядовой"
+	}
+	"Corporal"
+	{
+		"ru"		"Ефрейтор"
+	}
+	"Sergeant"
+	{
+		"ru"		"Мл. сержант"
+	}
+	"Staff Sergeant"
+	{
+		"ru"		"Сержант"
+	}
+	"Sergeant First Class"
+	{
+		"ru"		"Ст. сержант"
+	}
+	"Sergeant Major"
+	{
+		"ru"		"Старшина"
+	}
+	"Command Sergeant Major"
+	{
+		"ru"		"Прапорщик"
+	}
+	"Warrant Officer One"
+	{
+		"ru"		"Ст. прапорщик"
+	}
+	"Second Lieutenant"
+	{
+		"ru"		"Мл. лейтенант"
+	}
+	"First Lieutenant"
+	{
+		"ru"		"Лейтенант"
+	}
+	"Captain"
+	{
+		"ru"		"Ст. лейтенант"
+	}
+	"Major"
+	{
+		"ru"		"Капитан"
+	}
+	"Lieutenant Colonel"
+	{
+		"ru"		"Майор"
+	}
+	"Colonel"
+	{
+		"ru"		"Подполковник"
+	}
+	"Brigadier General"
+	{
+		"ru"		"Полковник"
+	}
+	"Major General"
+	{
+		"ru"		"Генерал-майор"
+	}
+	"Lieutenant General"
+	{
+		"ru"		"Генерал-лейтенант"
+	}
+	"General"
+	{
+		"ru"		"Генерал-полковник"
+	}
+	"General of the Army"
+	{
+		"ru"		"Генерал Армии"
+	}
+	"Marshal"
+	{
+		"ru"		"Маршал"
 	}
 }

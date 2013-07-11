@@ -7,19 +7,19 @@
 	}
 	"Toggled notifications"
 	{
-		"fr"		"Affichage des Stats {lightgreen}{1}{default}. Ecrire {green}!notify{default} pour les activer."
+		"fr"		"Affichage des Stats {lightgreen}{1}{default}.\nEcrire {green}!notify{default} pour activer/désactiver l'affichage."
 	}
 	"Not enough players"
 	{
-		"fr"		"Besoin d'au moins {green}{1}{default} joueurs pour permettre les {green}stats{default}."
+		"fr"		"Au moins {green}{1}{default} joueurs nécessaires pour activer les {green}stats{default}."
 	}
 	"Ranking enabled"
 	{
-		"fr"		"Stats {green}activées:{default} chaque début de Round."
+		"fr"		"Stats {green}activées:{default} Chaque début de Round."
 	}
 	"Ranking disabled"
 	{
-		"fr"		"Stats {green}désactivées:{default} pendant le Bonus Round."
+		"fr"		"Stats {green}désactivées:{default} Pendant le Bonus Round."
 	}
 	"Welcome message"
 	{
@@ -27,7 +27,7 @@
 	}
 	"Stats have been reset"
 	{
-		"fr"		"{lightgreen}Toutes les Stats ont été remises à zéro."
+		"fr"		"{lightgreen}Toutes les Stats ont été réinitialisées."
 	}
 	"Removed from database"
 	{
@@ -43,15 +43,15 @@
 	}
 	"First in rank"
 	{
-		"fr"		"{1}{2}{default} détient {green}la premiere place{default} ({lightgreen}Grade: {green}{3}{default}) avec {green}{4}{default} point(s) - {green}{5}{default} tué(s)."
+		"fr"		"{1}{2}{default} détient {green}la première place{default} ({lightgreen}Grade: {green}{3}{default}) avec {green}{4}{default} point(s) - {green}{5}{default} kills."
 	}
 	"Rank display"
 	{
-		"fr"		"{1}{2}{default} est classé {green}{3}{default}/{green}{4}{default} avec {lightgreen}{5}{default} point(s) ({lightgreen}{6} du joueur précedent{default}), {green}{7}{default} tué(s) & {green}{8}{default} mort(s)."
+		"fr"		"{1}{2}{default} est classé {green}{3}{default}/{green}{4}{default} avec {lightgreen}{5}{default} point(s) ({lightgreen}{6} du joueur précédent{default}), {green}{7}{default} kills & {green}{8}{default} deaths."
 	}
 	"Suicide penalty"
 	{
-		"fr"		"Vous perdez {green}{1}{default} point(s) car {lightgreen}vous vous êtes suicidé."
+		"fr"		"Vous perdez {green}{1}{default} point(s) pour {lightgreen}suicide."
 	}
 	"Teamkill penalty"
 	{
@@ -63,51 +63,51 @@
 	}
 	"Death points"
 	{
-		"fr"		"Vous venez d'être tué par {1}{2}{default} et vous avez perdu {green}{3}{default} point(s)."
+		"fr"		"Vous venez d'être tué par {1}{2}{default}, vous perdez {green}{3}{default} points."
 	}
-	"Level steal"
+	"Level up"
 	{
-		"fr"		"Vous gagnez {green}{1}{default} point(s) pour avoir{2} volé un level."
+		"fr"		"Vous gagnez {green}{1}{default} points pour avoir descendu {2} d'un niveau."
 	}
 	"Level down"
 	{
-		"fr"		"Vous avez perdu {green}{2}{default} point(s) pour avoir{1} perdu un level."
+		"fr"		"{1}, vous perdez {green}{2}{default} points pour être descendu d'un niveau."
 	}
 	"GunGame victory"
 	{
-		"fr"		"{1}Vous avez atteint le dernier niveau du {lightgreen}GunGame{default} , vous gagnez {green}{2}{default} point(s) pour cette victoire !"
+		"fr"		"{1}, vous avez atteint le dernier niveau du {lightgreen}GunGame{default}\nVous gagnez {green}{2}{default} point(s) pour cette victoire !"
 	}
 	"Headshot points"
 	{
-		"fr"		"Vous gagnez {green}{1}{default} point(s) pour ce {lightgreen}headshot."
+		"fr"		"Vous gagnez {green}{1}{default} points pour ce {lightgreen}Headshot."
 	}
 	"Victory points"
 	{
-		"fr"		"{1}Votre équipe gagne le Round ! Tous les coequipiers gagnent {green}{2} point(s)."
+		"fr"		"{1}, votre équipe gagne le Round !\nTous les coéquipiers gagnent {green}{2} point(s)."
 	}
 	"Capture points"
 	{
-		"fr"		"Vous gagnez {green}{1}{default} point(s) pour {2}cette Capture !"
+		"fr"		"Vous gagnez {green}{1}{default} points: Prise de flag {2}!"
 	}
 	"Block points"
 	{
-		"fr"		"Vous gagnez {green}{1}{default} point(s) pour avoir empèche la{2} Capture !"
+		"fr"		"Vous gagnez {green}{1}{default} points: Blocage d'une capture de flag {2}!"
 	}
 	"Explode points"
 	{
-		"fr"		"Vous gagnez {green}{1}{default} point(s) pour avoir {2}Explose un objet/une bombe."
+		"fr"		"Vous gagnez {green}{1}{default} points: Destruction d'un élément {2}."
 	}
 	"Protect points"
 	{
-		"fr"		"Vous gagnez {green}{1}{default} point(s) pour avoir{2}Protège un objet/une bombe."
+		"fr"		"Vous gagnez {green}{1}{default} points: Protection d'un élément {2}."
 	}
 	"Plant points"
 	{
-		"fr"		"Vous gagnez {green}{1}{default} point(s) pour avoir{2}Pose une bombe."
+		"fr"		"Vous gagnez {green}{1}{default} points: Pose d'une bombe sur un élément {2}."
 	}
 	"Defuse points"
 	{
-		"fr"		"Vous gagnez {green}{1}{default} point(s) pour avoir {2}Désamorce une bombe."
+		"fr"		"Vous gagnez {green}{1}{default} points: Désamorçage d'une bombe sur un élément {2}."
 	}
 	// Menu items: no colors here
 	"Session Stats"
@@ -132,7 +132,7 @@
 	}
 	"Session KDR"
 	{
-		"fr"		"KDR"
+		"fr"		"Ratio"
 	}
 	"Session time"
 	{
@@ -152,7 +152,7 @@
 	}
 	"Position"
 	{
-		"fr"		"Position: #{1} sur {2} joueurs"
+		"fr"		"{1} place sur {2} joueurs enregistrés"
 	}
 	"Points earned"
 	{
@@ -164,7 +164,7 @@
 	}
 	"Kill Stats"
 	{
-		"fr"		"Stats des tués"
+		"fr"		"Stats des kills"
 	}
 	"Grade"
 	{
@@ -172,7 +172,7 @@
 	}
 	"Kills & deaths"
 	{
-		"fr"		"{1}:{2} Frag(s) ({3})"
+		"fr"		"{1}:{2} kill(s) ({3})"
 	}
 	"Accuracy"
 	{
@@ -184,7 +184,7 @@
 	}
 	"Teamkills & teamkilled"
 	{
-		"fr"		"Teamkills: {1} / Times teamkilled: {2}"
+		"fr"		"Tirs sur coéquipiers: {1} / Tué par coéquipiers: {2}"
 	}
 	"Objective Stats"
 	{
@@ -220,19 +220,19 @@
 	}
 	"Top10"
 	{
-		"fr"		"Top 10 Joueurs"
+		"fr"		"Meilleurs Joueurs"
 	}
 	"Top10 stats"
 	{
-		"fr"		"{1} | {2} KDR | {3} point(s)"
+		"fr"		"{1} Kills | {2} morts| {3} points"
 	}
 	"Top10 > 3"
 	{
-		"fr"		"{1} | {2} KDR | {3} point(s)"
+		"fr"		"{1} Kills | {2} morts| {3} points"
 	}
 	"TopGrades"
 	{
-		"fr"		"Top 10 Joueurs - Recompenses"
+		"fr"		"Meilleurs Joueurs: Grades"
 	}
 	"TopGrades stats"
 	{
@@ -240,18 +240,103 @@
 	}
 	"TopGrades > 3"
 	{
-		"fr"		"{1} | {2} | {3} tué(s)"
+		"fr"		"{1} | {2} | {3}"
 	}
 	"TopGG"
 	{
-		"fr"		"Top 10 Joueurs - GG"
+		"fr"		"Meilleurs Joueurs - GunGame"
 	}
 	"TopGG stats"
 	{
-		"fr"		"{1} - {2} gagné(s) ({3} level(s) volé(s))"
+		"fr"		"{1} - {2} victoires ({3} niveau(x) volé(s))"
 	}
 	"TopGG > 3"
 	{
-		"fr"		"{1} - {2} gagné(s) ({3} volé(s))"
+		"fr"		"{1} - {2} victoires ({3} niveau(x) volé(s))"
+	}
+	// Grades
+	"Civil"
+	{
+		"fr"		"Civil"
+	}
+	"Private"
+	{
+		"fr"		"Resistant"
+	}
+	"Corporal"
+	{
+		"fr"		"Soldat"
+	}
+	"Sergeant"
+	{
+		"fr"		"Soldat 1ere classe"
+	}
+	"Staff Sergeant"
+	{
+		"fr"		"Caporal"
+	}
+	"Sergeant First Class"
+	{
+		"fr"		"Caporal-chef"
+	}
+	"Sergeant Major"
+	{
+		"fr"		"Sergent"
+	}
+	"Command Sergeant Major"
+	{
+		"fr"		"Sergent-chef"
+	}
+	"Warrant Officer One"
+	{
+		"fr"		"Adjudant"
+	}
+	"Second Lieutenant"
+	{
+		"fr"		"Adjudant-chef"
+	}
+	"First Lieutenant"
+	{
+		"fr"		"Major"
+	}
+	"Captain"
+	{
+		"fr"		"Aspirant"
+	}
+	"Major"
+	{
+		"fr"		"Sous-lieutenant"
+	}
+	"Lieutenant Colonel"
+	{
+		"fr"		"Lieutenant"
+	}
+	"Colonel"
+	{
+		"fr"		"Capitaine"
+	}
+	"Brigadier General"
+	{
+		"fr"		"Commandant"
+	}
+	"Major General"
+	{
+		"fr"		"Lieutenant-colonel"
+	}
+	"Lieutenant General"
+	{
+		"fr"		"Colonel"
+	}
+	"General"
+	{
+		"fr"		"Général de brigade"
+	}
+	"General of the Army"
+	{
+		"fr"		"Général de division"
+	}
+	"Marshal"
+	{
+		"fr"		"Général de corps d'armée"
 	}
 }

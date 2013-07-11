@@ -64,7 +64,7 @@ public Action:Command_Reset(client, args)
 	// Log action.
 	LogAction(client, -1, "\"%L\" have been reset all stats.", client);
 
-	dod_global_player_count = 0;
+	dod_global_player_count = DEFAULT;
 
 	// Print message to all clients
 	CPrintToChatAll("%t", "Stats have been reset");
@@ -79,7 +79,7 @@ public Action:Command_DeletePlayer(client, args)
 {
 	if (args == 1)
 	{
-		decl String:arg[MAX_STEAMID_LENGTH], String:query[128];
+		decl String:arg[MAX_STEAMID_LENGTH], String:query[MAX_QUERY_LENGTH];
 		GetCmdArg(1, arg, sizeof(arg));
 
 		Format(query, sizeof(query), "DELETE FROM dodstats WHERE steamid = '%s'", arg);
@@ -88,11 +88,10 @@ public Action:Command_DeletePlayer(client, args)
 		LogAction(client, -1, "\"%L\" have been removed \"%s\" from the database.", client, arg);
 
 		// Notify admin about deleted steamid.
-		if (client > 0) CReplyToCommand(client, "%t", "Removed from database", arg);
+		if (IsValidClient(client)) CReplyToCommand(client, "%t", "Removed from database", arg);
 
 		// Duplicates: fuck 'em.
 		dod_global_player_count--;
-		return Plugin_Handled;
 	}
 	else ReplyToCommand(client, "%t", "Delete player");
 	return Plugin_Handled;

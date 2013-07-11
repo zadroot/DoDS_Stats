@@ -1,10 +1,21 @@
+/* AskPluginLoad2()
+ *
+ * Called before OnPluginStart.
+ * ----------------------------------------------------------------- */
+public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
+{
+	// Needed to load properly on older versions of SourceMod
+	MarkNativeAsOptional("GetUserMessageType");
+	return APLRes_Success;
+}
+
 /* OnPluginStart()
  *
  * When the plugin starts up.
  * ----------------------------------------------------------------- */
 public OnPluginStart()
 {
-	decl String:error[256];
+	decl String:error[MAX_QUERY_LENGTH];
 
 	if (SQL_CheckConfig("dodstats"))
 		db = SQL_Connect("dodstats", true, error, sizeof(error));
@@ -14,29 +25,29 @@ public OnPluginStart()
 	if (db != INVALID_HANDLE)
 	{
 		// Check DB driver (SQLite or MySQL)
-		decl String:driver[16];
+		decl String:driver[10];
 		SQL_ReadDriver(db, driver, sizeof(driver));
 
-		if (StrEqual(driver, "mysql"))
+		if (StrEqual(driver, "mysql", false))
 		{
 			sqlite = false;
 			LogMessage("Connected to a MySQL database.");
 		}
-		else if (StrEqual(driver, "sqlite"))
+		else if (StrEqual(driver, "sqlite", false))
 		{
 			sqlite = true;
 			LogMessage("Using SQLite database.");
 		}
-		else SetFailState("Fatal Error: Check your database config! Driver should be \"mysql\" or \"sqlite\"!");
+		else SetFailState("Check your databases config: \"driver\" should be \"mysql\" or \"sqlite\"");
+
+		SQL_LockDatabase(db);
 	}
-	else SetFailState("Fatal Error: Could not connect to database: %s", error);
+	else SetFailState("Plugin encountered fatal error: %s", error);
 
 	// Load common.phrases as well to prevent some errors with targeting.
 	LoadTranslations("common.phrases");
+	LoadTranslations("core.phrases");
 	LoadTranslations("plugin.dodstats");
-
-	// Create CoVars
-	CreateConVar("sm_dodstats_version", PLUGIN_VERSION, PLUGIN_NAME, FCVAR_NOTIFY|FCVAR_PLUGIN|FCVAR_SPONLY);
 
 	// Load all plugin convars
 	LoadConVars();
@@ -69,8 +80,11 @@ public OnPluginStart()
 	HookEvent("dod_bomb_defused", Event_Bomb_Defused);
 
 	// For bonusround
-	HookEvent("dod_round_active", Event_Round_Start);
+	HookEvent("dod_round_active", Event_Round_Start, EventHookMode_PostNoCopy);
 	HookEvent("dod_round_win",    Event_Round_End);
+
+	// Periodic player stats save
+	HookEvent("dod_tick_points", Event_SavePlayersStats, EventHookMode_PostNoCopy);
 
 	// Create and exec plugin.dodstats config in cfg/sourcemod folder
 	AutoExecConfig(true, "dod_stats");
@@ -93,28 +107,26 @@ public OnAllPluginsLoaded()
 {
 	// Checking if server is running DeathMatch
 	dodstats_gameplay = FindConVar("deathmatch_version");
+
+	if (dodstats_gameplay != INVALID_HANDLE)
 	{
+		gameplay = DEATHMATCH;
+		LogMessage("Server is running DeathMatch > appropriate stats mode enabled.");
+	}
+	else /* Cant find DM cvar. Lets check for GunGame now */
+	{
+		dodstats_gameplay = FindConVar("sm_gungame_version");
+
 		if (dodstats_gameplay != INVALID_HANDLE)
 		{
-			gameplay = 1;
-			LogMessage("Server is running DeathMatch > appropriate stats mode enabled.");
+			gameplay = GUNGAME; /* If mod detected - accept mode and print to server console */
+			LogMessage("Server is running GunGame > appropriate stats mode enabled.");
 		}
-		else /* Cant find DM cvar. Lets check for GunGame now */
-		{
-			dodstats_gameplay = FindConVar("sm_gungame_version");
-			{
-				if (dodstats_gameplay != INVALID_HANDLE)
-				{
-					gameplay = 2; /* If mod detected - accept mode and print to server console */
-					LogMessage("Server is running GunGame > appropriate stats mode enabled.");
-				}
-				else gameplay = 0;
-			}
-		}
+		else gameplay = DEFAULT;
 	}
 
 	if (LibraryExists("updater")) Updater_AddPlugin(UPDATE_URL);
 
-	// Set all db characters to UTF8 (MySQL only)
+	// Set all db characters to UTF8 (for MySQL only)
 	SetEncoding();
 }

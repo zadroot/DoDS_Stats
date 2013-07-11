@@ -4,20 +4,22 @@
  * ----------------------------------------------------------------- */
 public Event_Round_Start(Handle:event, const String:name[], bool:dontBroadcast)
 {
+	new minplayers = GetConVar[MinPlayers][Value];
+
 	roundend = false;
 
 	// Enable ranking now
-	if (!rankactive && GetClientCount(true) >= GetConVar[MinPlayers][Value])
+	if (!rankactive && GetClientCount(true) >= minplayers)
 	{
 		rankactive = true;
 		CPrintToChatAll("%t", "Ranking enabled");
 	}
 
 	// If rank is not active and player count not exceeded minimum player count, disable rank active
-	if (rankactive && GetClientCount(true) < GetConVar[MinPlayers][Value])
+	if (rankactive && GetClientCount(true) < minplayers)
 	{
 		rankactive = false;
-		CPrintToChatAll("%t", "Not enough players", GetConVar[MinPlayers][Value]);
+		CPrintToChatAll("%t", "Not enough players", minplayers);
 	}
 }
 
@@ -29,24 +31,22 @@ public Event_Round_End(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	if (rankactive)
 	{
-		// Round ended only if any of team is won
-		new win_team = GetEventInt(event, "team");
-
+		new roundpoints = GetConVar[Points_RoundWin][Value];
 		for (new client = 1; client <= MaxClients; client++)
 		{
 			// Encourage players from winner's team
-			if (IsClientInGame(client) && GetClientTeam(client) == win_team)
+			if (IsClientInGame(client) && GetClientTeam(client) == GetEventInt(event, "team"))
 			{
 				// POINTS!
-				if (GetConVar[Points_RoundWin][Value])
+				if (roundpoints)
 				{
-					decl String:color[10]; Format(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
+					decl String:color[10]; FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
 
-					dod_stats_score[client] += GetConVar[Points_RoundWin][Value];
+					dod_stats_score[client] += roundpoints;
 
 					if (dod_stats_client_notify[client])
 					{
-						CPrintToChat(client, "%t", "Victory points", color, GetConVar[Points_RoundWin][Value]);
+						CPrintToChat(client, "%t", "Victory points", color, roundpoints);
 					}
 				}
 			}
@@ -81,6 +81,28 @@ public Event_Player_Disconnect(Handle:event, const String:name[], bool:dontBroad
 	}
 }
 
+/* Event_SaveAllPlayers()
+ *
+ * Saves the stats for all players.
+ * ----------------------------------------------------------------- */
+public Event_SavePlayersStats(Handle:event, const String:name[], bool:dontBroadcast)
+{
+	// If that event were fired for 10 times, save stats of all players
+	if (++tickpoints_fired >= 10)
+	{
+		// And reset amount of fired events
+		tickpoints_fired = 0;
+
+		for (new client = 1; client <= MaxClients; client++)
+		{
+			if (IsClientInGame(client) && bool:dod_stats_online[client] == true)
+			{
+				SavePlayer(client);
+			}
+		}
+	}
+}
+
 /* Event_Player_Death()
  *
  * Called when a player dies.
@@ -93,140 +115,55 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 		new attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
 		new victim   = GetClientOfUserId(GetEventInt(event, "victim"));
 
-		if (attacker > 0 && victim > 0)
+		dod_stats_weaponhits[attacker]++;
+
+		// Make sure victim is dead
+		if (GetClientHealth(victim) < 1)
 		{
-			dod_stats_weaponhits[attacker]++;
+			new weapon    = GetEventInt(event, "weapon");
+			new headshot  = GetEventInt(event, "hitgroup") == 1;
+			new minpoints = GetConVar[MinPoints][Value];
+			new hspoints  = GetConVar[Points_Headshot][Value];
+			new score     = GetConVar[MinPoints][Value] + (dod_stats_score[victim] - dod_stats_score[attacker]) / 100;
 
-			// Make sure victim is dead
-			if (GetClientHealth(victim) < 1)
+			decl String:teamcolor[10], String:enemycolor[10];
+			FormatEx(teamcolor,  sizeof(teamcolor),  "%s", GetClientTeam(attacker) == 2 ? "{allies}" : "{axis}");
+			FormatEx(enemycolor, sizeof(enemycolor), "%s", GetClientTeam(victim)   == 2 ? "{allies}" : "{axis}");
+
+			// Check for suicide
+			if (attacker == victim)
 			{
-				new headshot  = GetEventInt(event, "hitgroup") == 1;
-				new minpoints = GetConVar[MinPoints][Value];
-				new hspoints  = GetConVar[Points_Headshot][Value];
-				new score     = GetConVar[MinPoints][Value] + (dod_stats_score[victim] - dod_stats_score[attacker]) / 100;
+				dod_stats_deaths[victim]++;
+				dod_stats_session_deaths[victim]++;
 
-				decl String:teamcolor[10], String:enemycolor[10];
-				Format(teamcolor,  sizeof(teamcolor),  "%s", GetClientTeam(attacker) == 2 ? "{allies}" : "{axis}");
-				Format(enemycolor, sizeof(enemycolor), "%s", GetClientTeam(victim)   == 2 ? "{allies}" : "{axis}");
-
-				// Check for suicide
-				if (attacker == victim)
+				// If points to take on suicide is specified - continue. Skip otherwise
+				new suipoints = GetConVar[Points_Suicide][Value];
+				if (suipoints)
 				{
-					dod_stats_deaths[victim]++;
-					dod_stats_session_deaths[victim]++;
+					dod_stats_score[victim]         -= suipoints;
+					dod_stats_session_score[victim] -= suipoints;
 
-					// If points to take on suicide is specified - continue. Skip otherwise
-					if (GetConVar[Points_Suicide][Value])
+					if (dod_stats_client_notify[victim])
 					{
-						dod_stats_score[victim]         -= GetConVar[Points_Suicide][Value];
-						dod_stats_session_score[victim] -= GetConVar[Points_Suicide][Value];
-
-						if (dod_stats_client_notify[victim])
-						{
-							CPrintToChat(victim, "%t", "Suicide penalty", GetConVar[Points_Suicide][Value]);
-						}
+						CPrintToChat(victim, "%t", "Suicide penalty", suipoints);
 					}
 				}
-				// Teamkill
-				else if (GetClientTeam(attacker) == GetClientTeam(victim))
+			}
+			// Teamkill
+			else if (GetClientTeam(attacker) == GetClientTeam(victim))
+			{
+				// Give points for teamkill as a usual kill (because its DM)
+				if (gameplay == DEATHMATCH)
 				{
-					// Give points for teamkill as a usual kill (because its DM)
-					if (gameplay == 1)
-					{
-						dod_stats_kills[attacker]++;
-						dod_stats_deaths[victim]++;
-						dod_stats_session_kills[attacker]++;
-						dod_stats_session_deaths[victim]++;
-
-						// Points
-						if (minpoints)
-						{
-							// ELO formula. Divider = 400 by default.
-							//new Float:ELO = 1 / (Pow(10.0, float((dod_stats_score[victim] - dod_stats_score[attacker])) / 100) + 1);
-							//new score     = RoundToNearest(GetConVarFloat(stats_points_k_value) * (1 - ELO));
-							//new score = (GetConVarInt(stats_points_min) + (dod_stats_score[victim] - dod_stats_score[attacker]) / 100);
-
-							// Forcing minimal value on kill.
-							if (score < minpoints)
-								score = minpoints;
-
-							dod_stats_score[attacker]         += score;
-							dod_stats_session_score[attacker] += score;
-							dod_stats_score[victim]           -= score;
-							dod_stats_session_score[victim]   -= score;
-
-							if (dod_stats_client_notify[attacker])
-							{
-								CPrintToChat(attacker, "%t", "Kill points", score, enemycolor, victim);
-							}
-							if (dod_stats_client_notify[victim])
-							{
-								CPrintToChat(victim, "%t", "Death points", teamcolor, attacker, score);
-							}
-						}
-
-						if (headshot)
-						{
-							dod_stats_headshots[attacker]++;
-							dod_stats_session_headshots[attacker]++;
-
-							if (hspoints)
-							{
-								dod_stats_score[attacker]         += hspoints;
-								dod_stats_session_score[attacker] += hspoints;
-
-								if (dod_stats_client_notify[attacker])
-								{
-									CPrintToChat(attacker, "%t", "Headshot points", hspoints);
-								}
-							}
-						}
-					}
-					// Punish player for teamkill in normal mode.
-					else
-					{
-						// Dont count teamkills if teammates down by TNT
-						if (GetEventInt(event, "weapon") > 0)
-						{
-							dod_stats_teamkills[attacker]++;
-							dod_stats_teamkilled[victim]++;
-
-							// Still not sure about that. Should I decrease kills amount on tk or just take points?
-							dod_stats_kills[attacker]--;
-							dod_stats_session_kills[attacker]--;
-
-							// If points to take on tk is specified - continue.
-							if (GetConVar[Points_TK_Penalty][Value])
-							{
-								dod_stats_score[attacker]         -= GetConVar[Points_TK_Penalty][Value];
-								dod_stats_session_score[attacker] -= GetConVar[Points_TK_Penalty][Value];
-
-								// And show message for attacker if notifications is enabled for him.
-								if (dod_stats_client_notify[attacker])
-								{
-									CPrintToChat(attacker, "%t", "Teamkill penalty", GetConVar[Points_TK_Penalty][Value], teamcolor);
-								}
-							}
-						}
-					}
-				}
-				// Otherwise it's a legitimate kill!
-				else
-				{
-					// Add points for overall score and session.
 					dod_stats_kills[attacker]++;
 					dod_stats_deaths[victim]++;
 					dod_stats_session_kills[attacker]++;
 					dod_stats_session_deaths[victim]++;
 
-					// Checking K-Value
+					// Points
 					if (minpoints)
 					{
-						// I use divider = 100 because start points < 1600
-						//new Float:ELO = 1 / (Pow(10.0, float((dod_stats_score[victim] - dod_stats_score[attacker])) / 100 ) + 1);
-						//new score     = RoundToNearest(GetConVarFloat(stats_points_k_value) * (1 - ELO));
-						//new score = (GetConVarInt(stats_points_min) + (dod_stats_score[victim] - dod_stats_score[attacker]) / 100);
-
+						// Forcing minimal value on kill.
 						if (score < minpoints)
 							score = minpoints;
 
@@ -247,7 +184,6 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 
 					if (headshot)
 					{
-						// Thats no DM, we wont`t count a headshot for teamkill
 						dod_stats_headshots[attacker]++;
 						dod_stats_session_headshots[attacker]++;
 
@@ -263,6 +199,91 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 						}
 					}
 				}
+				// Punish player for teamkill in normal mode.
+				else
+				{
+					// Dont count teamkills if teammates down by TNT
+					if (weapon != WeaponID_None)
+					{
+						dod_stats_teamkills[attacker]++;
+						dod_stats_teamkilled[victim]++;
+
+						// Still not sure about that. Should I decrease kills amount on tk or just take points?
+						dod_stats_kills[attacker]--;
+						dod_stats_session_kills[attacker]--;
+
+						// If points to take on tk is specified - continue.
+						new tkpoints = GetConVar[Points_TK_Penalty][Value];
+						if (tkpoints)
+						{
+							dod_stats_score[attacker]         -= tkpoints;
+							dod_stats_session_score[attacker] -= tkpoints;
+
+							// And show message for attacker if notifications is enabled for him.
+							if (dod_stats_client_notify[attacker])
+							{
+								CPrintToChat(attacker, "%t", "Teamkill penalty", tkpoints, teamcolor);
+							}
+						}
+					}
+				}
+			}
+			// Otherwise it's a legitimate kill!
+			else
+			{
+				// Add points for overall score and session.
+				dod_stats_kills[attacker]++;
+				dod_stats_deaths[victim]++;
+				dod_stats_session_kills[attacker]++;
+				dod_stats_session_deaths[victim]++;
+
+				// Checking K-Value
+				if (minpoints)
+				{
+					if (score < minpoints)
+						score = minpoints;
+
+					// Killed by melee
+					if (weapon == WeaponID_AmerKnife
+					||  weapon == WeaponID_Spade
+					||  weapon == WeaponID_Thompson_Punch
+					||  weapon == WeaponID_MP40_Punch)
+					{
+						score *= GetConVar[MeleeMultipler][Value];
+					}
+
+					dod_stats_score[attacker]         += score;
+					dod_stats_session_score[attacker] += score;
+					dod_stats_score[victim]           -= score;
+					dod_stats_session_score[victim]   -= score;
+
+					if (dod_stats_client_notify[attacker])
+					{
+						CPrintToChat(attacker, "%t", "Kill points", score, enemycolor, victim);
+					}
+					if (dod_stats_client_notify[victim])
+					{
+						CPrintToChat(victim, "%t", "Death points", teamcolor, attacker, score);
+					}
+				}
+
+				if (headshot)
+				{
+					// Thats no DM, we wont`t count a headshot for teamkill
+					dod_stats_headshots[attacker]++;
+					dod_stats_session_headshots[attacker]++;
+
+					if (hspoints)
+					{
+						dod_stats_score[attacker]         += hspoints;
+						dod_stats_session_score[attacker] += hspoints;
+
+						if (dod_stats_client_notify[attacker])
+						{
+							CPrintToChat(attacker, "%t", "Headshot points", hspoints);
+						}
+					}
+				}
 			}
 		}
 	}
@@ -274,7 +295,8 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
  * ----------------------------------------------------------------- */
 public Event_Weapon_Fire(Handle:event, const String:name[], bool:dontBroadcast)
 {
-	if (GetEventInt(event, "weapon") > 2) dod_stats_weaponshots[GetClientOfUserId(GetEventInt(event, "attacker"))]++;
+	// Expensive event. Ignore only melee weapons
+	if (GetEventInt(event, "weapon") > WeaponID_Spade) dod_stats_weaponshots[GetClientOfUserId(GetEventInt(event, "attacker"))]++;
 }
 
 /* Event_Point_Captured()
@@ -285,10 +307,10 @@ public Event_Point_Captured(Handle:event, const String:name[], bool:dontBroadcas
 {
 	if (rankactive && GetEventBool(event, "bomb") == false)
 	{
-		new client;
+		new cpoints = GetConVar[Points_Capture][Value];
 
 		// Because there may be more than 1 capper
-		decl String:cappers[256];
+		decl client, String:cappers[256];
 		GetEventString(event, "cappers", cappers, sizeof(cappers));
 
 		for (new i = 0 ; i < strlen(cappers); i++)
@@ -298,16 +320,17 @@ public Event_Point_Captured(Handle:event, const String:name[], bool:dontBroadcas
 
 			dod_stats_captures[client]++;
 
-			if (GetConVar[Points_Capture][Value])
+			if (cpoints)
 			{
 				// And add points.
-				dod_stats_score[client]         += GetConVar[Points_Capture][Value];
-				dod_stats_session_score[client] += GetConVar[Points_Capture][Value];
+				dod_stats_score[client]         += cpoints;
+				dod_stats_session_score[client] += cpoints;
 
 				if (dod_stats_client_notify[client])
 				{
-					decl String:color[10]; Format(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
-					CPrintToChat(client, "%t", "Capture points", GetConVar[Points_Capture][Value], color);
+					decl String:color[10];
+					FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
+					CPrintToChat(client, "%t", "Capture points", cpoints, color);
 				}
 			}
 		}
@@ -327,15 +350,17 @@ public Event_Capture_Blocked(Handle:event, const String:name[], bool:dontBroadca
 
 		dod_stats_capblocks[client]++;
 
-		if (GetConVar[Points_Block][Value])
+		new blpoints = GetConVar[Points_Block][Value];
+		if (blpoints)
 		{
-			dod_stats_score[client]         += GetConVar[Points_Block][Value];
-			dod_stats_session_score[client] += GetConVar[Points_Block][Value];
+			dod_stats_score[client]         += blpoints;
+			dod_stats_session_score[client] += blpoints;
 
 			if (dod_stats_client_notify[client])
 			{
-				decl String:color[10]; Format(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
-				CPrintToChat(client, "%t", "Block points", GetConVar[Points_Block][Value], color);
+				decl String:color[10];
+				FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
+				CPrintToChat(client, "%t", "Block points", blpoints, color);
 			}
 		}
 	}
@@ -347,18 +372,21 @@ public Event_Capture_Blocked(Handle:event, const String:name[], bool:dontBroadca
  * ----------------------------------------------------------------- */
 public Event_Bomb_Exploded(Handle:event, const String:name[], bool:dontBroadcast)
 {
+	new expoints = GetConVar[Points_Explode][Value];
+
 	// Event_Point_Captured() is also called with this event, so we'll just add points, not captures.
-	if (rankactive && GetConVar[Points_Explode][Value])
+	if (rankactive && expoints)
 	{
 		new client = GetClientOfUserId(GetEventInt(event, "userid"));
 
-		dod_stats_score[client]         += GetConVar[Points_Explode][Value];
-		dod_stats_session_score[client] += GetConVar[Points_Explode][Value];
+		dod_stats_score[client]         += expoints;
+		dod_stats_session_score[client] += expoints;
 
 		if (dod_stats_client_notify[client])
 		{
-			decl String:color[10]; Format(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
-			CPrintToChat(client, "%t", "Explode points", GetConVar[Points_Explode][Value], color);
+			decl String:color[10];
+			FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
+			CPrintToChat(client, "%t", "Explode points", expoints, color);
 		}
 	}
 }
@@ -369,20 +397,23 @@ public Event_Bomb_Exploded(Handle:event, const String:name[], bool:dontBroadcast
  * ----------------------------------------------------------------- */
 public Event_Bomb_Blocked(Handle:event, const String:name[], bool:dontBroadcast)
 {
+	new blpoints = GetConVar[Points_Block][Value];
+
 	// Event_Capture_Blocked() is also called with this event, so we'll just add points, not captures.
-	if (rankactive && GetConVar[Points_Block][Value])
+	if (rankactive && blpoints)
 	{
 		new client = GetClientOfUserId(GetEventInt(event, "userid"));
 
-		dod_stats_score[client]         += GetConVar[Points_Block][Value];
+		dod_stats_score[client]         += blpoints;
 
 		// Also add for session.
-		dod_stats_session_score[client] += GetConVar[Points_Block][Value];
+		dod_stats_session_score[client] += blpoints;
 
 		if (dod_stats_client_notify[client])
 		{
-			decl String:color[10]; Format(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
-			CPrintToChat(client, "%t", "Protect points", GetConVar[Points_Block][Value], color);
+			decl String:color[10];
+			FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
+			CPrintToChat(client, "%t", "Protect points", blpoints, color);
 		}
 	}
 }
@@ -400,15 +431,17 @@ public Event_Bomb_Planted(Handle:event, const String:name[], bool:dontBroadcast)
 		// Player is planted a bomb - track it into database.
 		dod_stats_planted[client]++;
 
-		if (GetConVar[Points_Plant][Value])
+		new plpoints = GetConVar[Points_Plant][Value];
+		if (plpoints)
 		{
-			dod_stats_score[client]         += GetConVar[Points_Plant][Value];
-			dod_stats_session_score[client] += GetConVar[Points_Plant][Value];
+			dod_stats_score[client]         += plpoints;
+			dod_stats_session_score[client] += plpoints;
 
 			if (dod_stats_client_notify[client])
 			{
-				decl String:color[10]; Format(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
-				CPrintToChat(client, "%t", "Plant points", GetConVar[Points_Plant][Value], color);
+				decl String:color[10];
+				FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
+				CPrintToChat(client, "%t", "Plant points", plpoints, color);
 			}
 		}
 	}
@@ -426,16 +459,18 @@ public Event_Bomb_Defused(Handle:event, const String:name[], bool:dontBroadcast)
 
 		dod_stats_defused[client]++;
 
-		if (GetConVar[Points_Defuse][Value])
+		new depoints = GetConVar[Points_Defuse][Value];
+		if (depoints)
 		{
 			// Player is defused a bomb - he deserve a ... points!
-			dod_stats_score[client]         += GetConVar[Points_Defuse][Value];
-			dod_stats_session_score[client] += GetConVar[Points_Defuse][Value];
+			dod_stats_score[client]         += depoints;
+			dod_stats_session_score[client] += depoints;
 
 			if (dod_stats_client_notify[client])
 			{
-				decl String:color[10]; Format(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
-				CPrintToChat(client, "%t", "Defuse points", GetConVar[Points_Defuse][Value], color);
+				decl String:color[10];
+				FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
+				CPrintToChat(client, "%t", "Defuse points", depoints, color);
 			}
 		}
 	}

@@ -297,4 +297,89 @@
 		"#format"	"{1:s},{2:i},{3:i}"
 		"en"		"{1} - {2} wins ({3} stolen)"
 	}
+	// Grades
+	"Civil"
+	{
+		"en"		"Civil"
+	}
+	"Private"
+	{
+		"en"		"Private"
+	}
+	"Corporal"
+	{
+		"en"		"Corporal"
+	}
+	"Sergeant"
+	{
+		"en"		"Sergeant"
+	}
+	"Staff Sergeant"
+	{
+		"en"		"Staff Sergeant"
+	}
+	"Sergeant First Class"
+	{
+		"en"		"Sergeant First Class"
+	}
+	"Sergeant Major"
+	{
+		"en"		"Sergeant Major"
+	}
+	"Command Sergeant Major"
+	{
+		"en"		"Command Sergeant Major"
+	}
+	"Warrant Officer One"
+	{
+		"en"		"Warrant Officer One"
+	}
+	"Second Lieutenant"
+	{
+		"en"		"Second Lieutenant"
+	}
+	"First Lieutenant"
+	{
+		"en"		"First Lieutenant"
+	}
+	"Captain"
+	{
+		"en"		"Captain"
+	}
+	"Major"
+	{
+		"en"		"Major"
+	}
+	"Lieutenant Colonel"
+	{
+		"en"		"Lieutenant Colonel"
+	}
+	"Colonel"
+	{
+		"en"		"Colonel"
+	}
+	"Brigadier General"
+	{
+		"en"		"Brigadier General"
+	}
+	"Major General"
+	{
+		"en"		"Major General"
+	}
+	"Lieutenant General"
+	{
+		"en"		"Lieutenant General"
+	}
+	"General"
+	{
+		"en"		"General"
+	}
+	"General of the Army"
+	{
+		"en"		"General of the Army"
+	}
+	"Marshal"
+	{
+		"en"		"Marshal"
+	}
 }

@@ -5,24 +5,26 @@
 ShowInfo(client)
 {
 	// That's how we can define awards.
-	new award;
-	for (new i = 0; i < sizeof(grade_names); i++)
+	decl i, award, String:grade[64];
+	for (i = 0; i < sizeof(grade_names); i++)
 	{
-		// Get kills & captures only for normal gameplay
-		if (gameplay == 0)
-		{
-			if (dod_stats_captures[client] >= grade_captures[i] && dod_stats_kills[client] >= grade_kills[i])
-			award = i;
-		}
-		else /* but DM has no flags */
+		// DM has no flags
+		if (gameplay)
 		{
 			if (dod_stats_kills[client] >= grade_kills[i])
 			award = i;
 		}
+		else /* Get kills & captures only for normal gameplay */
+		{
+			if (dod_stats_captures[client] >= grade_captures[i] && dod_stats_kills[client] >= grade_kills[i])
+			award = i;
+		}
 	}
 
+	Format(grade, sizeof(grade), "%t", grade_names[award]);
+
 	// Player is ingame and fully authorized - show message to everybody!
-	CPrintToChatAll("%t", "Connected stats", client, dod_stats_score[client], grade_names[award]);
+	CPrintToChatAll("%t", "Connected stats", client, dod_stats_score[client], grade);
 }
 
 /* ShowRank()
@@ -31,30 +33,33 @@ ShowInfo(client)
  * ----------------------------------------------------------------- */
 ShowRank(client, rank, next_score)
 {
-	decl String:color[10]; Format(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
+	decl i, award, String:grade[64], String:color[10];
+	FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
 
 	// Calc points to next position
-	new delta = 0;
-	if (next_score > dod_stats_score[client]) delta = next_score - dod_stats_score[client];
+	new delta, score = dod_stats_score[client], kills = dod_stats_kills[client];
+	if (next_score > score) delta = next_score - score;
 
 	// Grades
-	new award;
-	for (new i = 0; i < sizeof(grade_names); i++)
+	for (i = 0; i < sizeof(grade_names); i++)
 	{
-		if (gameplay == 0)
+		if (gameplay)
 		{
-			if (dod_stats_captures[client] >= grade_captures[i] && dod_stats_kills[client] >= grade_kills[i])
+			if (kills >= grade_kills[i])
 			award = i;
 		}
-		else /* I anyway want to use awards for DM */
+		else
 		{
-			if (dod_stats_kills[client] >= grade_kills[i])
+			if (dod_stats_captures[client] >= grade_captures[i] && kills >= grade_kills[i])
 			award = i;
 		}
 	}
 
-	if (delta == 0) CPrintToChatAll("%t", "First in rank", color, client, grade_names[award], dod_stats_score[client], dod_stats_kills[client]);
-	else            CPrintToChatAll("%t", "Rank display",  color, client, rank, dod_global_player_count, dod_stats_score[client], delta, dod_stats_kills[client], dod_stats_deaths[client]);
+	// Translate grade string
+	Format(grade, sizeof(grade), "%t", grade_names[award]);
+
+	if (!delta) CPrintToChatAll("%t", "First in rank", color, client, grade, score, kills);
+	else        CPrintToChatAll("%t", "Rank display",  color, client, rank,  dod_global_player_count, score, delta, kills, dod_stats_deaths[client]);
 }
 
 /* ShowSession()
@@ -65,50 +70,53 @@ ShowSession(client)
 {
 	decl String:data[16], String:title[32];
 
-	new Handle:sessioninfo = CreatePanel();
+	new Handle:session = CreatePanel();
+
+	new score      = dod_stats_session_score[client];
+	new kills      = dod_stats_session_kills[client];
+	new deaths     = dod_stats_session_deaths[client];
+	new headshots  = dod_stats_session_headshots[client];
+	new timeplayed = (GetTime() - dod_stats_time_joined[client]);
 
 	// Translate to our phrase
 	Format(title, sizeof(title), "%T:", "Session Stats", client);
-	SetPanelTitle(sessioninfo, title);
+	SetPanelTitle(session, title);
 
 	Format(title, sizeof(title), "%T", "Session points", client);
 
 	// Show '+' if player is in actual plus.
-	Format(data, sizeof(data), "%s%i", (dod_stats_session_score[client] <= 0 ? NULL_STRING : "+"), dod_stats_session_score[client]);
-	DrawPanelItem(sessioninfo, title);
-	DrawPanelText(sessioninfo, data);
+	Format(data, sizeof(data), "%s%i", (score <= 0 ? NULL_STRING : "+"), score);
+	DrawPanelItem(session, title);
+	DrawPanelText(session, data);
 
 	Format(title, sizeof(title), "%T", "Session kills", client);
-	Format(data, sizeof(data), "%i", dod_stats_session_kills[client]);
-	DrawPanelItem(sessioninfo, title);
-	DrawPanelText(sessioninfo, data);
+	FormatEx(data, sizeof(data), "%i", kills);
+	DrawPanelItem(session, title);
+	DrawPanelText(session, data);
 
 	Format(title, sizeof(title), "%T", "Session deaths", client);
-	Format(data, sizeof(data), "%i", dod_stats_session_deaths[client]);
-	DrawPanelItem(sessioninfo, title);
-	DrawPanelText(sessioninfo, data);
+	FormatEx(data, sizeof(data), "%i", deaths);
+	DrawPanelItem(session, title);
+	DrawPanelText(session, data);
 
 	Format(title, sizeof(title), "%T", "Session headshots", client);
-	Format(data, sizeof(data), "%i (%.0f%%)", dod_stats_session_headshots[client], float(dod_stats_session_headshots[client]) / (dod_stats_session_kills[client]) * 100);
-	DrawPanelItem(sessioninfo, title);
-	DrawPanelText(sessioninfo, data);
+	FormatEx(data, sizeof(data), "%i (%.0f%%)", headshots, FloatDiv(float(headshots), float(kills)) * 100.0);
+	DrawPanelItem(session, title);
+	DrawPanelText(session, data);
 
 	Format(title, sizeof(title), "%T", "Session KDR", client);
-	Format(data, sizeof(data), "%.2f", float(dod_stats_session_kills[client]) / (dod_stats_session_deaths[client] > 0 ? float(dod_stats_session_deaths[client]) : 1.0));
-	DrawPanelItem(sessioninfo, title);
-	DrawPanelText(sessioninfo, data);
-
-	// Session time.
-	new g_timeplayed = (GetTime() - dod_stats_time_joined[client]);
+	FormatEx(data, sizeof(data), "%.2f", FloatDiv(float(kills), float((deaths == 0)?1:deaths)));
+	DrawPanelItem(session, title);
+	DrawPanelText(session, data);
 
 	Format(title, sizeof(title), "%T", "Session time", client);
-	Format(data, sizeof(data), "%T", "Session timestamp", client, (g_timeplayed % 86400) / 3600, (g_timeplayed % 3600) / 60);
-	DrawPanelItem(sessioninfo, title);
-	DrawPanelText(sessioninfo, data);
+	Format(data, sizeof(data), "%T", "Session timestamp", client, (timeplayed % 86400) / 3600, (timeplayed % 3600) / 60);
+	DrawPanelItem(session, title);
+	DrawPanelText(session, data);
 
 	// Display menu for 20 seconds
-	SendPanelToClient(sessioninfo, client, Handler_DoNothing, 20);
-	CloseHandle(sessioninfo);
+	SendPanelToClient(session, client, Handler_DoNothing, MENU_TIME_FOREVER);
+	CloseHandle(session);
 }
 
 /* ShowStats()
@@ -117,124 +125,137 @@ ShowSession(client)
  * ----------------------------------------------------------------- */
 ShowStats(client, rank)
 {
-	// Is client & target is valid and not a server?
-	if (IsValidClient(client))
+	decl i, award, String:data[128], String:title[64], String:grade[64];
+
+	// Creates a MenuPanel from a MenuStyle.
+	new Handle:stats = CreatePanel();
+
+	new score      = dod_stats_score[client];
+	new kills      = dod_stats_kills[client];
+	new deaths     = dod_stats_deaths[client];
+	new headshots  = dod_stats_headshots[client];
+	new captures   = dod_stats_captures[client];
+
+	new timeplayed = dod_stats_time_played[client] + (GetTime() - dod_stats_time_joined[client]);
+
+	// Sets the panel's title
+	Format(title, sizeof(title), "%T", "Player Stats", client);
+	DrawPanelItem(stats, title);
+
+	Format(data, sizeof(data), "%T", "Nickname", client, client);
+	DrawPanelText(stats, data);
+
+	Format(data, sizeof(data), "%T", "Position", client, rank, dod_global_player_count);
+	DrawPanelText(stats, data);
+
+	Format(data, sizeof(data), "%T", "Points earned", client, score);
+	DrawPanelText(stats, data);
+
+	// Overall online time.
+	Format(data, sizeof(data), "%T", "Overall timeplayed", client, timeplayed / 86400, (timeplayed % 86400) / 3600, (timeplayed % 3600) / 60);
+	DrawPanelText(stats, data);
+
+	// Kills stats (kills/deaths/headshots/tks)
+	Format(title, sizeof(title), "%T", "Kill Stats", client);
+	DrawPanelItem(stats, title);
+
+	// Grade
+	for (i = 0; i < sizeof(grade_names); i++)
 	{
-		decl String:data[128], String:title[64];
-
-		// Creates a MenuPanel from a MenuStyle.
-		new Handle:statsinfo = CreatePanel();
-
-		// Sets the panel's title
-		Format(title, sizeof(title), "%T", "Player Stats", client);
-		DrawPanelItem(statsinfo, title);
-
-		Format(data, sizeof(data), "%T", "Nickname", client, client);
-		DrawPanelText(statsinfo, data);
-
-		Format(data, sizeof(data), "%T", "Position", client, rank, dod_global_player_count);
-		DrawPanelText(statsinfo, data);
-
-		Format(data, sizeof(data), "%T", "Points earned", client, dod_stats_score[client]);
-		DrawPanelText(statsinfo, data);
-
-		// Overall online time.
-		new g_timeplayed = dod_stats_time_played[client] + (GetTime() - dod_stats_time_joined[client]);
-		Format(data, sizeof(data), "%T", "Overall timeplayed", client, g_timeplayed / 86400, (g_timeplayed % 86400) / 3600, (g_timeplayed % 3600) / 60);
-		DrawPanelText(statsinfo, data);
-
-		// Kills stats (kills/deaths/headshots/tks)
-		Format(title, sizeof(title), "%T", "Kill Stats", client);
-		DrawPanelItem(statsinfo, title);
-
-		// Grade
-		new award;
-		for (new i = 0; i < sizeof(grade_names); i++)
+		if (gameplay)
 		{
-			if (gameplay == 0)
-			{
-				if (dod_stats_captures[client] >= grade_captures[i] && dod_stats_kills[client] >= grade_kills[i])
-				award = i;
-			}
-			else /* For DM we will sort grades only by kills */
-			{
-				if (dod_stats_kills[client] >= grade_kills[i])
-				award = i;
-			}
+			if (kills >= grade_kills[i])
+			award = i;
 		}
-
-		Format(data, sizeof(data), "%T", "Grade", client, grade_names[award]);
-		DrawPanelText(statsinfo, data);
-
-		Format(data, sizeof(data), "%T", "Kills & deaths", client, dod_stats_kills[client], dod_stats_deaths[client], float(dod_stats_kills[client]) / (dod_stats_deaths[client] > 0 ? float(dod_stats_deaths[client]) : 1.0));
-		DrawPanelText(statsinfo, data);
-
-		Format(data, sizeof(data), "%T", "Accuracy", client, float(dod_stats_weaponhits[client]) / (dod_stats_weaponshots[client]) * 100);
-		DrawPanelText(statsinfo, data);
-
-		Format(data, sizeof(data), "%T", "Overall headshots", client, dod_stats_headshots[client], float(dod_stats_headshots[client]) / (dod_stats_kills[client]) * 100);
-		DrawPanelText(statsinfo, data);
-
-		// If player have not killed any teammate (or mp_friendlyfire = 0) is not necessary to show TKs
-		if (dod_stats_teamkills[client] > 0 || dod_stats_teamkilled[client] > 0)
+		else /* For DM we will sort grades only by kills */
 		{
-			Format(data, sizeof(data), "%T", "Teamkills & teamkilled", client, dod_stats_teamkills[client], dod_stats_teamkilled[client]);
-			DrawPanelText(statsinfo, data);
+			if (captures >= grade_captures[i] && kills >= grade_kills[i])
+			award = i;
 		}
+	}
 
-		// Show objective stats only for normal gameplay
-		if (dod_stats_captures[client] > 0
-		|| dod_stats_capblocks[client] > 0
-		|| dod_stats_planted[client]   > 0
-		|| dod_stats_defused[client]   > 0)
+	Format(grade, sizeof(grade), "%t", grade_names[award]);
+	Format(data, sizeof(data), "%T", "Grade", client, grade);
+	DrawPanelText(stats, data);
+
+	Format(data, sizeof(data), "%T", "Kills & deaths", client, kills, deaths, FloatDiv(float(kills), float((deaths == 0)?1:deaths)));
+	DrawPanelText(stats, data);
+
+	Format(data, sizeof(data), "%T", "Accuracy", client, FloatDiv(float(dod_stats_weaponhits[client]), float(dod_stats_weaponshots[client])) * 100.0);
+	DrawPanelText(stats, data);
+
+	Format(data, sizeof(data), "%T", "Overall headshots", client, headshots, FloatDiv(float(headshots), float(kills)) * 100.0);
+	DrawPanelText(stats, data);
+
+	// If player have not killed any teammate (or mp_friendlyfire = 0) is not necessary to show TKs
+	if (dod_stats_teamkills[client]
+	|| dod_stats_teamkilled[client])
+	{
+		Format(data, sizeof(data), "%T", "Teamkills & teamkilled", client, dod_stats_teamkills[client], dod_stats_teamkilled[client]);
+		DrawPanelText(stats, data);
+	}
+
+	if (gameplay == GUNGAME)
+	{
+		new roundsplayed = dod_stats_gg_roundsplayed[client];
+		new roundswon    = dod_stats_gg_roundswon[client];
+		new levelsup     = dod_stats_gg_levelup[client];
+		new levelsdown   = dod_stats_gg_leveldown[client];
+
+		Format(title, sizeof(title), "%T", "GunGame Stats", client);
+		DrawPanelItem(stats, title);
+
+		Format(data, sizeof(data), "%T", "Played & won", client, roundsplayed, roundswon, FloatDiv(float(roundswon), float((roundsplayed == 0)?1:roundsplayed)));
+		DrawPanelText(stats, data);
+
+		Format(data, sizeof(data), "%T", "Steal & lost", client, levelsup, levelsdown, FloatDiv(float(levelsup), float((levelsdown == 0)?1:levelsdown)));
+		DrawPanelText(stats, data);
+	}
+
+	// Show objective stats only for normal gameplay
+	else if (gameplay == DEFAULT)
+	{
+		new capblocks = dod_stats_capblocks[client];
+		new planted   = dod_stats_planted[client];
+		new defused   = dod_stats_defused[client];
+
+		if (captures || capblocks || planted || defused)
 		{
 			Format(title, sizeof(title), "%T", "Objective Stats", client);
-			DrawPanelItem(statsinfo, title);
+			DrawPanelItem(stats, title);
 
-			if (dod_stats_captures[client] > 0)
+			if (captures)
 			{
-				Format(data, sizeof(data), "%T", "Captures", client, dod_stats_captures[client]);
-				DrawPanelText(statsinfo, data);
+				Format(data, sizeof(data), "%T", "Captures", client, captures);
+				DrawPanelText(stats, data);
 			}
 
-			if (dod_stats_capblocks[client] > 0)
+			if (capblocks)
 			{
-				Format(data, sizeof(data), "%T", "Blocked captures", client, dod_stats_capblocks[client]);
-				DrawPanelText(statsinfo, data);
+				Format(data, sizeof(data), "%T", "Blocked captures", client, capblocks);
+				DrawPanelText(stats, data);
 			}
 
 			// If player is not planted a TNT yet - dont show
-			if (dod_stats_planted[client] > 0)
+			if (planted)
 			{
-				Format(data, sizeof(data), "%T", "Bombs planted", client, dod_stats_planted[client]);
-				DrawPanelText(statsinfo, data);
+				Format(data, sizeof(data), "%T", "Bombs planted", client, planted);
+				DrawPanelText(stats, data);
 			}
 
 			// Same about 'defused', because server may not run maps with TNT
-			if (dod_stats_defused[client] > 0)
+			if (defused)
 			{
-				Format(data, sizeof(data), "%T", "Bombs defused", client, dod_stats_defused[client]);
-				DrawPanelText(statsinfo, data);
+				Format(data, sizeof(data), "%T", "Bombs defused", client, defused);
+				DrawPanelText(stats, data);
 			}
 		}
-
-		if (gameplay == 2)
-		{
-			Format(title, sizeof(title), "%T", "GunGame Stats", client);
-			DrawPanelItem(statsinfo, title);
-
-			Format(data, sizeof(data), "%T", "Played & won", client, dod_stats_gg_roundsplayed[client], dod_stats_gg_roundswon[client], float(dod_stats_gg_roundswon[client]) / (dod_stats_gg_roundsplayed[client] > 0 ? float(dod_stats_gg_roundsplayed[client]) : 1.0));
-			DrawPanelText(statsinfo, data);
-
-			Format(data, sizeof(data), "%T", "Steal & lost", client, dod_stats_gg_levelup[client], dod_stats_gg_leveldown[client], float(dod_stats_gg_levelup[client]) / (dod_stats_gg_leveldown[client] > 0 ? float(dod_stats_gg_leveldown[client]) : 1.0));
-			DrawPanelText(statsinfo, data);
-		}
-
-		SendPanelToClient(statsinfo, client, Handler_DoNothing, 20);
-
-		// If the menu has ended, destroy it
-		CloseHandle(statsinfo);
 	}
+
+	SendPanelToClient(stats, client, Handler_DoNothing, MENU_TIME_FOREVER);
+
+	// If the menu has ended, destroy it
+	CloseHandle(stats);
 }
 
 /* ShowTop10()
@@ -248,7 +269,7 @@ public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:data)
 		new client, row;
 
 		// Data is always zero. Stop threading if client is zero.
-		if ((client = GetClientOfUserId(data)) > 0)
+		if ((client = GetClientOfUserId(data)))
 		{
 			decl top_score, top_kills, top_deaths, String:top_name[MAX_NAME_LENGTH], String:title[32], String:buffer[TOP_PLAYERS + 1][64];
 
@@ -259,7 +280,7 @@ public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:data)
 			// Yay we've got a result.
 			if (SQL_HasResultSet(handle))
 			{
-				while(SQL_FetchRow(handle))
+				while (SQL_FetchRow(handle))
 				{
 					row++;
 					SQL_FetchString(handle, 0, top_name, sizeof(top_name));
@@ -269,13 +290,14 @@ public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:data)
 
 					// If there is more than 3 players in top10, but less than 10 - show their numbers (because this is a PanelText)
 					if (row > 3 && row <= TOP_PLAYERS)
-						Format(buffer[row], 64, "%i. %t", row, "Top10 > 3", top_name, float(top_kills) / (top_deaths == 0 ? 1.0 : float(top_deaths)), top_score);
+						Format(buffer[row], 64, "%i. %t", row, "Top10 > 3", top_name, FloatDiv(float(top_kills), float((top_deaths == 0)?1:top_deaths)), top_score);
 					else if (row <= TOP_PLAYERS)
-						Format(buffer[row], 64, "%t", "Top10 stats", top_name, float(top_kills) / (top_deaths == 0 ? 1.0 : float(top_deaths)), top_score);
+						Format(buffer[row], 64, "%t", "Top10 stats",        top_name, FloatDiv(float(top_kills), float((top_deaths == 0)?1:top_deaths)), top_score);
 				}
 				if (row > TOP_PLAYERS)
 					row = TOP_PLAYERS;
 
+				// i = 1
 				for (new i = 1; i <= row; i++)
 				{
 					/* Draws a raw line of text on a panel, without any markup other than a newline. */
@@ -285,7 +307,8 @@ public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:data)
 					else DrawPanelItem(top10, buffer[i]);
 				}
 			}
-			SendPanelToClient(top10, client, Handler_DoNothing, 20);
+
+			SendPanelToClient(top10, client, Handler_DoNothing, MENU_TIME_FOREVER);
 			CloseHandle(top10);
 		}
 	}
@@ -301,9 +324,9 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data
 	if (handle != INVALID_HANDLE)
 	{
 		new client, row;
-		if ((client = GetClientOfUserId(data)) > 0)
+		if ((client = GetClientOfUserId(data)))
 		{
-			decl top_flags, top_kills, String:top_name[MAX_NAME_LENGTH], String:title[48], String:buffer[TOP_PLAYERS + 1][96];
+			decl i, award, top_flags, top_kills, String:top_name[MAX_NAME_LENGTH], String:title[48], String:buffer[TOP_PLAYERS + 1][96];
 
 			new Handle:top10_awards = CreatePanel();
 			Format(title, sizeof(title), "%T:", "TopGrades", client);
@@ -311,7 +334,7 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data
 
 			if (SQL_HasResultSet(handle))
 			{
-				while(SQL_FetchRow(handle))
+				while (SQL_FetchRow(handle))
 				{
 					// Parse rows
 					row++;
@@ -320,17 +343,16 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data
 					top_kills = SQL_FetchInt(handle, 2);
 
 					// Grades
-					new award;
-					for (new i = 0; i < sizeof(grade_names); i++)
+					for (i = 0; i < sizeof(grade_names); i++)
 					{
-						if (gameplay == 0)
+						if (gameplay)
 						{
-							if (top_flags >= grade_captures[i] && top_kills >= grade_kills[i])
+							if (top_kills >= grade_kills[i])
 							award = i;
 						}
 						else
 						{
-							if (top_kills >= grade_kills[i])
+							if (top_flags >= grade_captures[i] && top_kills >= grade_kills[i])
 							award = i;
 						}
 					}
@@ -339,20 +361,20 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data
 						Format(buffer[row], 96, "%i. %t", row, "TopGrades > 3", top_name, grade_names[award], top_kills);
 					/* If there is less than 10 players AND less than 3 - dont show numbers, because this is PanelItem. */
 					else if (row <= TOP_PLAYERS)
-						Format(buffer[row], 96, "%t", "TopGrades stats", top_name, grade_names[award], top_kills);
+						Format(buffer[row], 96, "%t", "TopGrades stats",        top_name, grade_names[award], top_kills);
 				}
 				// Is good if there is more than 10 players stored in database, but we gonna show only 10!
 				if (row > TOP_PLAYERS)
 					row = TOP_PLAYERS;
 
-				for (new i = 1; i <= row; i++)
+				for (new j = 1; j <= row; j++)
 				{
-					if (i > 3) DrawPanelText(top10_awards, buffer[i]);
-					else DrawPanelItem(top10_awards, buffer[i]);
+					if (j > 3) DrawPanelText(top10_awards, buffer[j]);
+					else DrawPanelItem(top10_awards, buffer[j]);
 				}
 			}
 			// That means that if the client does not select an item within 20 seconds, the menu will be canceled.
-			SendPanelToClient(top10_awards, client, Handler_DoNothing, 20);
+			SendPanelToClient(top10_awards, client, Handler_DoNothing, MENU_TIME_FOREVER);
 
 			// Make sure we close the file!
 			CloseHandle(top10_awards);
@@ -372,7 +394,7 @@ public ShowTopGG(Handle:owner, Handle:handle, const String:error[], any:data)
 		new client, row;
 
 		// Data is always zero. Stop threading if client is zero.
-		if ((client = GetClientOfUserId(data)) > 0)
+		if ((client = GetClientOfUserId(data)))
 		{
 			decl top_wins, top_steal, String:top_name[MAX_NAME_LENGTH], String:title[32], String:buffer[TOP_PLAYERS + 1][64];
 
@@ -383,18 +405,18 @@ public ShowTopGG(Handle:owner, Handle:handle, const String:error[], any:data)
 			// Yay we've got a result.
 			if (SQL_HasResultSet(handle))
 			{
-				while(SQL_FetchRow(handle))
+				while (SQL_FetchRow(handle))
 				{
 					row++;
 					SQL_FetchString(handle, 0, top_name, sizeof(top_name));
-					top_wins   = SQL_FetchInt(handle, 1);
-					top_steal  = SQL_FetchInt(handle, 2);
+					top_wins  = SQL_FetchInt(handle, 1);
+					top_steal = SQL_FetchInt(handle, 2);
 
 					if (row > 3 && row <= TOP_PLAYERS)
 						Format(buffer[row], 96, "%i. %t", row, "TopGG > 3", top_name, top_wins, top_steal);
 					/* If there is less than 10 players AND less than 3 - dont show numbers, because this is PanelItem. */
 					else if (row <= TOP_PLAYERS)
-						Format(buffer[row], 96, "%t", "TopGG stats", top_name, top_wins, top_steal);
+						Format(buffer[row], 96, "%t", "TopGG stats",        top_name, top_wins, top_steal);
 				}
 				// Is good if there is more than 10 players stored in database, but we gonna show only 10!
 				if (row > TOP_PLAYERS)
@@ -406,7 +428,7 @@ public ShowTopGG(Handle:owner, Handle:handle, const String:error[], any:data)
 					else DrawPanelItem(topGG, buffer[i]);
 				}
 			}
-			SendPanelToClient(topGG, client, Handler_DoNothing, 20);
+			SendPanelToClient(topGG, client, Handler_DoNothing, MENU_TIME_FOREVER);
 			CloseHandle(topGG);
 		}
 	}
@@ -418,3 +440,89 @@ public ShowTopGG(Handle:owner, Handle:handle, const String:error[], any:data)
  * Called when a menu action is completed.
  * ----------------------------------------------------------------- */
 public Handler_DoNothing(Handle:menu, MenuAction:action, param1, param2){}
+
+/* public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:data)
+{
+	if (handle != INVALID_HANDLE)
+	{
+		new client, row;
+
+		if ((client = GetClientOfUserId(data)))
+		{
+			decl top_score, top_kills, top_deaths, String:top_name[MAX_NAME_LENGTH], String:title[32], String:translate[32], String:buffer[TOP_PLAYERS + 1][64];
+
+			new Handle:top10 = CreatePanel();
+			Format(title, sizeof(title), "%T:", "Top", client);
+			SetPanelTitle(top10, title);
+
+			if (SQL_HasResultSet(handle))
+			{
+				while (SQL_FetchRow(handle))
+				{
+					row++;
+					SQL_FetchString(handle, 0, top_name, sizeof(top_name));
+					top_score  = SQL_FetchInt(handle, 1);
+					top_kills  = SQL_FetchInt(handle, 2);
+					top_deaths = SQL_FetchInt(handle, 3);
+
+					//if (row > 3 && row <= TOP_PLAYERS)
+					Format(buffer[row], 64, "%i. %t", row + dod_stats_top_page[client] * TOP_PLAYERS, "Top > 3", top_name, float(top_kills) / (top_deaths == 0 ? 1.0 : float(top_deaths)), top_score);
+					//else if (row <= TOP_PLAYERS)
+						//Format(buffer[row], 64, "%t", "Top stats", top_name, float(top_kills) / (top_deaths == 0 ? 1.0 : float(top_deaths)), top_score);
+				}
+
+				Format(translate, sizeof(translate), "%T", "Next", client);
+				DrawPanelItem(top10, translate);
+				SetPanelCurrentKey(top10, 1);
+
+				for (new i = 1; i <= row; i++)
+				{
+					DrawPanelText(top10, buffer[i]);
+				}
+
+				if (dod_stats_top_page[client])
+				{
+					Format(translate, sizeof(translate), "%T", "Previous", client);
+					DrawPanelItem(top10, translate);
+					SetPanelCurrentKey(top10, 2);
+				}
+
+				DrawPanelItem(top10, NULL_STRING, ITEMDRAW_SPACER);
+
+				Format(translate, sizeof(translate), "%T", "Exit", client);
+				SetPanelCurrentKey(top10, TOP_PLAYERS);
+				DrawPanelItem(top10, translate, ITEMDRAW_CONTROL);
+
+				SendPanelToClient(top10, client, Menu_Top10, 20);
+			}
+		}
+	}
+	else LogError("Top command error: %s", error);
+}
+
+public Menu_Top10(Handle:menu, MenuAction:action, client, param)
+{
+	switch (action)
+	{
+		case MenuAction_Select:
+		{
+			switch (param)
+			{
+				case 1:
+				{
+					dod_stats_top_page[client]++;
+					QueryTopPlayers(client, dod_stats_top_page[client] * TOP_PLAYERS);
+				}
+				case 2:
+				{
+					dod_stats_top_page[client]--;
+
+					if (dod_stats_top_page[client] == 1)
+						 QueryTopPlayers(client, TOP_PLAYERS);
+					else QueryTopPlayers(client, dod_stats_top_page[client] * TOP_PLAYERS);
+				}
+			}
+		}
+		case MenuAction_End: CloseHandle(menu);
+    }
+} */
