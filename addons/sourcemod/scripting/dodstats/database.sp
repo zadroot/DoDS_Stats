@@ -65,7 +65,7 @@ public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:
 		{
 			// For writing names I recommend use MAX_NAME_LENGTH, because that's way makes easier definition of "clean" name
 			// decl is bad
-			new String:query[MAX_QUERY_LENGTH],
+			new	String:query[MAX_QUERY_LENGTH],
 				String:client_steamid[MAX_STEAMID_LENGTH],
 				String:safe_steamid[(MAX_STEAMID_LENGTH*2)+1],
 				String:client_name[MAX_NAME_LENGTH],
@@ -184,7 +184,7 @@ public QueryRank(Handle:owner, Handle:handle, const String:error[], any:data)
 		if ((client = GetClientOfUserId(data)))
 		{
 			// Getting rank position of all players.
-			new rank = SQL_GetRowCount(handle),
+			new	rank = SQL_GetRowCount(handle),
 				next_score, bool:rankup = true;
 
 			// Success! Database isn't empty!
@@ -269,7 +269,7 @@ public QueryStatsMe(Handle:owner, Handle:handle, const String:error[], any:data)
 		new client;
 		if ((client = GetClientOfUserId(data)))
 		{
-			new rank = SQL_GetRowCount(handle),
+			new	rank = SQL_GetRowCount(handle),
 				bool:rankup = true;
 
 			if (SQL_HasResultSet(handle) && SQL_FetchRow(handle))
@@ -342,7 +342,10 @@ ToggleNotify(client)
 {
 	// Get client data.
 	// decl is bad
-	new String:client_steamid[MAX_STEAMID_LENGTH], String:safe_steamid[(MAX_STEAMID_LENGTH*2)+1], String:query[MAX_QUERY_LENGTH], String:status[8];
+	new	String:client_steamid[MAX_STEAMID_LENGTH],
+		String:safe_steamid[(MAX_STEAMID_LENGTH*2)+1],
+		String:query[MAX_QUERY_LENGTH],
+		String:status[8];
 
 	if (GetClientAuthString(client, client_steamid, sizeof(client_steamid)))
 	{

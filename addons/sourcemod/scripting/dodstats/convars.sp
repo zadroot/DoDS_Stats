@@ -35,9 +35,9 @@ enum ValueType
 
 enum ConVar
 {
-	Handle:ConVarHandle,	// Handle of the convar
-	ValueType:Type,			// Type of value (int, bool)
-	any:Value				// The value
+	Handle:ConVarHandle, // Handle of the convar
+	ValueType:Type,      // Type of value (int, bool)
+	any:Value            // The value
 };
 
 new GetConVar[ConVar_Size][ConVar];

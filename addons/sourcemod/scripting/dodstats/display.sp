@@ -72,11 +72,11 @@ ShowSession(client)
 
 	new Handle:session = CreatePanel();
 
-	new score      = dod_stats_session_score[client];
-	new kills      = dod_stats_session_kills[client];
-	new deaths     = dod_stats_session_deaths[client];
-	new headshots  = dod_stats_session_headshots[client];
-	new timeplayed = (GetTime() - dod_stats_time_joined[client]);
+	new score          = dod_stats_session_score[client];
+	new kills          = dod_stats_session_kills[client];
+	new deaths         = dod_stats_session_deaths[client];
+	new headshots      = dod_stats_session_headshots[client];
+	new timeplayed     = (GetTime() - dod_stats_time_joined[client]);
 
 	// Translate to our phrase
 	Format(title, sizeof(title), "%T:", "Session Stats", client);
@@ -105,7 +105,7 @@ ShowSession(client)
 	DrawPanelText(session, data);
 
 	Format(title, sizeof(title), "%T", "Session KDR", client);
-	FormatEx(data, sizeof(data), "%.2f", FloatDiv(float(kills), float((deaths == 0)?1:deaths)));
+	FormatEx(data, sizeof(data), "%.2f", FloatDiv(float(kills), float((deaths == 0) ? 1 : deaths)));
 	DrawPanelItem(session, title);
 	DrawPanelText(session, data);
 
@@ -130,13 +130,13 @@ ShowStats(client, rank)
 	// Creates a MenuPanel from a MenuStyle.
 	new Handle:stats = CreatePanel();
 
-	new score      = dod_stats_score[client];
-	new kills      = dod_stats_kills[client];
-	new deaths     = dod_stats_deaths[client];
-	new headshots  = dod_stats_headshots[client];
-	new captures   = dod_stats_captures[client];
+	new score        = dod_stats_score[client];
+	new kills        = dod_stats_kills[client];
+	new deaths       = dod_stats_deaths[client];
+	new headshots    = dod_stats_headshots[client];
+	new captures     = dod_stats_captures[client];
 
-	new timeplayed = dod_stats_time_played[client] + (GetTime() - dod_stats_time_joined[client]);
+	new timeplayed   = dod_stats_time_played[client] + (GetTime() - dod_stats_time_joined[client]);
 
 	// Sets the panel's title
 	Format(title, sizeof(title), "%T", "Player Stats", client);
@@ -178,7 +178,7 @@ ShowStats(client, rank)
 	Format(data, sizeof(data), "%T", "Grade", client, grade);
 	DrawPanelText(stats, data);
 
-	Format(data, sizeof(data), "%T", "Kills & deaths", client, kills, deaths, FloatDiv(float(kills), float((deaths == 0)?1:deaths)));
+	Format(data, sizeof(data), "%T", "Kills & deaths", client, kills, deaths, FloatDiv(float(kills), float((deaths == 0) ? 1 : deaths)));
 	DrawPanelText(stats, data);
 
 	Format(data, sizeof(data), "%T", "Accuracy", client, FloatDiv(float(dod_stats_weaponhits[client]), float(dod_stats_weaponshots[client])) * 100.0);
@@ -205,10 +205,10 @@ ShowStats(client, rank)
 		Format(title, sizeof(title), "%T", "GunGame Stats", client);
 		DrawPanelItem(stats, title);
 
-		Format(data, sizeof(data), "%T", "Played & won", client, roundsplayed, roundswon, FloatDiv(float(roundswon), float((roundsplayed == 0)?1:roundsplayed)));
+		Format(data, sizeof(data), "%T", "Played & won", client, roundsplayed, roundswon, FloatDiv(float(roundswon), float((roundsplayed == 0) ? 1 : roundsplayed)));
 		DrawPanelText(stats, data);
 
-		Format(data, sizeof(data), "%T", "Steal & lost", client, levelsup, levelsdown, FloatDiv(float(levelsup), float((levelsdown == 0)?1:levelsdown)));
+		Format(data, sizeof(data), "%T", "Steal & lost", client, levelsup, levelsdown, FloatDiv(float(levelsup), float((levelsdown == 0) ? 1 : levelsdown)));
 		DrawPanelText(stats, data);
 	}
 
@@ -290,9 +290,9 @@ public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:data)
 
 					// If there is more than 3 players in top10, but less than 10 - show their numbers (because this is a PanelText)
 					if (row > 3 && row <= TOP_PLAYERS)
-						Format(buffer[row], 64, "%i. %t", row, "Top10 > 3", top_name, FloatDiv(float(top_kills), float((top_deaths == 0)?1:top_deaths)), top_score);
+						Format(buffer[row], 64, "%i. %t", row, "Top10 > 3", top_name, FloatDiv(float(top_kills), float((top_deaths == 0) ? 1 : top_deaths)), top_score);
 					else if (row <= TOP_PLAYERS)
-						Format(buffer[row], 64, "%t", "Top10 stats",        top_name, FloatDiv(float(top_kills), float((top_deaths == 0)?1:top_deaths)), top_score);
+						Format(buffer[row], 64, "%t", "Top10 stats",        top_name, FloatDiv(float(top_kills), float((top_deaths == 0) ? 1 : top_deaths)), top_score);
 				}
 				if (row > TOP_PLAYERS)
 					row = TOP_PLAYERS;
@@ -357,6 +357,7 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data
 						}
 					}
 
+					// Translate grades in top panel
 					Format(grade, sizeof(grade), "%t", grade_names[award]);
 
 					if (row > 3 && row <= TOP_PLAYERS)
