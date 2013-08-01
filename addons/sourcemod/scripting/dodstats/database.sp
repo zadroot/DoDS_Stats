@@ -106,7 +106,7 @@ public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:
 						dod_stats_weaponhits[client]      = SQL_FetchInt(handle, 14);
 						dod_stats_weaponshots[client]     = SQL_FetchInt(handle, 15);
 						dod_stats_time_played[client]     = SQL_FetchInt(handle, 16);
-						dod_stats_client_notify[client]   = SQL_FetchInt(handle, 17);
+						dod_stats_client_notify[client]   = bool:SQL_FetchInt(handle, 17);
 					}
 				}
 				else // Nope player is new
@@ -365,7 +365,7 @@ ToggleNotify(client)
 			SQL_TQuery(db, DB_CheckErrors, query);
 		}
 
-		FormatEx(status, sizeof(status), "%T", dod_stats_client_notify[client] ? "On" : "Off", client);
+		FormatEx(status, sizeof(status), "%T", bool:dod_stats_client_notify[client] ? "On" : "Off", client);
 		CPrintToChat(client, "%t", "Toggled notifications", status);
 	}
 }

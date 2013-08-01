@@ -326,7 +326,7 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data
 		new client, row;
 		if ((client = GetClientOfUserId(data)))
 		{
-			decl i, award, top_flags, top_kills, String:top_name[MAX_NAME_LENGTH], String:title[48], String:buffer[TOP_PLAYERS + 1][96];
+			decl i, award, top_flags, top_kills, String:top_name[MAX_NAME_LENGTH], String:grade[64], String:title[48], String:buffer[TOP_PLAYERS + 1][96];
 
 			new Handle:top10_awards = CreatePanel();
 			Format(title, sizeof(title), "%T:", "TopGrades", client);
@@ -357,11 +357,13 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data
 						}
 					}
 
+					Format(grade, sizeof(grade), "%t", grade_names[award]);
+
 					if (row > 3 && row <= TOP_PLAYERS)
-						Format(buffer[row], 96, "%i. %t", row, "TopGrades > 3", top_name, grade_names[award], top_kills);
+						Format(buffer[row], 96, "%i. %t", row, "TopGrades > 3", top_name, grade, top_kills);
 					/* If there is less than 10 players AND less than 3 - dont show numbers, because this is PanelItem. */
 					else if (row <= TOP_PLAYERS)
-						Format(buffer[row], 96, "%t", "TopGrades stats",        top_name, grade_names[award], top_kills);
+						Format(buffer[row], 96, "%t", "TopGrades stats",        top_name, grade, top_kills);
 				}
 				// Is good if there is more than 10 players stored in database, but we gonna show only 10!
 				if (row > TOP_PLAYERS)

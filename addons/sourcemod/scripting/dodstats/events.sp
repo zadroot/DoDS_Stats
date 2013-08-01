@@ -44,7 +44,7 @@ public Event_Round_End(Handle:event, const String:name[], bool:dontBroadcast)
 
 					dod_stats_score[client] += roundpoints;
 
-					if (dod_stats_client_notify[client])
+					if (bool:dod_stats_client_notify[client])
 					{
 						CPrintToChat(client, "%t", "Victory points", color, roundpoints);
 					}
@@ -143,7 +143,7 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 					dod_stats_score[victim]         -= suipoints;
 					dod_stats_session_score[victim] -= suipoints;
 
-					if (dod_stats_client_notify[victim])
+					if (bool:dod_stats_client_notify[victim])
 					{
 						CPrintToChat(victim, "%t", "Suicide penalty", suipoints);
 					}
@@ -172,11 +172,11 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 						dod_stats_score[victim]           -= score;
 						dod_stats_session_score[victim]   -= score;
 
-						if (dod_stats_client_notify[attacker])
+						if (bool:dod_stats_client_notify[attacker])
 						{
 							CPrintToChat(attacker, "%t", "Kill points", score, enemycolor, victim);
 						}
-						if (dod_stats_client_notify[victim])
+						if (bool:dod_stats_client_notify[victim])
 						{
 							CPrintToChat(victim, "%t", "Death points", teamcolor, attacker, score);
 						}
@@ -192,7 +192,7 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 							dod_stats_score[attacker]         += hspoints;
 							dod_stats_session_score[attacker] += hspoints;
 
-							if (dod_stats_client_notify[attacker])
+							if (bool:dod_stats_client_notify[attacker])
 							{
 								CPrintToChat(attacker, "%t", "Headshot points", hspoints);
 							}
@@ -220,7 +220,7 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 							dod_stats_session_score[attacker] -= tkpoints;
 
 							// And show message for attacker if notifications is enabled for him.
-							if (dod_stats_client_notify[attacker])
+							if (bool:dod_stats_client_notify[attacker])
 							{
 								CPrintToChat(attacker, "%t", "Teamkill penalty", tkpoints, teamcolor);
 							}
@@ -257,11 +257,11 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 					dod_stats_score[victim]           -= score;
 					dod_stats_session_score[victim]   -= score;
 
-					if (dod_stats_client_notify[attacker])
+					if (bool:dod_stats_client_notify[attacker])
 					{
 						CPrintToChat(attacker, "%t", "Kill points", score, enemycolor, victim);
 					}
-					if (dod_stats_client_notify[victim])
+					if (bool:dod_stats_client_notify[victim])
 					{
 						CPrintToChat(victim, "%t", "Death points", teamcolor, attacker, score);
 					}
@@ -278,7 +278,7 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 						dod_stats_score[attacker]         += hspoints;
 						dod_stats_session_score[attacker] += hspoints;
 
-						if (dod_stats_client_notify[attacker])
+						if (bool:dod_stats_client_notify[attacker])
 						{
 							CPrintToChat(attacker, "%t", "Headshot points", hspoints);
 						}
@@ -326,7 +326,7 @@ public Event_Point_Captured(Handle:event, const String:name[], bool:dontBroadcas
 				dod_stats_score[client]         += cpoints;
 				dod_stats_session_score[client] += cpoints;
 
-				if (dod_stats_client_notify[client])
+				if (bool:dod_stats_client_notify[client])
 				{
 					decl String:color[10];
 					FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
@@ -356,7 +356,7 @@ public Event_Capture_Blocked(Handle:event, const String:name[], bool:dontBroadca
 			dod_stats_score[client]         += blpoints;
 			dod_stats_session_score[client] += blpoints;
 
-			if (dod_stats_client_notify[client])
+			if (bool:dod_stats_client_notify[client])
 			{
 				decl String:color[10];
 				FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
@@ -382,7 +382,7 @@ public Event_Bomb_Exploded(Handle:event, const String:name[], bool:dontBroadcast
 		dod_stats_score[client]         += expoints;
 		dod_stats_session_score[client] += expoints;
 
-		if (dod_stats_client_notify[client])
+		if (bool:dod_stats_client_notify[client])
 		{
 			decl String:color[10];
 			FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
@@ -409,7 +409,7 @@ public Event_Bomb_Blocked(Handle:event, const String:name[], bool:dontBroadcast)
 		// Also add for session.
 		dod_stats_session_score[client] += blpoints;
 
-		if (dod_stats_client_notify[client])
+		if (bool:dod_stats_client_notify[client])
 		{
 			decl String:color[10];
 			FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
@@ -437,7 +437,7 @@ public Event_Bomb_Planted(Handle:event, const String:name[], bool:dontBroadcast)
 			dod_stats_score[client]         += plpoints;
 			dod_stats_session_score[client] += plpoints;
 
-			if (dod_stats_client_notify[client])
+			if (bool:dod_stats_client_notify[client])
 			{
 				decl String:color[10];
 				FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
@@ -466,7 +466,7 @@ public Event_Bomb_Defused(Handle:event, const String:name[], bool:dontBroadcast)
 			dod_stats_score[client]         += depoints;
 			dod_stats_session_score[client] += depoints;
 
-			if (dod_stats_client_notify[client])
+			if (bool:dod_stats_client_notify[client])
 			{
 				decl String:color[10];
 				FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");

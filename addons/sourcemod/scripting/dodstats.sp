@@ -33,7 +33,7 @@ public Plugin:myinfo =
 {
 	name        = PLUGIN_NAME,
 	author      = "Root",
-	description = "A stats with awards, captures, headshots and more...",
+	description = "A stats with awards, captures, headshots & more...",
 	version     = PLUGIN_VERSION,
 	url         = "http://dodsplugins.com/"
 };
@@ -91,8 +91,8 @@ public OnClientDisconnect(client)
 			dodstats_info[client] = INVALID_HANDLE;
 		}
 
-		// Save stats only if client is connected before map change - otherwise database tables may broke (because stats wasnt loaded and saved properly)
-		if (bool:dod_stats_online[client] == true) SavePlayer(client);
+		// Save stats only if client is connected before map change (online) - otherwise database tables may broke, because stats wasnt loaded and saved properly
+		if (bool:dod_stats_online[client]) SavePlayer(client);
 	}
 }
 
@@ -109,7 +109,7 @@ public Action:OnSayCommand(client, const String:command[], argc)
 		// Retrieves argument string from the command (i.e. sended message)
 		GetCmdArgString(text, sizeof(text));
 
-		// Remove quotes from the argument (or triggers will never be detected)
+		// Remove quotes from the argument, or triggers will never be detected
 		StripQuotes(text);
 
 		// Convert capital chars to lower
@@ -119,7 +119,7 @@ public Action:OnSayCommand(client, const String:command[], argc)
 				text[trigger] = CharToLower(text[trigger]);
 		}
 
-		// Converting is needed to compare Trie's triggers
+		// Converting is needed to compare with trie triggers
 		if (GetTrieValue(dodstats_triggers, text, trigger))
 		{
 			switch (trigger)
