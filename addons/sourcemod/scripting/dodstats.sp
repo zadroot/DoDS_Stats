@@ -115,8 +115,8 @@ public Action:OnSayCommand(client, const String:command[], argc)
 		// Convert capital chars to lower
 		for (trigger = 0; trigger < strlen(text); trigger++)
 		{
-			if (IsCharUpper(text[trigger]))
-				text[trigger] = CharToLower(text[trigger]);
+			// It already checks IsCharUpper
+			text[trigger] = CharToLower(text[trigger]);
 		}
 
 		// Converting is needed to compare with trie triggers
