@@ -91,7 +91,7 @@ public OnClientDisconnect(client)
 			dodstats_info[client] = INVALID_HANDLE;
 		}
 
-		// Save stats only if client is connected before map change (online) - otherwise database tables may broke, because stats wasnt loaded and saved properly
+		// Save stats only if client is connected before map change - otherwise database tables may broke, because stats wasnt loaded and saved properly
 		if (bool:dod_stats_online[client]) SavePlayer(client);
 	}
 }
@@ -106,16 +106,16 @@ public Action:OnSayCommand(client, const String:command[], argc)
 	{
 		decl String:text[13], trigger;
 
-		// Retrieves argument string from the command (i.e. sended message)
+		// Retrieve a sended message
 		GetCmdArgString(text, sizeof(text));
 
-		// Remove quotes from the argument, or triggers will never be detected
+		// Remove quotes from the message, otherwise triggers will never be detected
 		StripQuotes(text);
 
-		// Convert capital chars to lower
+		// Now convert capital chars to lower
 		for (trigger = 0; trigger < strlen(text); trigger++)
 		{
-			// It already checks IsCharUpper
+			// CharToLower already checks for IsCharUpper
 			text[trigger] = CharToLower(text[trigger]);
 		}
 
@@ -133,7 +133,7 @@ public Action:OnSayCommand(client, const String:command[], argc)
 				case TOPGG:     QueryTopGG(client,      TOP_PLAYERS);
 			}
 
-			// Suppress chat triggers if needed
+			// Suppress sended message if needed
 			if (GetConVar[HideChat][Value])
 				return Plugin_Handled;
 		}
@@ -157,4 +157,4 @@ public Action:Timer_WelcomePlayer(Handle:timer, any:client)
  *
  * Checks if a client is valid.
  * ----------------------------------------------------------------------------- */
-bool:IsValidClient(client) return (client > 0 && IsClientConnected(client) && !IsFakeClient(client)) ? true : false;
+bool:IsValidClient(client) return (client > 0 && client <= MaxClients && IsClientConnected(client) && !IsFakeClient(client)) ? true : false;

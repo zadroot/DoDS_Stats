@@ -70,9 +70,9 @@ LoadConVars()
 	AddConVar(Points_Headshot,   ValueType_Int,  CreateConVar("dodstats_points_headshot",  "1",    "Amount of points to add for a headshot kill",                                            FCVAR_PLUGIN, true, 0.0, true, 25.0));
 	AddConVar(Points_RoundWin,   ValueType_Int,  CreateConVar("dodstats_points_victory",   "1",    "Amount of points to give to all members of team which has won the round",                FCVAR_PLUGIN, true, 0.0, true, 25.0));
 
-	AddConVar(GG_LevelSteal,     ValueType_Int,  CreateConVar("dodstats_gg_levelsteal",    "5",    "Amount of points to give for stealing a level\nRequires GG 4.2 and newer!",              FCVAR_PLUGIN, true, 0.0, true, 25.0));
-	AddConVar(GG_LevelDown,      ValueType_Int,  CreateConVar("dodstats_gg_leveldown",     "5",    "Amount of points to take on level lost\nRequires GG 4.2 and newer!",                     FCVAR_PLUGIN, true, 0.0, true, 25.0));
-	AddConVar(GG_RoundWin,       ValueType_Int,  CreateConVar("dodstats_gg_victorypoints", "10",   "Amount of points to give to a GunGame winner\nRequires GG 4.2 and newer!",               FCVAR_PLUGIN, true, 0.0, true, 25.0));
+	AddConVar(GG_LevelSteal,     ValueType_Int,  CreateConVar("dodstats_gg_levelsteal",    "5",    "Amount of points to give for stealing a level\nRequires GG 4.2 and newer",               FCVAR_PLUGIN, true, 0.0, true, 25.0));
+	AddConVar(GG_LevelDown,      ValueType_Int,  CreateConVar("dodstats_gg_leveldown",     "5",    "Amount of points to take on level lost\nRequires GG 4.2 and newer",                      FCVAR_PLUGIN, true, 0.0, true, 25.0));
+	AddConVar(GG_RoundWin,       ValueType_Int,  CreateConVar("dodstats_gg_victorypoints", "10",   "Amount of points to give to a GunGame winner\nRequires GG 4.2 and newe!",                FCVAR_PLUGIN, true, 0.0, true, 25.0));
 }
 
 /* AddConVar()

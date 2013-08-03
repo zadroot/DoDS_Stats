@@ -38,7 +38,7 @@ public OnPluginStart()
 			sqlite = true;
 			LogMessage("Using SQLite database.");
 		}
-		else SetFailState("Fatal error: Section \"driver\" in databases config should be \"mysql\" or \"sqlite\" !");
+		else SetFailState("Fatal error: \"driver\" in databases config should be \"mysql\" or \"sqlite\" !");
 
 		SQL_LockDatabase(db);
 	}
