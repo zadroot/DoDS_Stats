@@ -9,7 +9,7 @@
 		}
 
 		"Notes"	"See full changelog from 1.9 to 1.9.1 there:"
-		"Notes"	"http://dodsplugins.com/viewtopic.php?f=4&t=245&start=50"
+		"Notes"	"http://dodsplugins.com/viewtopic.php?f=4&p=2254#p2254"
 	}
 
 	"Files"
