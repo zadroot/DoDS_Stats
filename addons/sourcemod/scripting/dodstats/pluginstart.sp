@@ -52,10 +52,6 @@ public OnPluginStart()
 	// Load all plugin convars
 	LoadConVars();
 
-	// Hook say messages for triggers
-	AddCommandListener(OnSayCommand, "say");
-	AddCommandListener(OnSayCommand, "say_team");
-
 	// Admin commands
 	RegAdminCmd("sm_resetstats",  Command_Reset,        ADMFLAG_ROOT, "Reset all stats");
 	RegAdminCmd("sm_resetplayer", Command_DeletePlayer, ADMFLAG_ROOT, "Delete a steamid from the database");

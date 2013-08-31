@@ -54,7 +54,7 @@ public OnMapStart()
 
 /* OnClientPostAdminCheck()
  *
- * Called when a client is in game and fully authorized.
+ * When a client is in game and fully authorized.
  * ----------------------------------------------------------------------------- */
 public OnClientPostAdminCheck(client)
 {
@@ -96,26 +96,26 @@ public OnClientDisconnect(client)
 	}
 }
 
-/* OnSayCommand()
+/* OnClientSayCommand()
  *
- * Hook the say and say_team cmds for chat triggers.
+ * When a client says something.
  * ----------------------------------------------------------------------------- */
-public Action:OnSayCommand(client, const String:command[], argc)
+public Action:OnClientSayCommand(client, const String:command[], const String:sArgs[])
 {
 	if (IsValidClient(client))
 	{
 		decl String:text[13], trigger;
 
-		// Retrieve a sended message
-		GetCmdArgString(text, sizeof(text));
+		// Copy original message
+		strcopy(text, sizeof(text), sArgs);
 
-		// Remove quotes from the message, otherwise triggers will never be detected
+		// Remove quotes from destination string, otherwise triggers will never be detected
 		StripQuotes(text);
 
-		// Now convert capital chars to lower
+		// Now get rid of capital chars
 		for (trigger = 0; trigger < strlen(text); trigger++)
 		{
-			// CharToLower already checks for IsCharUpper
+			// CharToLower is already checks for IsCharUpper
 			text[trigger] = CharToLower(text[trigger]);
 		}
 

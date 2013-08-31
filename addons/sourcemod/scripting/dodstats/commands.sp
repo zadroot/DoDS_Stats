@@ -20,9 +20,9 @@ CreateTriggersTrie()
 	SetTrieValue(dodstats_triggers, "/statsme", STATSME);
 
 	// No need to query database for session - enough to show it
-	SetTrieValue(dodstats_triggers, "session",   SESSION);
-	SetTrieValue(dodstats_triggers, "!sesssion", SESSION);
-	SetTrieValue(dodstats_triggers, "/session",  SESSION);
+	SetTrieValue(dodstats_triggers, "session",  SESSION);
+	SetTrieValue(dodstats_triggers, "!session", SESSION);
+	SetTrieValue(dodstats_triggers, "/session", SESSION);
 
 	// Enable/disable notifications on trigger match
 	SetTrieValue(dodstats_triggers, "notify",  NOTIFY);

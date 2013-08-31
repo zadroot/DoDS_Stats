@@ -4,12 +4,12 @@
 	{
 		"Version"
 		{
-			"Latest"		"1.9"
-			"Previous"		"1.8"
+			"Latest"		"1.9.1"
+			"Previous"		"1.9"
 		}
 
-		"Notes"	"See full changelog from 1.8 to 1.9 here:"
-		"Notes"	"http://dodsplugins.com/viewtopic.php?f=4&t=245&p=1735#p1735"
+		"Notes"	"See full changelog from 1.9 to 1.9.1 there:"
+		"Notes"	"http://dodsplugins.com/viewtopic.php?f=4&t=245&start=50"
 	}
 
 	"Files"
