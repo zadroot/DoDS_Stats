@@ -37,7 +37,7 @@ ShowRank(client, rank, next_score)
 	FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
 
 	// Calc points to next position
-	new delta, score = dod_stats_score[client], kills = dod_stats_kills[client];
+	new delta = 0, score = dod_stats_score[client], kills = dod_stats_kills[client];
 	if (next_score > score) delta = next_score - score;
 
 	// Grades
@@ -100,7 +100,7 @@ ShowSession(client)
 	DrawPanelText(session, data);
 
 	Format(title, sizeof(title), "%T", "Session headshots", client);
-	FormatEx(data, sizeof(data), "%i (%.0f%%)", headshots, FloatDiv(float(headshots), float(kills)) * 100.0);
+	FormatEx(data, sizeof(data), "%i (%.0f%%)", headshots, FloatMul(FloatDiv(float(headshots), float(kills)), 100.0));
 	DrawPanelItem(session, title);
 	DrawPanelText(session, data);
 
@@ -181,10 +181,10 @@ ShowStats(client, rank)
 	Format(data, sizeof(data), "%T", "Kills & deaths", client, kills, deaths, FloatDiv(float(kills), float((deaths == 0) ? 1 : deaths)));
 	DrawPanelText(stats, data);
 
-	Format(data, sizeof(data), "%T", "Accuracy", client, FloatDiv(float(dod_stats_weaponhits[client]), float(dod_stats_weaponshots[client])) * 100.0);
+	Format(data, sizeof(data), "%T", "Accuracy", client, FloatMul(FloatDiv(float(dod_stats_weaponhits[client]), float(dod_stats_weaponshots[client])), 100.0));
 	DrawPanelText(stats, data);
 
-	Format(data, sizeof(data), "%T", "Overall headshots", client, headshots, FloatDiv(float(headshots), float(kills)) * 100.0);
+	Format(data, sizeof(data), "%T", "Overall headshots", client, headshots, FloatMul(FloatDiv(float(headshots), float(kills)), 100.0));
 	DrawPanelText(stats, data);
 
 	// If player have not killed any teammate (or mp_friendlyfire = 0) is not necessary to show TKs

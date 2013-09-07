@@ -407,7 +407,7 @@ public DB_PurgeCallback(Handle:owner, Handle:handle, const String:error[], any:d
 SavePlayer(client)
 {
 	// decl is bad
-	new String:client_steamid[MAX_STEAMID_LENGTH],
+	new	String:client_steamid[MAX_STEAMID_LENGTH],
 		String:safe_steamid[(MAX_STEAMID_LENGTH*2)+1],
 		String:client_name[MAX_NAME_LENGTH],
 		String:safe_name[(MAX_NAME_LENGTH*2)+1];
