@@ -59,7 +59,7 @@ CreateTriggersTrie()
  * ----------------------------------------------------------------- */
 public Action:Command_Reset(client, args)
 {
-	SQL_TQuery(db, DB_CheckErrors, "DELETE FROM dodstats");
+	SQL_TQuery(db, DB_CheckErrors, "DELETE FROM dodstats; VACUUM;");
 
 	// Log action.
 	LogAction(client, -1, "\"%L\" have been reset all stats.", client);

@@ -121,7 +121,9 @@ public OnAllPluginsLoaded()
 		else gameplay = DEFAULT;
 	}
 
+#if defined _updater_included
 	if (LibraryExists("updater")) Updater_AddPlugin(UPDATE_URL);
+#endif
 
 	// Set all db characters to UTF8 (for MySQL only)
 	SetEncoding();

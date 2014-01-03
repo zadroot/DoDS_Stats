@@ -45,7 +45,7 @@ PrepareClient(client)
 		SQL_EscapeString(db, client_steamid, safe_steamid, sizeof(safe_steamid));
 
 		// last_connect ?
-		Format(query, sizeof(query), "SELECT score, kills, deaths, headshots, teamkills, teamkilled, captured, blocked, planted, defused, gg_played, gg_leader, gg_levelup, gg_leveldown, hits, shots, timeplayed, notify FROM dodstats WHERE steamid = '%s'", safe_steamid);
+		FormatEx(query, sizeof(query), "SELECT score, kills, deaths, headshots, teamkills, teamkilled, captured, blocked, planted, defused, gg_played, gg_leader, gg_levelup, gg_leveldown, hits, shots, timeplayed, notify FROM dodstats WHERE steamid = '%s'", safe_steamid);
 		SQL_TQuery(db, PrepareClientData, query, GetClientUserId(client));
 	}
 }
@@ -54,14 +54,14 @@ PrepareClient(client)
  *
  * Connects to a database via a thread.
  * ----------------------------------------------------------------- */
-public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:data)
+public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:client)
 {
 	if (handle != INVALID_HANDLE)
 	{
-		new client, time = GetTime(), startpoints = GetConVar[StartPoints][Value];
+		new time = GetTime(), startpoints = GetConVar[StartPoints][Value];
 
 		// Data is always zero. Stop threading if client is zero.
-		if ((client = GetClientOfUserId(data)))
+		if ((client = GetClientOfUserId(client)))
 		{
 			// For writing names I recommend use MAX_NAME_LENGTH, because that's way makes easier definition of "clean" name
 			// decl is bad
@@ -83,7 +83,7 @@ public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:
 				if (SQL_MoreRows(handle))
 				{
 					// Then we're gonna only update his nickname and date of last visit.
-					Format(query, sizeof(query), "UPDATE dodstats SET name = '%s', last_connect = %i WHERE steamid = '%s'", safe_name, time, safe_steamid);
+					FormatEx(query, sizeof(query), "UPDATE dodstats SET name = '%s', last_connect = %i WHERE steamid = '%s'", safe_name, time, safe_steamid);
 					SQL_TQuery(db, DB_CheckErrors, query);
 
 					// And get player's previous data.
@@ -113,9 +113,9 @@ public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:
 				{
 					// Yep. Creating tables.
 					if (sqlite)
-						Format(query, sizeof(query), "INSERT INTO dodstats VALUES ('%s', '%s', %i, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %i)", safe_steamid, safe_name, startpoints, time);
+						FormatEx(query, sizeof(query), "INSERT INTO dodstats VALUES ('%s', '%s', %i, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %i)", safe_steamid, safe_name, startpoints, time);
 					else /* Because MySQL is different */
-						Format(query, sizeof(query), "INSERT INTO dodstats (steamid, name, score, kills, deaths, headshots, teamkills, teamkilled, captured, blocked, planted, defused, gg_played, gg_leader, gg_levelup, gg_leveldown, hits, shots, timeplayed, notify, last_connect) VALUES ('%s', '%s', %i, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %i)", safe_steamid, safe_name, startpoints, time);
+						FormatEx(query, sizeof(query), "INSERT INTO dodstats (steamid, name, score, kills, deaths, headshots, teamkills, teamkilled, captured, blocked, planted, defused, gg_played, gg_leader, gg_levelup, gg_leveldown, hits, shots, timeplayed, notify, last_connect) VALUES ('%s', '%s', %i, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %i)", safe_steamid, safe_name, startpoints, time);
 					SQL_TQuery(db, DB_CheckErrors, query);
 
 					/** Initialize tables. */
@@ -176,12 +176,11 @@ QueryRankStats(client)
  *
  * Executes a simple query via a thread for rank.
  * ----------------------------------------------------------------- */
-public QueryRank(Handle:owner, Handle:handle, const String:error[], any:data)
+public QueryRank(Handle:owner, Handle:handle, const String:error[], any:client)
 {
 	if (handle != INVALID_HANDLE)
 	{
-		new client;
-		if ((client = GetClientOfUserId(data)))
+		if ((client = GetClientOfUserId(client)))
 		{
 			// Getting rank position of all players.
 			new	rank = SQL_GetRowCount(handle),
@@ -261,13 +260,12 @@ QueryStats(client)
  *
  * Executes a simple query via a thread for statsme.
  * ----------------------------------------------------------------- */
-public QueryStatsMe(Handle:owner, Handle:handle, const String:error[], any:data)
+public QueryStatsMe(Handle:owner, Handle:handle, const String:error[], any:client)
 {
 	// Almost same as rank
 	if (handle != INVALID_HANDLE)
 	{
-		new client;
-		if ((client = GetClientOfUserId(data)))
+		if ((client = GetClientOfUserId(client)))
 		{
 			new	rank = SQL_GetRowCount(handle),
 				bool:rankup = true;
@@ -316,7 +314,7 @@ RemoveOldPlayers()
 		// Current date - purge value * 24 hours.
 		new days = GetTime() - (GetConVar[Purge][Value] * 86400);
 
-		FormatEx(query, sizeof(query), "DELETE FROM dodstats WHERE last_connect <= %i", days);
+		FormatEx(query, sizeof(query), "DELETE FROM dodstats WHERE last_connect <= %i; VACUUM;", days);
 		SQL_TQuery(db, DB_PurgeCallback, query);
 	}
 }
@@ -357,14 +355,14 @@ ToggleNotify(client)
 			dod_stats_client_notify[client] = false;
 
 			// No need to save notify all time, just update it once.
-			Format(query, sizeof(query), "UPDATE dodstats SET notify = 0 WHERE steamid = '%s'", safe_steamid);
+			FormatEx(query, sizeof(query), "UPDATE dodstats SET notify = 0 WHERE steamid = '%s'", safe_steamid);
 			SQL_TQuery(db, DB_CheckErrors, query);
 		}
 		else /* Notify was disabled. Enable it now. */
 		{
 			dod_stats_client_notify[client] = true;
 
-			Format(query, sizeof(query), "UPDATE dodstats SET notify = 1 WHERE steamid = '%s'", safe_steamid);
+			FormatEx(query, sizeof(query), "UPDATE dodstats SET notify = 1 WHERE steamid = '%s'", safe_steamid);
 			SQL_TQuery(db, DB_CheckErrors, query);
 		}
 

@@ -87,6 +87,8 @@ public Event_Player_Disconnect(Handle:event, const String:name[], bool:dontBroad
  * ----------------------------------------------------------------- */
 public Event_SavePlayersStats(Handle:event, const String:name[], bool:dontBroadcast)
 {
+	static tickpoints_fired;
+
 	// If that event were fired for 10 times, save stats of all players
 	if (++tickpoints_fired >= 10)
 	{

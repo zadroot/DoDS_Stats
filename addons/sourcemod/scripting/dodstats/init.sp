@@ -6,15 +6,13 @@
 #define UPDATE_URL         "https://raw.github.com/zadroot/DoDS_Stats/master/updater.txt"
 
 // Globals
-new	Handle:dodstats_info[DOD_MAXPLAYERS + 1],
-	Handle:dodstats_gameplay,
+new	Handle:dodstats_gameplay,
 	Handle:dodstats_triggers,
 	Handle:db,
 	bool:rankactive,
 	bool:roundend,
 	bool:sqlite,
 	gameplay,
-	tickpoints_fired,
 	dod_global_player_count;
 
 enum //GameTypes

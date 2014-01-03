@@ -4,7 +4,7 @@
 * Description:
 *    A stats plugin (SQLite & MySQL) with many features, full point customization and GunGame/DeathMatch support.
 *
-* Version 1.9.1
+* Version 1.9.2
 * Changelog & more info at http://goo.gl/4nKhJ
 */
 
@@ -13,11 +13,11 @@
 // ====[ INCLUDES ]=============================================================
 #include <morecolors>
 #undef REQUIRE_PLUGIN
-#include <updater>
+#tryinclude <updater>
 
 // ====[ CONSTANTS ]============================================================
 #define PLUGIN_NAME    "DoD:S Stats"
-#define PLUGIN_VERSION "1.9.1"
+#define PLUGIN_VERSION "1.9.2"
 
 // ====[ PLUGIN ]===============================================================
 #include "dodstats/init.sp"
@@ -48,7 +48,7 @@ public OnMapStart()
 	// Update global player's count at every mapchange for servers with MySQL database
 	if (!sqlite) GetPlayerCount();
 
-	// Purge database at every map change
+	// Purge database at a every map change
 	RemoveOldPlayers();
 }
 
@@ -66,13 +66,15 @@ public OnClientPostAdminCheck(client)
 			// Load player stats or create if client wasnt found in database
 			PrepareClient(client);
 
-			// Show stats welcome message to a player in 30 seconds after connecting
-			dodstats_info[client] = CreateTimer(30.0, Timer_WelcomePlayer, client, TIMER_FLAG_NO_MAPCHANGE);
+			// Show welcome message to a player in 30 seconds after connecting
+			CreateTimer(30.0, Timer_WelcomePlayer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		}
 
 		// Enable stats if there is enough players on a server
-		if (!roundend && GetClientCount(true) >= GetConVar[MinPlayers][Value])
+		if (bool:roundend == false && GetClientCount(true) >= GetConVar[MinPlayers][Value])
+		{
 			rankactive = true;
+		}
 	}
 }
 
@@ -84,15 +86,11 @@ public OnClientDisconnect(client)
 {
 	if (IsValidClient(client))
 	{
-		// If player disconnected in less than 30 seconds, kill timer to prevent errors
-		if (dodstats_info[client] != INVALID_HANDLE)
-		{
-			CloseHandle(dodstats_info[client]);
-			dodstats_info[client] = INVALID_HANDLE;
-		}
-
 		// Save stats only if client is connected before map change - otherwise database tables may broke, because stats wasnt loaded and saved properly
-		if (bool:dod_stats_online[client]) SavePlayer(client);
+		if (bool:dod_stats_online[client] == true)
+		{
+			SavePlayer(client);
+		}
 	}
 }
 
@@ -112,14 +110,14 @@ public Action:OnClientSayCommand(client, const String:command[], const String:sA
 		// Remove quotes from destination string, otherwise triggers will never be detected
 		StripQuotes(text);
 
-		// Now get rid of capital chars
+		// Loop through all chars and get rid of capital ones
 		for (trigger = 0; trigger < strlen(text); trigger++)
 		{
 			// CharToLower is already checks for IsCharUpper
 			text[trigger] = CharToLower(text[trigger]);
 		}
 
-		// Converting is needed to compare with trie triggers
+		// Converting is needed to compare with trie
 		if (GetTrieValue(dodstats_triggers, text, trigger))
 		{
 			switch (trigger)
@@ -133,13 +131,13 @@ public Action:OnClientSayCommand(client, const String:command[], const String:sA
 				case TOPGG:     QueryTopGG(client,      TOP_PLAYERS);
 			}
 
-			// Suppress sended message if needed
+			// Suppress rank messages if needed
 			if (GetConVar[HideChat][Value])
 				return Plugin_Handled;
 		}
 	}
 
-	// Continue (otherwise plugin will block say/say_team commands)
+	// Continue (otherwise plugin will block say or say_team commands)
 	return Plugin_Continue;
 }
 
@@ -149,12 +147,14 @@ public Action:OnClientSayCommand(client, const String:command[], const String:sA
  * ----------------------------------------------------------------------------- */
 public Action:Timer_WelcomePlayer(Handle:timer, any:client)
 {
-	dodstats_info[client] = INVALID_HANDLE;
-	if (IsValidClient(client)) CPrintToChat(client, "%t", "Welcome message");
+	if ((client = GetClientOfUserId(client)))
+	{
+		CPrintToChat(client, "%t", "Welcome message");
+	}
 }
 
 /* IsValidClient()
  *
  * Checks if a client is valid.
  * ----------------------------------------------------------------------------- */
-bool:IsValidClient(client) return (client > 0 && client <= MaxClients && IsClientConnected(client) && !IsFakeClient(client)) ? true : false;
+bool:IsValidClient(client) return (1 <= client <= MaxClients && IsClientConnected(client) && !IsFakeClient(client)) ? true : false;

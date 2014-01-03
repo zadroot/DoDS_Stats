@@ -85,7 +85,7 @@ ShowSession(client)
 	Format(title, sizeof(title), "%T", "Session points", client);
 
 	// Show '+' if player is in actual plus.
-	Format(data, sizeof(data), "%s%i", (score <= 0 ? NULL_STRING : "+"), score);
+	FormatEx(data, sizeof(data), "%s%i", (score <= 0 ? NULL_STRING : "+"), score);
 	DrawPanelItem(session, title);
 	DrawPanelText(session, data);
 
@@ -188,8 +188,7 @@ ShowStats(client, rank)
 	DrawPanelText(stats, data);
 
 	// If player have not killed any teammate (or mp_friendlyfire = 0) is not necessary to show TKs
-	if (dod_stats_teamkills[client]
-	|| dod_stats_teamkilled[client])
+	if (dod_stats_teamkills[client] || dod_stats_teamkilled[client])
 	{
 		Format(data, sizeof(data), "%T", "Teamkills & teamkilled", client, dod_stats_teamkills[client], dod_stats_teamkilled[client]);
 		DrawPanelText(stats, data);
@@ -262,16 +261,13 @@ ShowStats(client, rank)
  *
  * Displays top10 to a client.
  * ----------------------------------------------------------------- */
-public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:data)
+public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:client)
 {
 	if (handle != INVALID_HANDLE)
 	{
-		new client, row;
-
-		// Data is always zero. Stop threading if client is zero.
-		if ((client = GetClientOfUserId(data)))
+		if ((client = GetClientOfUserId(client)))
 		{
-			decl top_score, top_kills, top_deaths, String:top_name[MAX_NAME_LENGTH], String:title[32], String:buffer[TOP_PLAYERS + 1][64];
+			decl i, top_score, top_kills, top_deaths, String:top_name[MAX_NAME_LENGTH], String:title[32], String:buffer[TOP_PLAYERS + 1][64];
 
 			new Handle:top10 = CreatePanel();
 			Format(title, sizeof(title), "%T:", "Top10", client);
@@ -280,6 +276,7 @@ public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:data)
 			// Yay we've got a result.
 			if (SQL_HasResultSet(handle))
 			{
+				new row;
 				while (SQL_FetchRow(handle))
 				{
 					row++;
@@ -298,7 +295,7 @@ public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:data)
 					row = TOP_PLAYERS;
 
 				// i = 1
-				for (new i = 1; i <= row; i++)
+				for (i = 1; i <= row; i++)
 				{
 					/* Draws a raw line of text on a panel, without any markup other than a newline. */
 					if (i > 3) DrawPanelText(top10, buffer[i]);
@@ -319,14 +316,13 @@ public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:data)
  *
  * Displays topgrades to a client.
  * ----------------------------------------------------------------- */
-public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data)
+public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:client)
 {
 	if (handle != INVALID_HANDLE)
 	{
-		new client, row;
-		if ((client = GetClientOfUserId(data)))
+		if ((client = GetClientOfUserId(client)))
 		{
-			decl i, award, top_flags, top_kills, String:top_name[MAX_NAME_LENGTH], String:grade[64], String:title[48], String:buffer[TOP_PLAYERS + 1][96];
+			decl i, j, award, top_flags, top_kills, String:top_name[MAX_NAME_LENGTH], String:grade[64], String:title[48], String:buffer[TOP_PLAYERS + 1][96];
 
 			new Handle:top10_awards = CreatePanel();
 			Format(title, sizeof(title), "%T:", "TopGrades", client);
@@ -334,6 +330,7 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data
 
 			if (SQL_HasResultSet(handle))
 			{
+				new row;
 				while (SQL_FetchRow(handle))
 				{
 					// Parse rows
@@ -370,7 +367,7 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data
 				if (row > TOP_PLAYERS)
 					row = TOP_PLAYERS;
 
-				for (new j = 1; j <= row; j++)
+				for (j = 1; j <= row; j++)
 				{
 					if (j > 3) DrawPanelText(top10_awards, buffer[j]);
 					else DrawPanelItem(top10_awards, buffer[j]);
@@ -390,16 +387,13 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:data
  *
  * Displays topgg to a client.
  * ----------------------------------------------------------------- */
-public ShowTopGG(Handle:owner, Handle:handle, const String:error[], any:data)
+public ShowTopGG(Handle:owner, Handle:handle, const String:error[], any:client)
 {
 	if (handle != INVALID_HANDLE)
 	{
-		new client, row;
-
-		// Data is always zero. Stop threading if client is zero.
-		if ((client = GetClientOfUserId(data)))
+		if ((client = GetClientOfUserId(client)))
 		{
-			decl top_wins, top_steal, String:top_name[MAX_NAME_LENGTH], String:title[32], String:buffer[TOP_PLAYERS + 1][64];
+			decl i, top_wins, top_steal, String:top_name[MAX_NAME_LENGTH], String:title[32], String:buffer[TOP_PLAYERS + 1][64];
 
 			new Handle:topGG = CreatePanel();
 			Format(title, sizeof(title), "%T:", "TopGG", client);
@@ -408,6 +402,7 @@ public ShowTopGG(Handle:owner, Handle:handle, const String:error[], any:data)
 			// Yay we've got a result.
 			if (SQL_HasResultSet(handle))
 			{
+				new row;
 				while (SQL_FetchRow(handle))
 				{
 					row++;
@@ -425,7 +420,7 @@ public ShowTopGG(Handle:owner, Handle:handle, const String:error[], any:data)
 				if (row > TOP_PLAYERS)
 					row = TOP_PLAYERS;
 
-				for (new i = 1; i <= row; i++)
+				for (i = 1; i <= row; i++)
 				{
 					if (i > 3) DrawPanelText(topGG, buffer[i]);
 					else DrawPanelItem(topGG, buffer[i]);
