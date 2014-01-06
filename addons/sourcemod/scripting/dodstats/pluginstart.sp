@@ -6,6 +6,7 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
 	// Needed to load properly on older versions of SourceMod
 	MarkNativeAsOptional("GetUserMessageType");
+	MarkNativeAsOptional("SQL_SetCharset");
 	return APLRes_Success;
 }
 

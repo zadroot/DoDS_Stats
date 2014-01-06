@@ -4,12 +4,11 @@
 	{
 		"Version"
 		{
-			"Latest"		"1.9.2"
-			"Previous"		"1.9.1"
+			"Latest"		"1.9.3"
+			"Previous"		"1.9.2"
 		}
 
-		"Notes"	"Compiled against latest SourceMod and MoreColors includes"
-		"Notes"	"Removed every-player timer handle, overally optimized plugin"
+		"Notes"	"Fixed a few issues related to latest release"
 	}
 
 	"Files"

@@ -29,25 +29,22 @@ public Event_Round_Start(Handle:event, const String:name[], bool:dontBroadcast)
  * ----------------------------------------------------------------- */
 public Event_Round_End(Handle:event, const String:name[], bool:dontBroadcast)
 {
-	if (rankactive)
+	new roundpoints = GetConVar[Points_RoundWin][Value];
+	if (rankactive && roundpoints)
 	{
-		new roundpoints = GetConVar[Points_RoundWin][Value];
 		for (new client = 1; client <= MaxClients; client++)
 		{
 			// Encourage players from winner's team
 			if (IsClientInGame(client) && GetClientTeam(client) == GetEventInt(event, "team"))
 			{
 				// POINTS!
-				if (roundpoints)
+				decl String:color[10]; FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
+
+				dod_stats_score[client] += roundpoints;
+
+				if (bool:dod_stats_client_notify[client])
 				{
-					decl String:color[10]; FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
-
-					dod_stats_score[client] += roundpoints;
-
-					if (bool:dod_stats_client_notify[client])
-					{
-						CPrintToChat(client, "%t", "Victory points", color, roundpoints);
-					}
+					CPrintToChat(client, "%t", "Victory points", color, roundpoints);
 				}
 			}
 		}
@@ -75,6 +72,7 @@ public Event_Player_Disconnect(Handle:event, const String:name[], bool:dontBroad
 	{
 		// Reset session status when client disconnected.
 		dod_stats_online[client] = false;
+		SavePlayer(client);
 
 		if (GetClientCount(true) < GetConVar[MinPlayers][Value])
 			rankactive = false;
@@ -97,7 +95,7 @@ public Event_SavePlayersStats(Handle:event, const String:name[], bool:dontBroadc
 
 		for (new client = 1; client <= MaxClients; client++)
 		{
-			if (IsClientInGame(client) && bool:dod_stats_online[client] == true)
+			if (IsValidClient(client) && bool:dod_stats_online[client] == true)
 			{
 				SavePlayer(client);
 			}
@@ -123,7 +121,7 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 		if (GetClientHealth(victim) < 1)
 		{
 			new weapon    = GetEventInt(event, "weapon");
-			new headshot  = GetEventInt(event, "hitgroup") == 1;
+			new bool:hs   = GetEventInt(event, "hitgroup") == 1;
 			new minpoints = GetConVar[MinPoints][Value];
 			new hspoints  = GetConVar[Points_Headshot][Value];
 			new score     = GetConVar[MinPoints][Value] + (dod_stats_score[victim] - dod_stats_score[attacker]) / 100;
@@ -133,7 +131,7 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 			FormatEx(enemycolor, sizeof(enemycolor), "%s", GetClientTeam(victim)   == 2 ? "{allies}" : "{axis}");
 
 			// Check for suicide
-			if (attacker == victim)
+			if (attacker == victim || !attacker)
 			{
 				dod_stats_deaths[victim]++;
 				dod_stats_session_deaths[victim]++;
@@ -184,7 +182,7 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 						}
 					}
 
-					if (headshot)
+					if (hs)
 					{
 						dod_stats_headshots[attacker]++;
 						dod_stats_session_headshots[attacker]++;
@@ -269,7 +267,7 @@ public Event_Player_Death(Handle:event, const String:name[], bool:dontBroadcast)
 					}
 				}
 
-				if (headshot)
+				if (hs)
 				{
 					// Thats no DM, we wont`t count a headshot for teamkill
 					dod_stats_headshots[attacker]++;

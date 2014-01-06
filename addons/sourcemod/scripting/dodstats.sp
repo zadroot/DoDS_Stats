@@ -4,7 +4,7 @@
 * Description:
 *    A stats plugin (SQLite & MySQL) with many features, full point customization and GunGame/DeathMatch support.
 *
-* Version 1.9.2
+* Version 1.9.3
 * Changelog & more info at http://goo.gl/4nKhJ
 */
 
@@ -17,7 +17,7 @@
 
 // ====[ CONSTANTS ]============================================================
 #define PLUGIN_NAME    "DoD:S Stats"
-#define PLUGIN_VERSION "1.9.2"
+#define PLUGIN_VERSION "1.9.3"
 
 // ====[ PLUGIN ]===============================================================
 #include "dodstats/init.sp"

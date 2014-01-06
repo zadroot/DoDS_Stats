@@ -6,8 +6,6 @@ public Action:OnLevelDown(client)
 {
 	if (IsValidClient(client))
 	{
-		decl String:color[10]; FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
-
 		dod_stats_gg_leveldown[client]++;
 
 		new ldpoints = GetConVar[GG_LevelDown][Value];
@@ -17,8 +15,10 @@ public Action:OnLevelDown(client)
 			dod_stats_session_score[client] -= ldpoints;
 
 			// GunGame message on spade kill.
-			if (dod_stats_client_notify[client])
+			if (bool:dod_stats_client_notify[client])
 			{
+				decl String:color[10];
+				FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
 				CPrintToChat(client, "%t", "Level down", color, ldpoints);
 			}
 		}
@@ -33,8 +33,6 @@ public Action:OnLevelSteal(client)
 {
 	if (IsValidClient(client))
 	{
-		decl String:color[10]; FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
-
 		dod_stats_gg_levelup[client]++;
 
 		new lspoints = GetConVar[GG_LevelSteal][Value];
@@ -44,8 +42,10 @@ public Action:OnLevelSteal(client)
 			dod_stats_session_score[client] += lspoints;
 
 			// GunGame message on spade kill.
-			if (dod_stats_client_notify[client])
+			if (bool:dod_stats_client_notify[client])
 			{
+				decl String:color[10];
+				FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
 				CPrintToChat(client, "%t", "Level up", lspoints, color);
 			}
 		}
@@ -60,8 +60,6 @@ public Action:OnGGWin(winner)
 {
 	if (IsValidClient(winner))
 	{
-		decl String:color[10]; FormatEx(color, sizeof(color), "%s", GetClientTeam(winner) == 2 ? "{allies}" : "{axis}");
-
 		// Client won the round - save it to database.
 		dod_stats_gg_roundswon[winner]++;
 
@@ -83,8 +81,10 @@ public Action:OnGGWin(winner)
 			dod_stats_session_score[winner] += lwponits;
 
 			// And notify winner!
-			if (dod_stats_client_notify[winner])
+			if (bool:dod_stats_client_notify[winner])
 			{
+				decl String:color[10];
+				FormatEx(color, sizeof(color), "%s", GetClientTeam(winner) == 2 ? "{allies}" : "{axis}");
 				CPrintToChat(winner, "%t", "GunGame victory", color, lwponits);
 			}
 		}

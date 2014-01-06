@@ -120,24 +120,26 @@ public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:
 
 					/** Initialize tables. */
 					// Start score depends on start points value.
-					dod_stats_score[client]           = startpoints;
-					dod_stats_kills[client]           = 0;
-					dod_stats_deaths[client]          = 0;
-					dod_stats_headshots[client]       = 0;
-					dod_stats_teamkills[client]       = 0;
-					dod_stats_teamkilled[client]      = 0;
-					dod_stats_captures[client]        = 0;
-					dod_stats_capblocks[client]       = 0;
-					dod_stats_planted[client]         = 0;
-					dod_stats_defused[client]         = 0;
-					dod_stats_gg_roundsplayed[client] = 0;
-					dod_stats_gg_roundswon[client]    = 0;
-					dod_stats_gg_levelup[client]      = 0;
-					dod_stats_gg_leveldown[client]    = 0;
-					dod_stats_weaponhits[client]      = 0;
-					dod_stats_weaponshots[client]     = 0;
-					dod_stats_time_played[client]     = 0;
-					dod_stats_client_notify[client]   = false;
+					dod_stats_score[client] = startpoints;
+
+					dod_stats_kills[client] =
+					dod_stats_deaths[client] =
+					dod_stats_headshots[client] =
+					dod_stats_teamkills[client] =
+					dod_stats_teamkilled[client] =
+					dod_stats_captures[client] =
+					dod_stats_capblocks[client] =
+					dod_stats_planted[client] =
+					dod_stats_defused[client] =
+					dod_stats_gg_roundsplayed[client] =
+					dod_stats_gg_roundswon[client] =
+					dod_stats_gg_levelup[client] =
+					dod_stats_gg_leveldown[client] =
+					dod_stats_weaponhits[client] =
+					dod_stats_weaponshots[client] =
+					dod_stats_time_played[client] =
+					dod_stats_client_notify[client] = false;
+
 					dod_global_player_count++;
 				}
 
@@ -149,9 +151,9 @@ public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:
 				dod_stats_online[client]      = true;
 
 				// Session stats
-				dod_stats_session_score[client]     = 0;
-				dod_stats_session_kills[client]     = 0;
-				dod_stats_session_deaths[client]    = 0;
+				dod_stats_session_score[client] =
+				dod_stats_session_kills[client] =
+				dod_stats_session_deaths[client] =
 				dod_stats_session_headshots[client] = 0;
 			}
 		}
@@ -308,8 +310,7 @@ RemoveOldPlayers()
 	if (GetConVar[Purge][Value])
 	{
 		// Create a single query for purge.
-		// decl is bad
-		new String:query[MAX_QUERY_LENGTH];
+		decl String:query[MAX_QUERY_LENGTH];
 
 		// Current date - purge value * 24 hours.
 		new days = GetTime() - (GetConVar[Purge][Value] * 86400);
@@ -327,8 +328,8 @@ SetEncoding()
 {
 	if (!sqlite)
 	{
-		// Set codepage to utf8
-		SQL_TQuery(db, DB_CheckErrors, "SET NAMES utf8");
+		if (!SQL_SetCharset(db, "utf8"))
+			SQL_TQuery(db, DB_CheckErrors, "SET NAMES utf8");
 	}
 }
 
@@ -377,7 +378,7 @@ ToggleNotify(client)
  * ----------------------------------------------------------------- */
 public DB_CheckErrors(Handle:owner, Handle:handle, const String:error[], any:data)
 {
-	if (!StrEqual(error, NULL_STRING)) LogError("Database Error: %s", error);
+	if (error[0] != '\0') LogError(error);
 }
 
 /* DB_PurgeCallback()
@@ -388,11 +389,13 @@ public DB_PurgeCallback(Handle:owner, Handle:handle, const String:error[], any:d
 {
 	if (handle != INVALID_HANDLE)
 	{
+		new rows = SQL_GetAffectedRows(owner);
+
 		// If more or equal rows was changed - log message
-		if (SQL_GetAffectedRows(owner))
+		if (rows)
 		{
-			LogMessage("Database purged: %i player(s) was removed due of inactivity.", SQL_GetAffectedRows(owner));
-			dod_global_player_count -= SQL_GetAffectedRows(owner);
+			LogMessage("Database has purged: %i player(s) was removed due of inactivity.", rows);
+			dod_global_player_count -= rows;
 		}
 	}
 	else LogError("Could not purge database: %s", error);
@@ -420,7 +423,26 @@ SavePlayer(client)
 		SQL_EscapeString(db, client_steamid, safe_steamid, sizeof(safe_steamid));
 
 		decl String:query[MAX_QUERY_LENGTH];
-		Format(query, sizeof(query), "UPDATE dodstats SET name = '%s', score = %i, kills = %i, deaths = %i, headshots = %i, teamkills = %i, teamkilled = %i, captured = %i, blocked = %i, planted = %i, defused = %i, gg_played = %i, gg_leader = %i, gg_levelup = %i, gg_leveldown = %i, hits = %i, shots = %i, timeplayed = %i WHERE steamid = '%s'",
+		Format(query, sizeof(query), "UPDATE dodstats SET \
+		name = '%s', \
+		score = %i, \
+		kills = %i, \
+		deaths = %i, \
+		headshots = %i, \
+		teamkills = %i, \
+		teamkilled = %i, \
+		captured = %i, \
+		blocked = %i, \
+		planted = %i, \
+		defused = %i, \
+		gg_played = %i, \
+		gg_leader = %i, \
+		gg_levelup = %i, \
+		gg_leveldown = %i, \
+		hits = %i, \
+		shots = %i, \
+		timeplayed = %i \
+		WHERE steamid = '%s'",
 		safe_name,
 		dod_stats_score[client],
 		dod_stats_kills[client],

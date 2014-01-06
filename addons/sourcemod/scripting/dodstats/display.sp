@@ -12,12 +12,12 @@ ShowInfo(client)
 		if (gameplay)
 		{
 			if (dod_stats_kills[client] >= grade_kills[i])
-			award = i;
+				award = i;
 		}
 		else /* Get kills & captures only for normal gameplay */
 		{
 			if (dod_stats_captures[client] >= grade_captures[i] && dod_stats_kills[client] >= grade_kills[i])
-			award = i;
+				award = i;
 		}
 	}
 
@@ -38,7 +38,9 @@ ShowRank(client, rank, next_score)
 
 	// Calc points to next position
 	new delta = 0, score = dod_stats_score[client], kills = dod_stats_kills[client];
-	if (next_score > score) delta = next_score - score;
+
+	if (next_score > score)
+		delta = next_score - score;
 
 	// Grades
 	for (i = 0; i < sizeof(grade_names); i++)
@@ -46,12 +48,12 @@ ShowRank(client, rank, next_score)
 		if (gameplay)
 		{
 			if (kills >= grade_kills[i])
-			award = i;
+				award = i;
 		}
 		else
 		{
 			if (dod_stats_captures[client] >= grade_captures[i] && kills >= grade_kills[i])
-			award = i;
+				award = i;
 		}
 	}
 
@@ -76,7 +78,7 @@ ShowSession(client)
 	new kills          = dod_stats_session_kills[client];
 	new deaths         = dod_stats_session_deaths[client];
 	new headshots      = dod_stats_session_headshots[client];
-	new timeplayed     = (GetTime() - dod_stats_time_joined[client]);
+	new timeplayed     = GetTime() - dod_stats_time_joined[client];
 
 	// Translate to our phrase
 	Format(title, sizeof(title), "%T:", "Session Stats", client);
@@ -135,8 +137,7 @@ ShowStats(client, rank)
 	new deaths       = dod_stats_deaths[client];
 	new headshots    = dod_stats_headshots[client];
 	new captures     = dod_stats_captures[client];
-
-	new timeplayed   = dod_stats_time_played[client] + (GetTime() - dod_stats_time_joined[client]);
+	new timeplayed   = dod_stats_time_played[client] + GetTime() - dod_stats_time_joined[client];
 
 	// Sets the panel's title
 	Format(title, sizeof(title), "%T", "Player Stats", client);
@@ -165,12 +166,12 @@ ShowStats(client, rank)
 		if (gameplay)
 		{
 			if (kills >= grade_kills[i])
-			award = i;
+				award = i;
 		}
 		else /* For DM we will sort grades only by kills */
 		{
 			if (captures >= grade_captures[i] && kills >= grade_kills[i])
-			award = i;
+				award = i;
 		}
 	}
 
@@ -299,9 +300,7 @@ public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:client)
 				{
 					/* Draws a raw line of text on a panel, without any markup other than a newline. */
 					if (i > 3) DrawPanelText(top10, buffer[i]);
-
-					/* Draws an item on a panel. */
-					else DrawPanelItem(top10, buffer[i]);
+					else       DrawPanelItem(top10, buffer[i]);
 				}
 			}
 
@@ -345,12 +344,12 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:clie
 						if (gameplay)
 						{
 							if (top_kills >= grade_kills[i])
-							award = i;
+								award = i;
 						}
 						else
 						{
 							if (top_flags >= grade_captures[i] && top_kills >= grade_kills[i])
-							award = i;
+								award = i;
 						}
 					}
 
@@ -370,7 +369,7 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:clie
 				for (j = 1; j <= row; j++)
 				{
 					if (j > 3) DrawPanelText(top10_awards, buffer[j]);
-					else DrawPanelItem(top10_awards, buffer[j]);
+					else       DrawPanelItem(top10_awards, buffer[j]);
 				}
 			}
 			// That means that if the client does not select an item within 20 seconds, the menu will be canceled.
@@ -423,7 +422,7 @@ public ShowTopGG(Handle:owner, Handle:handle, const String:error[], any:client)
 				for (i = 1; i <= row; i++)
 				{
 					if (i > 3) DrawPanelText(topGG, buffer[i]);
-					else DrawPanelItem(topGG, buffer[i]);
+					else       DrawPanelItem(topGG, buffer[i]);
 				}
 			}
 			SendPanelToClient(topGG, client, Handler_DoNothing, MENU_TIME_FOREVER);
