@@ -79,19 +79,30 @@ public Action:Command_DeletePlayer(client, args)
 {
 	if (args == 1)
 	{
-		decl String:arg[MAX_STEAMID_LENGTH], String:query[MAX_QUERY_LENGTH];
+		decl String:arg[MAX_STEAMID_LENGTH],
+			 String:arg_escaped[(MAX_STEAMID_LENGTH*2)+1],
+			 String:query[MAX_QUERY_LENGTH];
+
 		GetCmdArg(1, arg, sizeof(arg));
+		SQL_EscapeString(db, arg, arg_escaped, sizeof(arg_escaped));
 
-		Format(query, sizeof(query), "DELETE FROM dodstats WHERE steamid = '%s'", arg);
-		SQL_TQuery(db, DB_CheckErrors, query);
+		// Make sure its STEAMID
+		if (arg_escaped[5] == '_'
+		&&  arg_escaped[7] == ':')
+		{
+			FormatEx(query, sizeof(query), "DELETE FROM dodstats WHERE steamid = '%s'", arg_escaped);
+			SQL_TQuery(db, DB_CheckErrors, query);
 
-		LogAction(client, -1, "\"%L\" have been removed \"%s\" from the database.", client, arg);
+			LogAction(client, -1, "\"%L\" have been removed \"%s\" from the database.", client, arg_escaped);
 
-		// Notify admin about deleted steamid.
-		if (IsValidClient(client)) CReplyToCommand(client, "%t", "Removed from database", arg);
+			// Notify admin about deleted steamid.
+			if (IsValidClient(client))
+				CReplyToCommand(client, "%t", "Removed from database", arg_escaped);
 
-		// Duplicates: fuck 'em.
-		dod_global_player_count--;
+			// Duplicates: fuck 'em.
+			dod_global_player_count--;
+		}
+		else ReplyToCommand(client, "%t", "Delete player");
 	}
 	else ReplyToCommand(client, "%t", "Delete player");
 	return Plugin_Handled;

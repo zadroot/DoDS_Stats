@@ -5,8 +5,8 @@
 ShowInfo(client)
 {
 	// That's how we can define awards.
-	decl i, award, String:grade[64];
-	for (i = 0; i < sizeof(grade_names); i++)
+	decl award, String:grade[64];
+	for (new i; i < sizeof(grade_names); i++)
 	{
 		// DM has no flags
 		if (gameplay)
@@ -33,17 +33,17 @@ ShowInfo(client)
  * ----------------------------------------------------------------- */
 ShowRank(client, rank, next_score)
 {
-	decl i, award, String:grade[64], String:color[10];
+	decl delta, score, kills, award, String:grade[64], String:color[10];
 	FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
 
 	// Calc points to next position
-	new delta = 0, score = dod_stats_score[client], kills = dod_stats_kills[client];
+	delta = 0, score = dod_stats_score[client], kills = dod_stats_kills[client];
 
 	if (next_score > score)
 		delta = next_score - score;
 
 	// Grades
-	for (i = 0; i < sizeof(grade_names); i++)
+	for (new i; i < sizeof(grade_names); i++)
 	{
 		if (gameplay)
 		{
@@ -127,7 +127,7 @@ ShowSession(client)
  * ----------------------------------------------------------------- */
 ShowStats(client, rank)
 {
-	decl i, award, String:data[128], String:title[64], String:grade[64];
+	decl award, String:data[128], String:title[64], String:grade[64];
 
 	// Creates a MenuPanel from a MenuStyle.
 	new Handle:stats = CreatePanel();
@@ -161,7 +161,7 @@ ShowStats(client, rank)
 	DrawPanelItem(stats, title);
 
 	// Grade
-	for (i = 0; i < sizeof(grade_names); i++)
+	for (new i; i < sizeof(grade_names); i++)
 	{
 		if (gameplay)
 		{
@@ -266,42 +266,38 @@ public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:client)
 {
 	if (handle != INVALID_HANDLE)
 	{
-		if ((client = GetClientOfUserId(client)))
+		// Yay we've got a result.
+		if ((client = GetClientOfUserId(client)) && SQL_HasResultSet(handle))
 		{
-			decl i, top_score, top_kills, top_deaths, String:top_name[MAX_NAME_LENGTH], String:title[32], String:buffer[TOP_PLAYERS + 1][64];
+			decl top_score, top_kills, top_deaths, String:top_name[MAX_NAME_LENGTH], String:title[32], String:buffer[TOP_PLAYERS + 1][64];
 
-			new Handle:top10 = CreatePanel();
+			new Handle:top10 = CreatePanel(), row;
 			Format(title, sizeof(title), "%T:", "Top10", client);
 			SetPanelTitle(top10, title);
 
-			// Yay we've got a result.
-			if (SQL_HasResultSet(handle))
+			while (SQL_FetchRow(handle))
 			{
-				new row;
-				while (SQL_FetchRow(handle))
-				{
-					row++;
-					SQL_FetchString(handle, 0, top_name, sizeof(top_name));
-					top_score  = SQL_FetchInt(handle, 1);
-					top_kills  = SQL_FetchInt(handle, 2);
-					top_deaths = SQL_FetchInt(handle, 3);
+				row++;
+				SQL_FetchString(handle, 0, top_name, sizeof(top_name));
+				top_score  = SQL_FetchInt(handle, 1);
+				top_kills  = SQL_FetchInt(handle, 2);
+				top_deaths = SQL_FetchInt(handle, 3);
 
-					// If there is more than 3 players in top10, but less than 10 - show their numbers (because this is a PanelText)
-					if (row > 3 && row <= TOP_PLAYERS)
-						Format(buffer[row], 64, "%i. %t", row, "Top10 > 3", top_name, FloatDiv(float(top_kills), float((top_deaths == 0) ? 1 : top_deaths)), top_score);
-					else if (row <= TOP_PLAYERS)
-						Format(buffer[row], 64, "%t", "Top10 stats",        top_name, FloatDiv(float(top_kills), float((top_deaths == 0) ? 1 : top_deaths)), top_score);
-				}
-				if (row > TOP_PLAYERS)
-					row = TOP_PLAYERS;
+				// If there is more than 3 players in top10, but less than 10 - show their numbers (because this is a PanelText)
+				if (row > 3 && row <= TOP_PLAYERS)
+					Format(buffer[row], 64, "%i. %t", row, "Top10 > 3", top_name, FloatDiv(float(top_kills), float((top_deaths == 0) ? 1 : top_deaths)), top_score);
+				else if (row <= TOP_PLAYERS)
+					Format(buffer[row], 64, "%t", "Top10 stats",        top_name, FloatDiv(float(top_kills), float((top_deaths == 0) ? 1 : top_deaths)), top_score);
+			}
+			if (row > TOP_PLAYERS)
+				row = TOP_PLAYERS;
 
-				// i = 1
-				for (i = 1; i <= row; i++)
-				{
-					/* Draws a raw line of text on a panel, without any markup other than a newline. */
-					if (i > 3) DrawPanelText(top10, buffer[i]);
-					else       DrawPanelItem(top10, buffer[i]);
-				}
+			// i = 1
+			for (new i = 1; i <= row; i++)
+			{
+				/* Draws a raw line of text on a panel, without any markup other than a newline. */
+				if (i > 3) DrawPanelText(top10, buffer[i]);
+				else       DrawPanelItem(top10, buffer[i]);
 			}
 
 			SendPanelToClient(top10, client, Handler_DoNothing, MENU_TIME_FOREVER);
@@ -319,59 +315,56 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:clie
 {
 	if (handle != INVALID_HANDLE)
 	{
-		if ((client = GetClientOfUserId(client)))
+		if ((client = GetClientOfUserId(client)) && SQL_HasResultSet(handle))
 		{
-			decl i, j, award, top_flags, top_kills, String:top_name[MAX_NAME_LENGTH], String:grade[64], String:title[48], String:buffer[TOP_PLAYERS + 1][96];
+			decl award, top_flags, top_kills, String:top_name[MAX_NAME_LENGTH], String:grade[64], String:title[48], String:buffer[TOP_PLAYERS + 1][96];
 
-			new Handle:top10_awards = CreatePanel();
+			new Handle:top10_awards = CreatePanel(), row;
 			Format(title, sizeof(title), "%T:", "TopGrades", client);
 			SetPanelTitle(top10_awards, title);
 
-			if (SQL_HasResultSet(handle))
+			while (SQL_FetchRow(handle))
 			{
-				new row;
-				while (SQL_FetchRow(handle))
-				{
-					// Parse rows
-					row++;
-					SQL_FetchString(handle, 0, top_name, sizeof(top_name));
-					top_flags = SQL_FetchInt(handle, 1);
-					top_kills = SQL_FetchInt(handle, 2);
+				// Parse rows
+				row++;
+				SQL_FetchString(handle, 0, top_name, sizeof(top_name));
+				top_flags = SQL_FetchInt(handle, 1);
+				top_kills = SQL_FetchInt(handle, 2);
 
-					// Grades
-					for (i = 0; i < sizeof(grade_names); i++)
+				// Grades
+				for (new i; i < sizeof(grade_names); i++)
+				{
+					if (gameplay)
 					{
-						if (gameplay)
-						{
-							if (top_kills >= grade_kills[i])
-								award = i;
-						}
-						else
-						{
-							if (top_flags >= grade_captures[i] && top_kills >= grade_kills[i])
-								award = i;
-						}
+						if (top_kills >= grade_kills[i])
+							award = i;
 					}
-
-					// Translate grades in top panel
-					Format(grade, sizeof(grade), "%t", grade_names[award]);
-
-					if (row > 3 && row <= TOP_PLAYERS)
-						Format(buffer[row], 96, "%i. %t", row, "TopGrades > 3", top_name, grade, top_kills);
-					/* If there is less than 10 players AND less than 3 - dont show numbers, because this is PanelItem. */
-					else if (row <= TOP_PLAYERS)
-						Format(buffer[row], 96, "%t", "TopGrades stats",        top_name, grade, top_kills);
+					else
+					{
+						if (top_flags >= grade_captures[i] && top_kills >= grade_kills[i])
+							award = i;
+					}
 				}
-				// Is good if there is more than 10 players stored in database, but we gonna show only 10!
-				if (row > TOP_PLAYERS)
-					row = TOP_PLAYERS;
 
-				for (j = 1; j <= row; j++)
-				{
-					if (j > 3) DrawPanelText(top10_awards, buffer[j]);
-					else       DrawPanelItem(top10_awards, buffer[j]);
-				}
+				// Translate grades in top panel
+				Format(grade, sizeof(grade), "%t", grade_names[award]);
+
+				if (row > 3 && row <= TOP_PLAYERS)
+					Format(buffer[row], 96, "%i. %t", row, "TopGrades > 3", top_name, grade, top_kills);
+				/* If there is less than 10 players AND less than 3 - dont show numbers, because this is PanelItem. */
+				else if (row <= TOP_PLAYERS)
+					Format(buffer[row], 96, "%t", "TopGrades stats",        top_name, grade, top_kills);
 			}
+			// Is good if there is more than 10 players stored in database, but we gonna show only 10!
+			if (row > TOP_PLAYERS)
+				row = TOP_PLAYERS;
+
+			for (new j = 1; j <= row; j++)
+			{
+				if (j > 3) DrawPanelText(top10_awards, buffer[j]);
+				else       DrawPanelItem(top10_awards, buffer[j]);
+			}
+
 			// That means that if the client does not select an item within 20 seconds, the menu will be canceled.
 			SendPanelToClient(top10_awards, client, Handler_DoNothing, MENU_TIME_FOREVER);
 
@@ -390,46 +383,42 @@ public ShowTopGG(Handle:owner, Handle:handle, const String:error[], any:client)
 {
 	if (handle != INVALID_HANDLE)
 	{
-		if ((client = GetClientOfUserId(client)))
+		if ((client = GetClientOfUserId(client)) && SQL_HasResultSet(handle))
 		{
-			decl i, top_wins, top_steal, String:top_name[MAX_NAME_LENGTH], String:title[32], String:buffer[TOP_PLAYERS + 1][64];
+			decl top_wins, top_steal, String:top_name[MAX_NAME_LENGTH], String:title[32], String:buffer[TOP_PLAYERS + 1][64];
 
-			new Handle:topGG = CreatePanel();
+			new Handle:topGG = CreatePanel(), row;
 			Format(title, sizeof(title), "%T:", "TopGG", client);
 			SetPanelTitle(topGG, title);
 
-			// Yay we've got a result.
-			if (SQL_HasResultSet(handle))
+			while (SQL_FetchRow(handle))
 			{
-				new row;
-				while (SQL_FetchRow(handle))
-				{
-					row++;
-					SQL_FetchString(handle, 0, top_name, sizeof(top_name));
-					top_wins  = SQL_FetchInt(handle, 1);
-					top_steal = SQL_FetchInt(handle, 2);
+				row++;
+				SQL_FetchString(handle, 0, top_name, sizeof(top_name));
+				top_wins  = SQL_FetchInt(handle, 1);
+				top_steal = SQL_FetchInt(handle, 2);
 
-					if (row > 3 && row <= TOP_PLAYERS)
-						Format(buffer[row], 96, "%i. %t", row, "TopGG > 3", top_name, top_wins, top_steal);
-					/* If there is less than 10 players AND less than 3 - dont show numbers, because this is PanelItem. */
-					else if (row <= TOP_PLAYERS)
-						Format(buffer[row], 96, "%t", "TopGG stats",        top_name, top_wins, top_steal);
-				}
-				// Is good if there is more than 10 players stored in database, but we gonna show only 10!
-				if (row > TOP_PLAYERS)
-					row = TOP_PLAYERS;
-
-				for (i = 1; i <= row; i++)
-				{
-					if (i > 3) DrawPanelText(topGG, buffer[i]);
-					else       DrawPanelItem(topGG, buffer[i]);
-				}
+				if (row > 3 && row <= TOP_PLAYERS)
+					Format(buffer[row], 96, "%i. %t", row, "TopGG > 3", top_name, top_wins, top_steal);
+				/* If there is less than 10 players AND less than 3 - dont show numbers, because this is PanelItem. */
+				else if (row <= TOP_PLAYERS)
+					Format(buffer[row], 96, "%t", "TopGG stats",        top_name, top_wins, top_steal);
 			}
+			// Is good if there is more than 10 players stored in database, but we gonna show only 10!
+			if (row > TOP_PLAYERS)
+				row = TOP_PLAYERS;
+
+			for (new i = 1; i <= row; i++)
+			{
+				if (i > 3) DrawPanelText(topGG, buffer[i]);
+				else       DrawPanelItem(topGG, buffer[i]);
+			}
+
 			SendPanelToClient(topGG, client, Handler_DoNothing, MENU_TIME_FOREVER);
 			CloseHandle(topGG);
 		}
 	}
-	else LogError("topGG command error: %s", error);
+	else LogError("TopGG command error: %s", error);
 }
 
 /* Handler_DoNothing()

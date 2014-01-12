@@ -15,7 +15,7 @@ public Action:OnLevelDown(client)
 			dod_stats_session_score[client] -= ldpoints;
 
 			// GunGame message on spade kill.
-			if (bool:dod_stats_client_notify[client])
+			if (dod_stats_client_notify[client])
 			{
 				decl String:color[10];
 				FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
@@ -42,7 +42,7 @@ public Action:OnLevelSteal(client)
 			dod_stats_session_score[client] += lspoints;
 
 			// GunGame message on spade kill.
-			if (bool:dod_stats_client_notify[client])
+			if (dod_stats_client_notify[client])
 			{
 				decl String:color[10];
 				FormatEx(color, sizeof(color), "%s", GetClientTeam(client) == 2 ? "{allies}" : "{axis}");
@@ -66,7 +66,7 @@ public Action:OnGGWin(winner)
 		// Write Roundsplayed into database for all ingame players.
 		for (new client = 1; client <= MaxClients; client++)
 		{
-			if (IsClientInGame(client))
+			if (IsValidClient(client))
 			{
 				dod_stats_gg_roundsplayed[client]++;
 			}
@@ -81,7 +81,7 @@ public Action:OnGGWin(winner)
 			dod_stats_session_score[winner] += lwponits;
 
 			// And notify winner!
-			if (bool:dod_stats_client_notify[winner])
+			if (dod_stats_client_notify[winner])
 			{
 				decl String:color[10];
 				FormatEx(color, sizeof(color), "%s", GetClientTeam(winner) == 2 ? "{allies}" : "{axis}");

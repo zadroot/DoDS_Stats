@@ -103,24 +103,24 @@ public OnPluginStart()
 public OnAllPluginsLoaded()
 {
 	// Checking if server is running DeathMatch
-	dodstats_gameplay = FindConVar("deathmatch_version");
+	static Handle:dodstats_gameplay = INVALID_HANDLE;
 
+	if ((dodstats_gameplay = FindConVar("deathmatch_version")))
+	{
+		gameplay = DEATHMATCH; /* If mod detected - accept mode and print to server console */
+		LogMessage("Server is running DeathMatch plugin. Appropriate stats mode enabled.");
+	}
+	else if ((dodstats_gameplay = FindConVar("sm_gungame_version")))
+	{
+		// Cant find DM cvar. Lets check for GunGame now
+		gameplay = GUNGAME;
+		LogMessage("Server is running GunGame plugin. Appropriate stats mode enabled.");
+	}
+	//else gameplay = DEFAULT;
+
+	// Close handle
 	if (dodstats_gameplay != INVALID_HANDLE)
-	{
-		gameplay = DEATHMATCH;
-		LogMessage("Server is running DeathMatch > appropriate stats mode enabled.");
-	}
-	else /* Cant find DM cvar. Lets check for GunGame now */
-	{
-		dodstats_gameplay = FindConVar("sm_gungame_version");
-
-		if (dodstats_gameplay != INVALID_HANDLE)
-		{
-			gameplay = GUNGAME; /* If mod detected - accept mode and print to server console */
-			LogMessage("Server is running GunGame > appropriate stats mode enabled.");
-		}
-		else gameplay = DEFAULT;
-	}
+		CloseHandle(dodstats_gameplay);
 
 #if defined _updater_included
 	if (LibraryExists("updater")) Updater_AddPlugin(UPDATE_URL);

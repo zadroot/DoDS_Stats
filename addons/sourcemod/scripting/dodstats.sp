@@ -33,7 +33,7 @@ public Plugin:myinfo =
 {
 	name        = PLUGIN_NAME,
 	author      = "Root",
-	description = "A stats with awards, captures, headshots & more...",
+	description = "A stats with awards, captures, headshots & more",
 	version     = PLUGIN_VERSION,
 	url         = "http://dodsplugins.com/"
 };
@@ -45,10 +45,10 @@ public Plugin:myinfo =
  * ----------------------------------------------------------------------------- */
 public OnMapStart()
 {
-	// Update global player's count at every mapchange for servers with MySQL database
+	// Update global player's count at every mapchange for servers with MySQL database only
 	if (!sqlite) GetPlayerCount();
 
-	// Purge database at a every map change
+	// Purge dodstats database at a every map change
 	RemoveOldPlayers();
 }
 
@@ -58,10 +58,10 @@ public OnMapStart()
  * ----------------------------------------------------------------------------- */
 public OnClientPostAdminCheck(client)
 {
-	// Checking if client is valid (and wasn't connected before)
+	// Checking if client is valid and wasn't connected before
 	if (IsValidClient(client))
 	{
-		if (bool:dod_stats_online[client] == false)
+		if (!dod_stats_online[client])
 		{
 			// Load player stats or create if client wasnt found in database
 			PrepareClient(client);
@@ -70,8 +70,8 @@ public OnClientPostAdminCheck(client)
 			CreateTimer(30.0, Timer_WelcomePlayer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		}
 
-		// Enable stats if there is enough players on a server
-		if (bool:roundend == false && GetClientCount(true) >= GetConVar[MinPlayers][Value])
+		// Enable stats if there is enough players on a server at the moment
+		if (!roundend && GetClientCount(true) >= GetConVar[MinPlayers][Value])
 		{
 			rankactive = true;
 		}
@@ -86,8 +86,8 @@ public OnClientDisconnect(client)
 {
 	if (IsValidClient(client))
 	{
-		// Save stats only if client is connected before map change - otherwise database tables may broke, because stats wasnt loaded and saved properly
-		if (bool:dod_stats_online[client] == true)
+		// Save stats only if client is connected before map change - otherwise database tables may broke (because stats wasnt loaded and saved in proper way)
+		if (dod_stats_online[client])
 		{
 			SavePlayer(client);
 		}
@@ -107,13 +107,13 @@ public Action:OnClientSayCommand(client, const String:command[], const String:sA
 		// Copy original message
 		strcopy(text, sizeof(text), sArgs);
 
-		// Remove quotes from destination string, otherwise triggers will never be detected
+		// Remove quotes from destination string (otherwise triggers will never be detected)
 		StripQuotes(text);
 
-		// Loop through all chars and get rid of capital ones
+		// Loop through all chars and get rid of capital chars
 		for (trigger = 0; trigger < strlen(text); trigger++)
 		{
-			// CharToLower is already checks for IsCharUpper
+			// CharToLower is already checks for IsCharUpper btw
 			text[trigger] = CharToLower(text[trigger]);
 		}
 
@@ -137,7 +137,7 @@ public Action:OnClientSayCommand(client, const String:command[], const String:sA
 		}
 	}
 
-	// Continue (otherwise plugin will block say or say_team commands)
+	// Continue (otherwise plugin will block say or/and say_team commands)
 	return Plugin_Continue;
 }
 

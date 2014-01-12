@@ -58,8 +58,6 @@ public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:
 {
 	if (handle != INVALID_HANDLE)
 	{
-		new time = GetTime(), startpoints = GetConVar[StartPoints][Value];
-
 		// Data is always zero. Stop threading if client is zero.
 		if ((client = GetClientOfUserId(client)))
 		{
@@ -71,11 +69,13 @@ public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:
 				String:client_name[MAX_NAME_LENGTH],
 				String:safe_name[(MAX_NAME_LENGTH*2)+1];
 
-			GetClientName(client, client_name, sizeof(client_name));
-			SQL_EscapeString(db,  client_name, safe_name, sizeof(safe_name));
-
 			if (GetClientAuthString(client, client_steamid, sizeof(client_steamid)))
 			{
+				new time = GetTime(), startpoints = GetConVar[StartPoints][Value];
+
+				GetClientName(client, client_name, sizeof(client_name));
+				SQL_EscapeString(db,  client_name, safe_name, sizeof(safe_name));
+
 				// That's how we remove bad characters from nicknames.
 				SQL_EscapeString(db, client_steamid, safe_steamid, sizeof(safe_steamid));
 
@@ -107,6 +107,8 @@ public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:
 						dod_stats_weaponshots[client]     = SQL_FetchInt(handle, 15);
 						dod_stats_time_played[client]     = SQL_FetchInt(handle, 16);
 						dod_stats_client_notify[client]   = bool:SQL_FetchInt(handle, 17);
+
+						break;
 					}
 				}
 				else // Nope player is new
@@ -116,6 +118,7 @@ public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:
 						FormatEx(query, sizeof(query), "INSERT INTO dodstats VALUES ('%s', '%s', %i, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %i)", safe_steamid, safe_name, startpoints, time);
 					else /* Because MySQL is different */
 						FormatEx(query, sizeof(query), "INSERT INTO dodstats (steamid, name, score, kills, deaths, headshots, teamkills, teamkilled, captured, blocked, planted, defused, gg_played, gg_leader, gg_levelup, gg_leveldown, hits, shots, timeplayed, notify, last_connect) VALUES ('%s', '%s', %i, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %i)", safe_steamid, safe_name, startpoints, time);
+
 					SQL_TQuery(db, DB_CheckErrors, query);
 
 					/** Initialize tables. */
@@ -191,8 +194,7 @@ public QueryRank(Handle:owner, Handle:handle, const String:error[], any:client)
 			// Success! Database isn't empty!
 			if (SQL_HasResultSet(handle) && SQL_FetchRow(handle))
 			{
-				rank = SQL_GetRowCount(handle);
-				rank++;
+				rank = SQL_GetRowCount(handle) + 1;
 				rankup = false;
 				next_score = SQL_FetchInt(handle, false);
 			}
@@ -214,7 +216,7 @@ QueryTopPlayers(client, count)
 	decl String:query[MAX_QUERY_LENGTH];
 
 	// DESC LIMIT = 10 because we need to query only 10 players!
-	FormatEx(query, sizeof(query), "SELECT name, score, kills, deaths FROM dodstats ORDER BY score DESC LIMIT %i", count);
+	FormatEx(query, sizeof(query), "SELECT name, score, kills, deaths FROM dodstats ORDER BY score DESC LIMIT %i, 10", count);
 	SQL_TQuery(db, ShowTop10, query, GetClientUserId(client));
 }
 
@@ -225,7 +227,7 @@ QueryTopPlayers(client, count)
 QueryTopGrades(client, count)
 {
 	decl String:query[MAX_QUERY_LENGTH];
-	FormatEx(query, sizeof(query), "SELECT name, captured, kills FROM dodstats ORDER BY kills DESC LIMIT %i", count);
+	FormatEx(query, sizeof(query), "SELECT name, captured, kills FROM dodstats ORDER BY kills DESC LIMIT %i, 10", count);
 
 	// Data is queried and received, show top players.
 	SQL_TQuery(db, ShowTopGrades, query, GetClientUserId(client));
@@ -240,7 +242,7 @@ QueryTopGG(client, count)
 	if (gameplay == GUNGAME)
 	{
 		decl String:query[MAX_QUERY_LENGTH];
-		FormatEx(query, sizeof(query), "SELECT name, gg_leader, gg_levelup FROM dodstats ORDER BY gg_leader DESC LIMIT %i", count);
+		FormatEx(query, sizeof(query), "SELECT name, gg_leader, gg_levelup FROM dodstats ORDER BY gg_leader DESC LIMIT %i, 10", count);
 		SQL_TQuery(db, ShowTopGG, query, GetClientUserId(client));
 	}
 }
@@ -274,8 +276,7 @@ public QueryStatsMe(Handle:owner, Handle:handle, const String:error[], any:clien
 
 			if (SQL_HasResultSet(handle) && SQL_FetchRow(handle))
 			{
-				rank = SQL_GetRowCount(handle);
-				rank++;
+				rank = SQL_GetRowCount(handle) + 1;
 				rankup = false;
 			}
 			if (rankup) rank++;
@@ -310,12 +311,8 @@ RemoveOldPlayers()
 	if (GetConVar[Purge][Value])
 	{
 		// Create a single query for purge.
-		decl String:query[MAX_QUERY_LENGTH];
-
-		// Current date - purge value * 24 hours.
-		new days = GetTime() - (GetConVar[Purge][Value] * 86400);
-
-		FormatEx(query, sizeof(query), "DELETE FROM dodstats WHERE last_connect <= %i; VACUUM;", days);
+		decl String:query[MAX_QUERY_LENGTH]; // Current date - purge value * 24 hours.
+		FormatEx(query, sizeof(query), "DELETE FROM dodstats WHERE last_connect <= %i; VACUUM;", GetTime() - (GetConVar[Purge][Value] * 86400));
 		SQL_TQuery(db, DB_PurgeCallback, query);
 	}
 }
@@ -326,10 +323,9 @@ RemoveOldPlayers()
  * ----------------------------------------------------------------- */
 SetEncoding()
 {
-	if (!sqlite)
+	if (!sqlite && !SQL_SetCharset(db, "utf8"))
 	{
-		if (!SQL_SetCharset(db, "utf8"))
-			SQL_TQuery(db, DB_CheckErrors, "SET NAMES utf8");
+		SQL_TQuery(db, DB_CheckErrors, "SET NAMES utf8");
 	}
 }
 
@@ -351,7 +347,7 @@ ToggleNotify(client)
 		SQL_EscapeString(db, client_steamid, safe_steamid, sizeof(safe_steamid));
 
 		// Client's preferences of `notify` is enabled.
-		if (bool:dod_stats_client_notify[client])
+		if (dod_stats_client_notify[client])
 		{
 			dod_stats_client_notify[client] = false;
 
@@ -367,7 +363,7 @@ ToggleNotify(client)
 			SQL_TQuery(db, DB_CheckErrors, query);
 		}
 
-		FormatEx(status, sizeof(status), "%T", bool:dod_stats_client_notify[client] ? "On" : "Off", client);
+		FormatEx(status, sizeof(status), "%T", dod_stats_client_notify[client] ? "On" : "Off", client);
 		CPrintToChat(client, "%t", "Toggled notifications", status);
 	}
 }
@@ -378,7 +374,7 @@ ToggleNotify(client)
  * ----------------------------------------------------------------- */
 public DB_CheckErrors(Handle:owner, Handle:handle, const String:error[], any:data)
 {
-	if (error[0] != '\0') LogError(error);
+	if (error[0]) LogError(error);
 }
 
 /* DB_PurgeCallback()
@@ -394,7 +390,7 @@ public DB_PurgeCallback(Handle:owner, Handle:handle, const String:error[], any:d
 		// If more or equal rows was changed - log message
 		if (rows)
 		{
-			LogMessage("Database has purged: %i player(s) was removed due of inactivity.", rows);
+			LogMessage("Database has been purged: %i player(s) was removed due of inactivity.", rows);
 			dod_global_player_count -= rows;
 		}
 	}
@@ -413,12 +409,12 @@ SavePlayer(client)
 		String:client_name[MAX_NAME_LENGTH],
 		String:safe_name[(MAX_NAME_LENGTH*2)+1];
 
-	// "Dirty" name
-	GetClientName(client, client_name, sizeof(client_name));
-	SQL_EscapeString(db,  client_name, safe_name, sizeof(safe_name));
-
 	if (GetClientAuthString(client, client_steamid, sizeof(client_steamid)))
 	{
+		// "Dirty" name
+		GetClientName(client, client_name, sizeof(client_name));
+		SQL_EscapeString(db,  client_name, safe_name, sizeof(safe_name));
+
 		// Make SQL safer
 		SQL_EscapeString(db, client_steamid, safe_steamid, sizeof(safe_steamid));
 

@@ -6,8 +6,7 @@
 #define UPDATE_URL         "https://raw.github.com/zadroot/DoDS_Stats/master/updater.txt"
 
 // Globals
-new	Handle:dodstats_gameplay,
-	Handle:dodstats_triggers,
+new	Handle:dodstats_triggers,
 	Handle:db,
 	bool:rankactive,
 	bool:roundend,
