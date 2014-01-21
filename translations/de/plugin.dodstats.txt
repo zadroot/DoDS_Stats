@@ -1,0 +1,342 @@
+"Phrases"
+{
+	// Chat messages
+	"Connected stats"
+	{
+		"de"		"{lightgreen}{1}{default} connected ({green}{2}{default} punkte / {lightgreen}Rang - {3}{default})"
+	}
+	"Toggled notifications"
+	{
+		"de"		"Rang Benachrichtigung {lightgreen}{1}{default}. Schreibe {green}!notify{default} zum einschalten."
+	}
+	"Not enough players"
+	{
+		"de"		"Brauchte mindestens {green}{1}{default} Spielern zu ermöglichen {green}stats{default}."
+	}
+	"Ranking enabled"
+	{
+		"de"		"Rangliste {green}eingeschaltet:{default} Start der Runde."
+	}
+	"Ranking disabled"
+	{
+		"de"		"Rangliste {green}ausgeschaltet{default} in der Bonusrunde."
+	}
+	"Welcome message"
+	{
+		"de"		"Auf diesem Server laeuft {green}DoD:S Stats{default}.\nSchreibe {green}!notify{default} im Chat um die Benachrichtigung umzustellen."
+	}
+	"Stats have been reset"
+	{
+		"de"		"{lightgreen}Alle Statistiken wurden zurueckgesetzt."
+	}
+	"Removed from database"
+	{
+		"de"		"{lightgreen}{1}{default} wurde aus der Datenbank entfernt."
+	}
+	"Delete player"
+	{
+		"de"		"Verwende: sm_resetplayer \"STEAM_ID\""
+	}
+	"Show target"
+	{
+		"de"		"Verwende: sm_pstats <#userid|name>"
+	}
+	"First in rank"
+	{
+		"de"		"{1}{2}{default} ist auf dem {green}ersten Platz{default} ({lightgreen}Rang: {green}{3}{default}) bekommt {green}{4}{default} Punkte - {green}{5}{default} Kills."
+	}
+	"Rank display"
+	{
+		"de"		"{1}{2}{default} ist auf Platz {green}{3}{default}/{green}{4}{default} mit {lightgreen}{5}{default} Punkten ({lightgreen}{6} fuer den naechsten Rang{default}), {green}{7}{default} Kills & {green}{8}{default} Tode."
+	}
+	"Suicide penalty"
+	{
+		"de"		"Du hast {green}{1}{default} Punkte verloren {lightgreen}weil du tot bist."
+	}
+	"Teamkill penalty"
+	{
+		"de"		"Du verlierst {green}{1}{default} Punkte wegen {2}Teamkill."
+	}
+	"Kill points"
+	{
+		"de"		"Du bekommst {green}{1}{default} Punkte fuer das killen von {2}{3}"
+	}
+	"Death points"
+	{
+		"de"		"Du wurdest getoetet von {1}{2}{default} und verlierst {green}{3}{default} Punkte."
+	}
+	"Level up"
+	{
+		"de"		"Du bekommst {green}{1}{default} Punkte weil du {2}einen Level gestohlen hast."
+	}
+	"Level down"
+	{
+		"de"		"Du {1}verlierst einen Level{default} und {green}{2}{default} Punkte."
+	}
+	"GunGame victory"
+	{
+		"de"		"{1}Du hast den max. Level in {lightgreen}GunGame{default} erreicht und bekommst {green}{2}{default} Punkte fuer den Sieg!"
+	}
+	"Headshot points"
+	{
+		"de"		"Du bekommst {green}{1}{default} Punkte fuer einen {lightgreen}Kopfschuss."
+	}
+	"Victory points"
+	{
+		"de"		"{1}Dein Team hat die Runde gewonnen und jeder erhaelt {green}{2} Punkte."
+	}
+	"Capture points"
+	{
+		"de"		"Du bekommst {green}{1}{default} Punkte fuer {2}Gebiet einnehmen."
+	}
+	"Block points"
+	{
+		"de"		"Du bekommst {green}{1}{default} punkte fuer {2}Gebiet blockieren."
+	}
+	"Explode points"
+	{
+		"de"		"Du bekommst {green}{1}{default} Punkte fuer {2}Zerstoerung eines Ziels."
+	}
+	"Protect points"
+	{
+		"de"		"Du bekommst {green}{1}{default} Punkte fuer {2}beschuetzen eines Objekts/Bombe."
+	}
+	"Plant points"
+	{
+		"de"		"Du bekommst {green}{1}{default} Punkte fuer {2}anbringen einer Bombe."
+	}
+	"Defuse points"
+	{
+		"de"		"Du bekommst {green}{1}{default} Punkte fuer {2}entschaerfen einer Bombe."
+	}
+	// Menu items: no colors here
+	"Session Stats"
+	{
+		"de"		"Spieler session"
+	}
+	"Session points"
+	{
+		"de"		"Punkte"
+	}
+	"Session kills"
+	{
+		"de"		"Kills"
+	}
+	"Session deaths"
+	{
+		"de"		"Tode"
+	}
+	"Session headshots"
+	{
+		"de"		"Kopfschuesse"
+	}
+	"Session KDR"
+	{
+		"de"		"KDR"
+	}
+	"Session time"
+	{
+		"de"		"Auf Server gespielt"
+	}
+	"Session timestamp"
+	{
+		"de"		"{1} h {2} m"
+	}
+	"Player Stats"
+	{
+		"de"		"Spieler Stats"
+	}
+	"Nickname"
+	{
+		"de"		"Nickname: {1}"
+	}
+	"Position"
+	{
+		"de"		"Position: #{1} von {2} Spielern"
+	}
+	"Points earned"
+	{
+		"de"		"{1} Punkte bekommen"
+	}
+	"Overall timeplayed"
+	{
+		"de"		"Zeit gespielt: {1} days - {2} h {3} m"
+	}
+	"Kill Stats"
+	{
+		"de"		"Kill Stats"
+	}
+	"Grade"
+	{
+		"de"		"Rang: {1}"
+	}
+	"Kills & deaths"
+	{
+		"de"		"{1}:{2} Frags ({3})"
+	}
+	"Accuracy"
+	{
+		"de"		"Genauigkeit: {1}%%"
+	}
+	"Overall headshots"
+	{
+		"de"		"Kopfschuesse: {1} ({2}%%)"
+	}
+	"Teamkills & teamkilled"
+	{
+		"de"		"Teamkills: {1} / vom Teamkamerad getoetet: {2}"
+	}
+	"Objective Stats"
+	{
+		"de"		"Zielvorgabe Stats"
+	}
+	"Captures"
+	{
+		"de"		"Eroberungen: {1}"
+	}
+	"Blocked captures"
+	{
+		"de"		"blockierte Eroberungen: {1}"
+	}
+	"Bombs planted"
+	{
+		"de"		"Bomben angebracht: {1}"
+	}
+	"Bombs defused"
+	{
+		"de"		"Bomben deaktiviert: {1}"
+	}
+	"GunGame Stats"
+	{
+		"de"		"GunGame Stats"
+	}
+	"Played & won"
+	{
+		"de"		"Runden gespielt: {1} / Runden gewonnen: {2} ({3})"
+	}
+	"Steal & lost"
+	{
+		"de"		"Levels gestohlen: {1} / Levels verloren: {2} ({3})"
+	}
+	"Top10"
+	{
+		"de"		"Top Players"
+	}
+	"Top10 stats"
+	{
+		"de"		"{1} | {2} KDR | {3} punkte"
+	}
+	"Top10 > 3"
+	{
+		"de"		"{1} | {2} KDR | {3}"
+	}
+	"TopGrades"
+	{
+		"de"		"Top Spieler Auszeichnungen"
+	}
+	"TopGrades stats"
+	{
+		"de"		"{1} | {2} | {3} kills"
+	}
+	"TopGrades > 3"
+	{
+		"de"		"{1} | {2} | {3}"
+	}
+	"TopGG"
+	{
+		"de"		"Top Players - GG"
+	}
+	"TopGG stats"
+	{
+		"de"		"{1} - {2} runden gewonnen ({3} levels gestohlen)"
+	}
+	"TopGG > 3"
+	{
+		"de"		"{1} - {2} gewonnen ({3} gestohlen)"
+	}
+	// Grades
+	"Civil"
+	{
+		"de"		"Civil"
+	}
+	"Private"
+	{
+		"de"		"Private"
+	}
+	"Corporal"
+	{
+		"de"		"Corporal"
+	}
+	"Sergeant"
+	{
+		"de"		"Sergeant"
+	}
+	"Staff Sergeant"
+	{
+		"de"		"Staff Sergeant"
+	}
+	"Sergeant First Class"
+	{
+		"de"		"Sergeant First Class"
+	}
+	"Sergeant Major"
+	{
+		"de"		"Sergeant Major"
+	}
+	"Command Sergeant Major"
+	{
+		"de"		"Command Sergeant Major"
+	}
+	"Warrant Officer One"
+	{
+		"de"		"Warrant Officer One"
+	}
+	"Second Lieutenant"
+	{
+		"de"		"Second Lieutenant"
+	}
+	"First Lieutenant"
+	{
+		"de"		"First Lieutenant"
+	}
+	"Captain"
+	{
+		"de"		"Captain"
+	}
+	"Major"
+	{
+		"de"		"Major"
+	}
+	"Lieutenant Colonel"
+	{
+		"de"		"Lieutenant Colonel"
+	}
+	"Colonel"
+	{
+		"de"		"Colonel"
+	}
+	"Brigadier General"
+	{
+		"de"		"Brigadier General"
+	}
+	"Major General"
+	{
+		"de"		"Major General"
+	}
+	"Lieutenant General"
+	{
+		"de"		"Lieutenant General"
+	}
+	"General"
+	{
+		"de"		"General"
+	}
+	"General of the Army"
+	{
+		"de"		"General of the Army"
+	}
+	"Marshal"
+	{
+		"de"		"Marshal"
+	}
+}

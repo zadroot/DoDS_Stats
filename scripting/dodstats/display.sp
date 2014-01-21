@@ -359,10 +359,10 @@ public ShowTopGrades(Handle:owner, Handle:handle, const String:error[], any:clie
 			if (row > TOP_PLAYERS)
 				row = TOP_PLAYERS;
 
-			for (new j = 1; j <= row; j++)
+			for (new x = 1; x <= row; x++)
 			{
-				if (j > 3) DrawPanelText(top10_awards, buffer[j]);
-				else       DrawPanelItem(top10_awards, buffer[j]);
+				if (x > 3) DrawPanelText(top10_awards, buffer[x]);
+				else       DrawPanelItem(top10_awards, buffer[x]);
 			}
 
 			// That means that if the client does not select an item within 20 seconds, the menu will be canceled.
@@ -426,89 +426,3 @@ public ShowTopGG(Handle:owner, Handle:handle, const String:error[], any:client)
  * Called when a menu action is completed.
  * ----------------------------------------------------------------- */
 public Handler_DoNothing(Handle:menu, MenuAction:action, param1, param2){}
-
-/* public ShowTop10(Handle:owner, Handle:handle, const String:error[], any:data)
-{
-	if (handle != INVALID_HANDLE)
-	{
-		new client, row;
-
-		if ((client = GetClientOfUserId(data)))
-		{
-			decl top_score, top_kills, top_deaths, String:top_name[MAX_NAME_LENGTH], String:title[32], String:translate[32], String:buffer[TOP_PLAYERS + 1][64];
-
-			new Handle:top10 = CreatePanel();
-			Format(title, sizeof(title), "%T:", "Top", client);
-			SetPanelTitle(top10, title);
-
-			if (SQL_HasResultSet(handle))
-			{
-				while (SQL_FetchRow(handle))
-				{
-					row++;
-					SQL_FetchString(handle, 0, top_name, sizeof(top_name));
-					top_score  = SQL_FetchInt(handle, 1);
-					top_kills  = SQL_FetchInt(handle, 2);
-					top_deaths = SQL_FetchInt(handle, 3);
-
-					//if (row > 3 && row <= TOP_PLAYERS)
-					Format(buffer[row], 64, "%i. %t", row + dod_stats_top_page[client] * TOP_PLAYERS, "Top > 3", top_name, float(top_kills) / (top_deaths == 0 ? 1.0 : float(top_deaths)), top_score);
-					//else if (row <= TOP_PLAYERS)
-						//Format(buffer[row], 64, "%t", "Top stats", top_name, float(top_kills) / (top_deaths == 0 ? 1.0 : float(top_deaths)), top_score);
-				}
-
-				Format(translate, sizeof(translate), "%T", "Next", client);
-				DrawPanelItem(top10, translate);
-				SetPanelCurrentKey(top10, 1);
-
-				for (new i = 1; i <= row; i++)
-				{
-					DrawPanelText(top10, buffer[i]);
-				}
-
-				if (dod_stats_top_page[client])
-				{
-					Format(translate, sizeof(translate), "%T", "Previous", client);
-					DrawPanelItem(top10, translate);
-					SetPanelCurrentKey(top10, 2);
-				}
-
-				DrawPanelItem(top10, NULL_STRING, ITEMDRAW_SPACER);
-
-				Format(translate, sizeof(translate), "%T", "Exit", client);
-				SetPanelCurrentKey(top10, TOP_PLAYERS);
-				DrawPanelItem(top10, translate, ITEMDRAW_CONTROL);
-
-				SendPanelToClient(top10, client, Menu_Top10, 20);
-			}
-		}
-	}
-	else LogError("Top command error: %s", error);
-}
-
-public Menu_Top10(Handle:menu, MenuAction:action, client, param)
-{
-	switch (action)
-	{
-		case MenuAction_Select:
-		{
-			switch (param)
-			{
-				case 1:
-				{
-					dod_stats_top_page[client]++;
-					QueryTopPlayers(client, dod_stats_top_page[client] * TOP_PLAYERS);
-				}
-				case 2:
-				{
-					dod_stats_top_page[client]--;
-
-					if (dod_stats_top_page[client] == 1)
-						 QueryTopPlayers(client, TOP_PLAYERS);
-					else QueryTopPlayers(client, dod_stats_top_page[client] * TOP_PLAYERS);
-				}
-			}
-		}
-		case MenuAction_End: CloseHandle(menu);
-    }
-} */
