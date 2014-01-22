@@ -346,24 +346,13 @@ ToggleNotify(client)
 	{
 		SQL_EscapeString(db, client_steamid, safe_steamid, sizeof(safe_steamid));
 
-		// Client's preferences of `notify` is enabled.
-		if (dod_stats_client_notify[client])
-		{
-			dod_stats_client_notify[client] = false;
+		// Toggle player notifications
+		dod_stats_client_notify[client] = !dod_stats_client_notify[client];
 
-			// No need to save notify all time, just update it once.
-			FormatEx(query, sizeof(query), "UPDATE dodstats SET notify = 0 WHERE steamid = '%s'", safe_steamid);
-			SQL_TQuery(db, DB_CheckErrors, query);
-		}
-		else /* Notify was disabled. Enable it now. */
-		{
-			dod_stats_client_notify[client] = true;
-
-			FormatEx(query, sizeof(query), "UPDATE dodstats SET notify = 1 WHERE steamid = '%s'", safe_steamid);
-			SQL_TQuery(db, DB_CheckErrors, query);
-		}
-
+		// No need to save notify all time, just update it once.
+		FormatEx(query, sizeof(query), "UPDATE dodstats SET notify = %i WHERE steamid = '%s'", dod_stats_client_notify[client], safe_steamid);
 		FormatEx(status, sizeof(status), "%T", dod_stats_client_notify[client] ? "On" : "Off", client);
+		SQL_TQuery(db, DB_CheckErrors, query);
 		CPrintToChat(client, "%t", "Toggled notifications", status);
 	}
 }
