@@ -313,7 +313,7 @@ public Event_Point_Captured(Handle:event, const String:name[], bool:dontBroadcas
 		decl client, String:cappers[256];
 		GetEventString(event, "cappers", cappers, sizeof(cappers));
 
-		for (new i ; i < strlen(cappers); i++)
+		for (new i; i < strlen(cappers); i++)
 		{
 			// Track captures for all invaders!
 			client = cappers[i];

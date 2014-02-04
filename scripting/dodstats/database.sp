@@ -107,7 +107,6 @@ public PrepareClientData(Handle:owner, Handle:handle, const String:error[], any:
 						dod_stats_weaponshots[client]     = SQL_FetchInt(handle, 15);
 						dod_stats_time_played[client]     = SQL_FetchInt(handle, 16);
 						dod_stats_client_notify[client]   = bool:SQL_FetchInt(handle, 17);
-
 						break;
 					}
 				}
@@ -312,7 +311,7 @@ RemoveOldPlayers()
 	{
 		// Create a single query for purge.
 		decl String:query[MAX_QUERY_LENGTH]; // Current date - purge value * 24 hours.
-		FormatEx(query, sizeof(query), "DELETE FROM dodstats WHERE last_connect <= %i; VACUUM;", GetTime() - (GetConVar[Purge][Value] * 86400));
+		FormatEx(query, sizeof(query), "DELETE FROM dodstats WHERE last_connect <= %i; VACUUM", GetTime() - (GetConVar[Purge][Value] * 86400));
 		SQL_TQuery(db, DB_PurgeCallback, query);
 	}
 }
@@ -352,8 +351,8 @@ ToggleNotify(client)
 		// No need to save notify all time, just update it once.
 		FormatEx(query, sizeof(query), "UPDATE dodstats SET notify = %i WHERE steamid = '%s'", dod_stats_client_notify[client], safe_steamid);
 		FormatEx(status, sizeof(status), "%T", dod_stats_client_notify[client] ? "On" : "Off", client);
-		SQL_TQuery(db, DB_CheckErrors, query);
 		CPrintToChat(client, "%t", "Toggled notifications", status);
+		SQL_TQuery(db, DB_CheckErrors, query);
 	}
 }
 

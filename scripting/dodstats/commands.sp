@@ -59,7 +59,7 @@ CreateTriggersTrie()
  * ----------------------------------------------------------------- */
 public Action:Command_Reset(client, args)
 {
-	SQL_TQuery(db, DB_CheckErrors, "DELETE FROM dodstats; VACUUM;");
+	SQL_TQuery(db, DB_CheckErrors, "DELETE FROM dodstats; VACUUM");
 
 	// Log action.
 	LogAction(client, -1, "\"%L\" have been reset all stats.", client);
@@ -90,7 +90,7 @@ public Action:Command_DeletePlayer(client, args)
 		if (arg_escaped[5] == '_'
 		&&  arg_escaped[7] == ':')
 		{
-			FormatEx(query, sizeof(query), "DELETE FROM dodstats WHERE steamid = '%s'", arg_escaped);
+			FormatEx(query, sizeof(query), "DELETE FROM dodstats WHERE steamid = '%s'; VACUUM", arg_escaped);
 			SQL_TQuery(db, DB_CheckErrors, query);
 
 			LogAction(client, -1, "\"%L\" have been removed \"%s\" from the database.", client, arg_escaped);

@@ -34,7 +34,7 @@ public Plugin:myinfo =
 	description = "A stats with awards, captures, headshots & more",
 	version     = PLUGIN_VERSION,
 	url         = "http://dodsplugins.com/"
-};
+}
 
 /* OnMapStart()
  *
@@ -107,7 +107,7 @@ public Action:OnClientSayCommand(client, const String:command[], const String:sA
 		// Copy original message
 		strcopy(text, sizeof(text), sArgs);
 
-		// Remove quotes from destination string (otherwise triggers will never be detected!)
+		// Remove quotes from destination string (otherwise triggers will never be detected)
 		StripQuotes(text);
 
 		// Loop through all chars and get rid of capital chars
@@ -137,7 +137,7 @@ public Action:OnClientSayCommand(client, const String:command[], const String:sA
 		}
 	}
 
-	// Continue (otherwise plugin will block say or/and say_team commands)
+	// Continue (otherwise plugin will block say or / and say_team commands)
 	return Plugin_Continue;
 }
 
